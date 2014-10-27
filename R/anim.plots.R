@@ -1,4 +1,7 @@
 
+#' @import animation
+
+
 
 library(animation)
 
@@ -19,6 +22,21 @@ library(animation)
   if (exists(".old.ani.options")) ani.options(.old.ani.options)
 }
 
+
+#' Create an animated plot.
+#' 
+#' \code{anim.plot} 
+#' 
+#' @param x a matrix of x values. Each column is plotted in a single frame.
+#' @param y a matrix of y values.
+#' 
+#' @examples
+#' 
+#' x <- matrix(rep(-200:200/100, 10), nrow=41, ncol=10)
+#' y <- sin(outer(-200:200/100, 1:10))
+#' anim.plot(x, y, type="l", interval=0.5)
+#' 
+#' @export
 anim.plot <- function (x, y, interval=NULL, xlim=NULL, ylim=NULL, col=NULL, 
       pch=NULL, cex=NULL, lty=NULL, lwd=NULL, asp=NULL, smooth=NULL, ...) {
   

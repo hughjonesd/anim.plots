@@ -1,0 +1,11 @@
+Package: anim.plots
+Type: Package
+Title: Simple animated plots for R
+Version: 0.1
+Date: 2014-10-27
+Author: David Hugh-Jones <davidhughjones@gmail.com>
+Maintainer: David Hugh-Jones <davidhughjones@gmail.com>
+Description: More about what it does (maybe more than one line)
+License: GPL V2
+Imports:
+  animation
