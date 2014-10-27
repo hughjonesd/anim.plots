@@ -8,4 +8,4 @@ Maintainer: David Hugh-Jones <davidhughjones@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: GPL V2
 Imports:
-  animation
+    animation

@@ -1,10 +1,6 @@
 
 #' @import animation
 
-
-
-library(animation)
-
 # TODO:
 # barplot, curve, hist, density, boxplot?, stripchart?
 # smoothing?
@@ -32,9 +28,10 @@ library(animation)
 #' 
 #' @examples
 #' 
-#' x <- matrix(rep(-200:200/100, 10), nrow=41, ncol=10)
+#' x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
 #' y <- sin(outer(-200:200/100, 1:10))
 #' anim.plot(x, y, type="l", interval=0.5)
+#' anim.plot(x, y, type="l", interval=0.5, smooth=3)
 #' 
 #' @export
 anim.plot <- function (x, y, interval=NULL, xlim=NULL, ylim=NULL, col=NULL, 
