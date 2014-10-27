@@ -4,14 +4,15 @@
 \title{Create an animated plot.}
 \usage{
 anim.plot(x, y, interval = NULL, xlim = NULL, ylim = NULL,
-  col = par("col"), pch = par("pch"), cex = 1, lty = par("lty"),
-  lwd = par("lwd"), asp = NULL, smooth = NULL, ...)
+  col = par("col"), pch = par("pch"), cex = 1, labels = NULL,
+  asp = NULL, lty = par("lty"), lwd = par("lwd"), smooth = NULL, ...)
 }
 \arguments{
-\item{x}{a matrix of x values. Each column is plotted in a single frame
-of the animation.}
+\item{x}{a matrix or vector. If a matrix, each column is plotted in
+a single frame of the animation. If a vector, the same values are plotted
+in each frame. Either \code{x} or \code{y} must be a matrix.}
 
-\item{y}{a matrix of y values.}
+\item{y}{a matrix or vector.}
 
 \item{interval}{how many seconds to wait between each frame.}
 
@@ -25,33 +26,51 @@ of the animation.}
 
 \item{cex}{}
 
+\item{asp}{}
+
 \item{lty}{}
 
 \item{lwd}{}
 
-\item{asp}{}
-
 \item{smooth}{Interpolate data by linear smoothing? If NULL, no smoothing is
 done. If e.g. \code{smooth=2}, the number of plots will be doubled.}
 
-\item{...}{Other argumetns passed to \code{plot}.}
+\item{...}{Other arguments passed to \code{plot}.}
 }
 \description{
 \code{anim.plot}
 }
 \details{
 Parameters \code{xlim, ylim, col, pch} and \code{cex} can be matrices. Each
-column will apply to a single frame of the animation. Parameters \code{asp, lwd}
-and \code{lty} can be vectors of length > 1: if so, each value will apply to
-a single frame.
+column will apply to a single frame of the animation.
+
+Parameters \code{asp, lwd}
+and \code{lty} can be vectors of length > 1, in which case each value will
+apply to a single frame.
+
+When \code{smooth > 1}, parameters are interpolated where appropriate (including
+colours).
 }
 \examples{
 x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
 y <- sin(outer(-200:200/100, 1:10))
 anim.plot(x, y, type="l", interval=0.5)
 anim.plot(x, y, type="l", interval=0.5, smooth=3)
-## changing colors
+## changing colours
 anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
 anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
+## changing line width
+anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
+
+sizes <- matrix(c(1:6,5:1), ncol=11, nrow=5, byrow=T)
+anim.plot(1:5, matrix(1:5, ncol=11, nrow=5), pch=19, col="orange",
+     cex=sizes, interval=.2)
+
+## discoveries 1860-1959
+d.tmp <- sapply(1:91, function(x) discoveries[x:(x+9)])
+suppressWarnings( # problems with 'labels'...
+anim.plot(1:10, d.tmp, interval=.1, xlab="Year", ylab="Discoveries", type="h",
+     labels=t(outer(1860:1951, 0:9, "+")), at=1:10, col="blue", yaxt="n")
+ )
 }
 
