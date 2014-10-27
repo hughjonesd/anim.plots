@@ -3,22 +3,55 @@
 \alias{anim.plot}
 \title{Create an animated plot.}
 \usage{
-anim.plot(x, y, interval = NULL, xlim = NULL, ylim = NULL, col = NULL,
-  pch = NULL, cex = NULL, lty = NULL, lwd = NULL, asp = NULL,
-  smooth = NULL, ...)
+anim.plot(x, y, interval = NULL, xlim = NULL, ylim = NULL,
+  col = par("col"), pch = par("pch"), cex = 1, lty = par("lty"),
+  lwd = par("lwd"), asp = NULL, smooth = NULL, ...)
 }
 \arguments{
-\item{x}{a matrix of x values. Each column is plotted in a single frame.}
+\item{x}{a matrix of x values. Each column is plotted in a single frame
+of the animation.}
 
 \item{y}{a matrix of y values.}
+
+\item{interval}{how many seconds to wait between each frame.}
+
+\item{xlim}{These and subsequent arguments are the same as in \code{\link{plot}}.}
+
+\item{ylim}{}
+
+\item{col}{}
+
+\item{pch}{}
+
+\item{cex}{}
+
+\item{lty}{}
+
+\item{lwd}{}
+
+\item{asp}{}
+
+\item{smooth}{Interpolate data by linear smoothing? If NULL, no smoothing is
+done. If e.g. \code{smooth=2}, the number of plots will be doubled.}
+
+\item{...}{Other argumetns passed to \code{plot}.}
 }
 \description{
 \code{anim.plot}
+}
+\details{
+Parameters \code{xlim, ylim, col, pch} and \code{cex} can be matrices. Each
+column will apply to a single frame of the animation. Parameters \code{asp, lwd}
+and \code{lty} can be vectors of length > 1: if so, each value will apply to
+a single frame.
 }
 \examples{
 x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
 y <- sin(outer(-200:200/100, 1:10))
 anim.plot(x, y, type="l", interval=0.5)
 anim.plot(x, y, type="l", interval=0.5, smooth=3)
+## changing colors
+anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
+anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
 }
 
