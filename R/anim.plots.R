@@ -1,12 +1,14 @@
 
 #' @import animation
+#' @import Formula
 
 # TODO:
 # barplot, curve, hist, density, boxplot?, stripchart?
 # formula interface
-# generic plot interface? - e.g. plot.density
+# generic plot interface? - e.g. plot.density (maybe use xy.coords in .default)
+# "plot moving window" function?
 # generic function interface?
-# extend x and y to allow vectors?
+# annotate returned list with interval
 
 # idea:
 # barplot, curve, hist, stripchart, sunflowerplot, matplot..., symbols, arrows, 
@@ -80,64 +82,8 @@
   approx(1:size, obj, xout)$y
 }
 
-
-
-#' Create an animated plot.
-#' 
-#' \code{anim.plot} 
-#' 
-#' @param x a matrix or vector. If a matrix, each column is plotted in 
-#'        a single frame of the animation. If a vector, the same values are plotted
-#'        in each frame. Either \code{x} or \code{y} must be a matrix.
-#' @param y a matrix or vector.
-#' @param interval how many seconds to wait between each frame.
-#' @param xlim These and subsequent arguments are the same as in \code{\link{plot}}.
-#' @param ylim 
-#' @param col 
-#' @param pch
-#' @param cex
-#' @param lty
-#' @param lwd
-#' @param asp
-#' @param smooth Interpolate data by linear smoothing? If NULL, no smoothing is 
-#'        done. If e.g. \code{smooth=2}, the number of plots will be doubled.
-#' @param ... Other arguments passed to \code{plot}.
-#'       
-#' @details
-#' Parameters \code{xlim, ylim, col, pch} and \code{cex} can be matrices. Each
-#' column will apply to a single frame of the animation. 
-#' 
-#' Parameters \code{asp, lwd}
-#' and \code{lty} can be vectors of length > 1, in which case each value will 
-#' apply to a single frame.
-#' 
-#' When \code{smooth > 1}, parameters are interpolated where appropriate (including
-#' colours).
-#' 
-#' @examples
-#' 
-#' x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
-#' y <- sin(outer(-200:200/100, 1:10))
-#' anim.plot(x, y, type="l", interval=0.5)
-#' anim.plot(x, y, type="l", interval=0.5, smooth=3)
-#' ## changing colours
-#' anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
-#' anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
-#' ## changing line width
-#' anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
-#' 
-#' sizes <- matrix(c(1:6,5:1), ncol=11, nrow=5, byrow=T)
-#' anim.plot(1:5, matrix(1:5, ncol=11, nrow=5), pch=19, col="orange", 
-#'      cex=sizes, interval=.2)
-#'      
-#' ## discoveries 1860-1959
-#' d.tmp <- sapply(1:91, function(x) discoveries[x:(x+9)])
-#' suppressWarnings( # problems with 'labels'...
-#' anim.plot(1:10, d.tmp, interval=.1, xlab="Year", ylab="Discoveries", type="h",
-#'      labels=t(outer(1860:1951, 0:9, "+")), at=1:10, col="blue", yaxt="n")
-#'  )
-#' @export
-anim.plot <- function (x, y, interval=NULL, xlim=NULL, ylim=NULL, col=par("col"), 
+#' @export 
+anim.plot.default <- function (x, y, interval=NULL, xlim=NULL, ylim=NULL, col=par("col"), 
       pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
     smooth=NULL, ...) {  
   realintvl <- if (is.null(interval)) 1 else interval
@@ -146,8 +92,8 @@ anim.plot <- function (x, y, interval=NULL, xlim=NULL, ylim=NULL, col=par("col")
   ani.record(reset=TRUE)
 
   oth.args <- list(...)
-  if (is.null(xlim)) xlim <- range(x)
-  if (is.null(ylim)) ylim <- range(y)
+  if (is.null(xlim)) xlim <- range(x[is.finite(x)])
+  if (is.null(ylim)) ylim <- range(y[is.finite(y)])
   if (! "xlab" %in% names(oth.args)) oth.args$xlab <- deparse(substitute(x))
   if (! "ylab" %in% names(oth.args)) oth.args$ylab <- deparse(substitute(y))
   mat.args <- list(x=x, y=y, xlim=xlim, ylim=ylim, col=col, pch=pch, cex=cex,
@@ -168,10 +114,101 @@ anim.plot <- function (x, y, interval=NULL, xlim=NULL, ylim=NULL, col=par("col")
   return(invisible(animation:::.ani.env$.images))
 }
 
+#' @export 
+anim.plot.formula <- function(x, data, subset=NULL, na.action=NULL, ...) {
+  if (missing(x) || !inherits(x, "formula")) 
+    stop("'x' missing or invalid")
+  fml <- as.Formula(x)
+  if (any(length(fml) != c(1,2))) stop("Formula must be like: y ~ x | t")
+  mf <- model.frame(fml, data=data, na.action=na.action, lhs=1,
+        rhs=1:2)
+  
+  # get levels of t. 
+  tm <- model.part(fml, data=mf, rhs=2, drop=TRUE)
+  x <- model.part(fml, data=mf, rhs=1, drop=TRUE)
+  y <- model.part(fml, data=mf, lhs=1, drop=TRUE)
+  x <- x[order(tm)]
+  y <- y[order(tm)]
+  # now for each individual value of tm put x and y into matrices
+  colsize <- length(unique(tm))
+  X <- Y <- matrix(NA, ncol=colsize, nrow=max(table(tm)))
+  for (i in 1:colsize) {
+    tmi <- unique(tm)[i]
+    l <- 1:length(tm[tm==tmi])
+    X[l,i] <- x[tm==tmi]
+    Y[l,i] <- y[tm==tmi]
+  }
+  dots <- list(...)
+  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(fml)[1] 
+  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(fml)[2]
+  do.call("anim.plot", c(list(x=X, y=Y), dots))
+  # work out matrices for each value of the second part in order
+  # do other values come from within data?
+}
+
 anim.barplot <- function(height, width=1, space=NULL, col=NULL, smooth=NULL, ...) {
   # if nec, interpolate
   # plot data
 }
+
+
+#' Create an animated plot.
+#' 
+#' \code{anim.plot}
+#' 
+#' @param x a matrix or vector. If a matrix, each column is plotted in a single
+#'   frame of the animation. If a vector, the same values are plotted in each
+#'   frame. Either \code{x} or \code{y} must be a matrix.
+#' @param y a matrix or vector.
+#' @param interval how many seconds to wait between each frame.
+#' @param xlim These and subsequent arguments are the same as in
+#'   \code{\link{plot}}.
+#' @param ylim
+#' @param col
+#' @param pch
+#' @param labels
+#' @param cex
+#' @param lty
+#' @param lwd
+#' @param asp
+#' @param smooth Interpolate data by linear smoothing? If NULL, no smoothing is 
+#'   done. If e.g. \code{smooth=2}, the number of plots will be doubled.
+#' @param ... Other arguments passed to \code{plot}.
+#'   
+#' @details Parameters \code{xlim, ylim, col, pch, labels} and \code{cex} can be
+#' matrices. Each column will apply to a single frame of the animation.
+#' 
+#' Parameters \code{asp, lwd} and \code{lty} can be vectors of length > 1, in
+#' which case each value will apply to a single frame.
+#' 
+#' When \code{smooth > 1}, parameters are interpolated where appropriate
+#' (including colours).
+#' 
+#' @examples
+#' 
+#' x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
+#' y <- sin(outer(-200:200/100, 1:10))
+#' anim.plot(x, y, type="l", interval=0.5)
+#' anim.plot(x, y, type="l", interval=0.5, smooth=3)
+#' ## changing colours
+#' anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
+#' anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
+#' ## changing line width
+#' anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
+#' 
+#' sizes <- matrix(c(1:6,5:1), ncol=11, nrow=5, byrow=TRUE)
+#' anim.plot(1:5, matrix(1:5, ncol=11, nrow=5), pch=19, col="orange", 
+#'      cex=sizes, interval=.2)
+#'      
+#' ## discoveries 1860-1959
+#' d.tmp <- sapply(1:91, function(x) discoveries[x:(x+9)])
+#' labs.tmp <- outer(0:9, 1860:1951,"+")
+#' suppressWarnings( # problems with 'labels'...
+#' anim.plot(1:10, d.tmp, interval=.1, xlab="Year", ylab="Discoveries", type="h",
+#'      labels=labs.tmp, at=1:10, col="blue", yaxt="n")
+#'  )
+#' @export
+anim.plot <- function(...) UseMethod("anim.plot")
 
 
 
