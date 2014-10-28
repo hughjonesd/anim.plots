@@ -34,6 +34,7 @@
 .setup.anim <- function () {
   if (dev.cur()==1) dev.new()
   dev.control('enable')
+  ani.record(reset=TRUE)
   # if (! is.null(interval)) .old.ani.options <<- ani.options(interval=interval)
 }
 
@@ -41,39 +42,60 @@
   #if (exists(".old.ani.options")) ani.options(.old.ani.options)
 }
 
-.do.loop <- function(fn, nframes, show=TRUE, interval=1, mat.args=list(), vec.args=list(),
-       oth.args=NULL) {
-  # all arguments must be in the right form already, no guessing done
+.do.loop <- function(fn, times, show=TRUE, speed=1, slice.args=list(), chop.args=list(),
+  oth.args=list(), arg.dims=list()) {
+  # slice.args we take a slice and drop a dimension
+  # chop.args we cut without dropping
+  # oth.args we leave alone
+  # individual functions must put things in right boxes
+  # examples: matplot() wants matrices so makes sense to pass in 3d arrays
+  # arrows() wants vectors x0,y0,x1,y1: all pass in as vectors
+  # many functions have xlim=c(a,b) and should usually pass this as oth.args
+  mydiml <- function(obj) {
+    if (is.null(dim(obj))) {
+      if (length(obj)==1) 0 else 1
+    } else {
+      length(dim(obj))
+    }
+  }
+  
+  for (ar in names(c(slice.args, chop.args))) if (! ar %in% names(arg.dims)) 
+        arg.dims[[ar]] <- 0
+  times <- sort(times)
+  utimes <- unique(times)
+  nframes <- length(utimes)
+  intervals <- c(diff(utimes), 0)
+  adn <- names(arg.dims)
+
   mycalls <- list()
-  if (length(interval)==1) interval <- rep(interval, nframes-1)
   .setup.anim()
-  ani.record(reset=TRUE)
   for (i in 1:nframes) { 
     args.t <- list()
-    for (aa in names(mat.args)) {
-      an <- aa
-      aa <- mat.args[[aa]]
-      dl <- length(dim(aa))
-      args.t[[an]] <- if (dl==3) aa[,,i] else if (dl==2) aa[,i] else aa
+    for (an in names(slice.args)) {
+      aa <- slice.args[[an]]
+      dl <- mydiml(aa)
+      if (dl <= arg.dims[[an]]) next
+      args.t[[an]] <- switch(dl+1, aa, aa[i], aa[,i], aa[,,i])
     }
-    for (aa in names(vec.args)) {
-      an <- aa
-      aa <- vec.args[[aa]]
-      args.t[[an]] <- if (length(aa)>1) aa[i] else aa
+    idx <- times==utimes[i]
+    for (cn in names(chop.args)) {
+      ca <- chop.args[[cn]]
+      dl <- mydiml(ca)
+      args.t[[cn]] <- switch(dl+1, ca, ca[idx], ca[,idx, drop=FALSE])
     }
+
     cl <- as.call(c(fn, args.t, oth.args)) # or match.call?
     if (show) {
       eval(cl)
       ani.record()
-      if (i < nframes) {
-        ani.pause(interval[i])
-        attr(cl, "interval") <- interval[i]
-      }
+      ani.pause(intervals[i]/speed)
+      attr(cl, "interval") <- intervals[i]
     }
     mycalls <- c(mycalls, cl)
   } 
   .teardown.anim()
-  class(mycalls) <- "anim.plot"
+  class(mycalls) <- "anim.frames"
+  attr(mycalls, "speed") <- speed
   return(invisible(mycalls))
 }
 
@@ -85,7 +107,6 @@
   return(colmat) 
 }
 
-
 .interp <- function (obj, smooth) {
   size <- if(is.matrix(obj)) ncol(obj) else length(obj)
   xout <- seq(1, size, 1/smooth) 
@@ -96,32 +117,44 @@
 }
 
 #' @export 
-anim.plot.default <- function (x, y, interval=1, xlim=NULL, ylim=NULL, col=par("col"), 
+anim.plot.default <- function (x, y, times, speed=1, use.times=TRUE, xlim=NULL, ylim=NULL, col=par("col"), 
       pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
     smooth=NULL, ...) {  
   realintvl <- interval
   if (! is.null(smooth)) realintvl <- rep(realintvl/smooth, each=smooth)
 
-  oth.args <- list(...)
-  if (is.null(xlim)) xlim <- range(x[is.finite(x)])
-  if (is.null(ylim)) ylim <- range(y[is.finite(y)])
-  if (! "xlab" %in% names(oth.args)) oth.args$xlab <- deparse(substitute(x))
-  if (! "ylab" %in% names(oth.args)) oth.args$ylab <- deparse(substitute(y))
-  mat.args <- list(x=x, y=y, xlim=xlim, ylim=ylim, col=col, pch=pch, cex=cex,
-    labels=labels)
-  vec.args <- list(asp=asp, lty=lty, lwd=lwd)
-
-  if (! is.null(smooth)) {
-    for (ma in setdiff(names(mat.args), "col")) if (is.matrix(mat.args[[ma]])) 
-          mat.args[[ma]] <- .interp(mat.args[[ma]], smooth)
-    for (va in names(vec.args)) if (length(vec.args[[va]]) > 1) vec.args[[va]] <- 
-          .interp(vec.args[[va]], smooth) 
-    if (is.matrix(mat.args$col)) mat.args$col <- .col.interp(mat.args$col, smooth)
-  } 
+  args <- list(...)
+  args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
+  args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
+  if (! "xlab" %in% names(args)) args$xlab <- deparse(substitute(x))
+  if (! "ylab" %in% names(args)) args$ylab <- deparse(substitute(y))
   
-  nframes <- if (is.matrix(mat.args$x)) ncol(mat.args$x) else ncol(mat.args$y)
-  .do.loop(plot, nframes, interval=realintvl, mat.args=mat.args, 
-        vec.args=vec.args, oth.args=oth.args)
+  # x, y should be chopped. xlim and ylim should be chopped if dim==2.
+  # xlab and ylab should be sliced or other: not one value per point
+  # same for asp, lty, lwd. NB: these can be "sliced" by taking one value.
+  # col, pch, cex, should be chopped.
+  # you could say, if col is a matrix, we apply it once for each frame?
+  # labels' length could vary?
+#  mat.args <- list(x=x, y=y, xlim=xlim, ylim=ylim, col=col, pch=pch, cex=cex,
+#  vec.args <- list(asp=asp, lty=lty, lwd=lwd)
+#   labels=labels)
+
+#   if (! is.null(smooth)) {
+#     for (ma in setdiff(names(mat.args), "col")) if (is.matrix(mat.args[[ma]])) 
+#           mat.args[[ma]] <- .interp(mat.args[[ma]], smooth)
+#     for (va in names(vec.args)) if (length(vec.args[[va]]) > 1) vec.args[[va]] <- 
+#           .interp(vec.args[[va]], smooth) 
+#     if (is.matrix(mat.args$col)) mat.args$col <- .col.interp(mat.args$col, smooth)
+#   } 
+  
+  
+  chop.args <- list(x=x, y=y, col=col, pch=pch, cex=cex)
+  slice.args <- c(list(asp=asp, lty=lty, lwd=lwd), args)
+  
+  .do.loop(plot, times=times, use.times=use.times, speed=speed, 
+        chop.args=chop.args, slice.args=slice.args, arg.dims=list(
+          xlab=0, ylab=0, xlim=1, ylim=1, lwd=0, lty=0, asp=0,
+          x=1, y=1, col=1, pch=1, cex=1))
 }
 
 #' @export 
