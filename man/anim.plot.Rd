@@ -61,7 +61,8 @@ anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
 anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
 ## changing line width
 anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
-
+## different intervals
+anim.plot(x, y, interval=c(1,1,1,1,10,1,1,1,1)/10, type="l")
 sizes <- matrix(c(1:6,5:1), ncol=11, nrow=5, byrow=TRUE)
 anim.plot(1:5, matrix(1:5, ncol=11, nrow=5), pch=19, col="orange",
      cex=sizes, interval=.2)
