@@ -72,6 +72,8 @@
     }
     mycalls <- c(mycalls, cl)
   } 
+  .teardown.anim()
+  class(mycalls) <- "anim.plot"
   return(invisible(mycalls))
 }
 
@@ -120,8 +122,6 @@ anim.plot.default <- function (x, y, interval=1, xlim=NULL, ylim=NULL, col=par("
   nframes <- if (is.matrix(mat.args$x)) ncol(mat.args$x) else ncol(mat.args$y)
   .do.loop(plot, nframes, interval=realintvl, mat.args=mat.args, 
         vec.args=vec.args, oth.args=oth.args)
-  .teardown.anim()
-  return(invisible(animation:::.ani.env$.images))
 }
 
 #' @export 
