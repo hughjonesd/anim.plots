@@ -4,7 +4,8 @@
 
 # TODO:
 # barplot, curve, hist, density, boxplot?, stripchart?
-# formula interface
+# formula interface: subset not working
+# formula interface: other arguments must be evaluated in context of data frame
 # generic plot interface? - e.g. plot.density (maybe use xy.coords in .default)
 # "plot moving window" function?
 # generic function interface?
@@ -19,11 +20,6 @@
 # * interpolate it if necessary.
 # * call a sequence of functions, pausing between each one.
 # * return a list of the calls [or just do this if do.plot=FALSE]
-# each interface can just do the same procedure, specifying which arguments
-# get interpolated etc. 
-# you can compose stuff by calling the procedure with the "function"
-# being something that does the appropriate calls (which need to be 
-# setup right first re timing...)
 
 
 .setup.anim <- function (interval) {
@@ -129,6 +125,7 @@ anim.plot.formula <- function(x, data, subset=NULL, na.action=NULL, ...) {
   y <- model.part(fml, data=mf, lhs=1, drop=TRUE)
   x <- x[order(tm)]
   y <- y[order(tm)]
+  tm <- tm[order(tm)]
   # now for each individual value of tm put x and y into matrices
   colsize <- length(unique(tm))
   X <- Y <- matrix(NA, ncol=colsize, nrow=max(table(tm)))
@@ -139,8 +136,8 @@ anim.plot.formula <- function(x, data, subset=NULL, na.action=NULL, ...) {
     Y[l,i] <- y[tm==tmi]
   }
   dots <- list(...)
-  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(fml)[1] 
-  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(fml)[2]
+  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(fml)[2] 
+  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(fml)[1]
   do.call("anim.plot", c(list(x=X, y=Y), dots))
   # work out matrices for each value of the second part in order
   # do other values come from within data?
