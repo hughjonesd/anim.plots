@@ -52,27 +52,23 @@ When \code{smooth > 1}, parameters are interpolated where appropriate
 (including colours).
 }
 \examples{
-x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
-y <- sin(outer(-200:200/100, 1:10))
-anim.plot(x, y, type="l", interval=0.5)
-anim.plot(x, y, type="l", interval=0.5, smooth=3)
-## changing colours
-anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
-anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
-## changing line width
+x <- rep(1:100/10, 10)
+times <- rep(1:10, each=100)
+y <- sin(x*times/4)
+anim.plot(x,y,times, ylab="Sine wave", type="l")
+anim.plot(x,y,times, ylab="Sine wave", type="l", fg="red", col="blue")
+## changing colours - a per-point parameter
+cols <- (x+9*times)/100 # length 1000
+anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
+anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
+
+## changing line width - a whole-plot parameter
 anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
-## different intervals
-anim.plot(x, y, interval=c(1,1,1,1,10,1,1,1,1)/10, type="l")
-sizes <- matrix(c(1:6,5:1), ncol=11, nrow=5, byrow=TRUE)
-anim.plot(1:5, matrix(1:5, ncol=11, nrow=5), pch=19, col="orange",
-     cex=sizes, interval=.2)
 
 ## discoveries 1860-1959
-d.tmp <- sapply(1:91, function(x) discoveries[x:(x+9)])
-labs.tmp <- outer(0:9, 1860:1951,"+")
-suppressWarnings( # problems with 'labels'...
-anim.plot(1:10, d.tmp, interval=.1, xlab="Year", ylab="Discoveries", type="h",
-     labels=labs.tmp, at=1:10, col="blue", yaxt="n")
- )
+dis <- as.vector(sapply(1:91, function(x) discoveries[x:(x+9)]))
+years <- outer(0:9, 1860:1951,"+")
+anim.plot(years, dis, times=rep(1:100, each=10), xlab="Year", ylab="Discoveries", type="h",
+     col="blue", xlim=years[c(1,10),])
 }
 

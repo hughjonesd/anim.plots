@@ -42,7 +42,7 @@
   #if (exists(".old.ani.options")) ani.options(.old.ani.options)
 }
 
-.do.loop <- function(fn, times, show=TRUE, speed=1, slice.args=list(), chop.args=list(),
+.do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, slice.args=list(), chop.args=list(),
   oth.args=list(), arg.dims=list()) {
   # slice.args we take a slice and drop a dimension
   # chop.args we cut without dropping
@@ -53,7 +53,7 @@
   # many functions have xlim=c(a,b) and should usually pass this as oth.args
   mydiml <- function(obj) {
     if (is.null(dim(obj))) {
-      if (length(obj)==1) 0 else 1
+      if (length(obj)==1 || is.null(obj)) 0 else 1
     } else {
       length(dim(obj))
     }
@@ -64,7 +64,7 @@
   times <- sort(times)
   utimes <- unique(times)
   nframes <- length(utimes)
-  intervals <- c(diff(utimes), 0)
+  intervals <- if (use.times) c(diff(utimes), 0) else c(rep(1, nframes-1), 0)
   adn <- names(arg.dims)
 
   mycalls <- list()
@@ -74,8 +74,8 @@
     for (an in names(slice.args)) {
       aa <- slice.args[[an]]
       dl <- mydiml(aa)
-      if (dl <= arg.dims[[an]]) next
-      args.t[[an]] <- switch(dl+1, aa, aa[i], aa[,i], aa[,,i])
+      args.t[[an]] <- if (dl <= arg.dims[[an]]) aa else switch(dl+1, aa, aa[i], 
+            aa[,i], aa[,,i])
     }
     idx <- times==utimes[i]
     for (cn in names(chop.args)) {
@@ -120,9 +120,9 @@
 anim.plot.default <- function (x, y, times, speed=1, use.times=TRUE, xlim=NULL, ylim=NULL, col=par("col"), 
       pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
     smooth=NULL, ...) {  
-  realintvl <- interval
-  if (! is.null(smooth)) realintvl <- rep(realintvl/smooth, each=smooth)
 
+  x <- as.vector(x)
+  y <- as.vector(y) # consider doing sthg like xy.coords?
   args <- list(...)
   args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
   args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
@@ -154,7 +154,7 @@ anim.plot.default <- function (x, y, times, speed=1, use.times=TRUE, xlim=NULL, 
   .do.loop(plot, times=times, use.times=use.times, speed=speed, 
         chop.args=chop.args, slice.args=slice.args, arg.dims=list(
           xlab=0, ylab=0, xlim=1, ylim=1, lwd=0, lty=0, asp=0,
-          x=1, y=1, col=1, pch=1, cex=1))
+          x=1, y=1, col=1, pch=1, cex=1, type=0))
 }
 
 #' @export 
@@ -256,28 +256,29 @@ anim.barplot <- function(height, width=1, space=NULL, col=NULL, smooth=NULL, ...
 #' 
 #' @examples
 #' 
-#' x <- matrix(rep(-200:200/100, 10), nrow=401, ncol=10)
-#' y <- sin(outer(-200:200/100, 1:10))
-#' anim.plot(x, y, type="l", interval=0.5)
-#' anim.plot(x, y, type="l", interval=0.5, smooth=3)
-#' ## changing colours
-#' anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1))
-#' anim.plot(x, y, type="l", interval=0.5, col=matrix(1:10, nrow=1), smooth=5)
-#' ## changing line width
+#' x <- rep(1:100/10, 10)
+#' times <- rep(1:10, each=100)
+#' y <- sin(x*times/4)
+#' anim.plot(x,y,times, ylab="Sine wave", type="l")
+#' anim.plot(x,y,times, ylab="Sine wave", type="l", fg="red", col="blue")
+#' ## changing colours - a per-point parameter
+#' cols <- (x+9*times)/100 # length 1000
+#' anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
+#' anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
+#' 
+#' ## changing line width - a whole-plot parameter
 #' anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
-#' ## different intervals
-#' anim.plot(x, y, interval=c(1,1,1,1,10,1,1,1,1)/10, type="l")
-#' sizes <- matrix(c(1:6,5:1), ncol=11, nrow=5, byrow=TRUE)
-#' anim.plot(1:5, matrix(1:5, ncol=11, nrow=5), pch=19, col="orange", 
-#'      cex=sizes, interval=.2)
 #'      
 #' ## discoveries 1860-1959
-#' d.tmp <- sapply(1:91, function(x) discoveries[x:(x+9)])
-#' labs.tmp <- outer(0:9, 1860:1951,"+")
-#' suppressWarnings( # problems with 'labels'...
-#' anim.plot(1:10, d.tmp, interval=.1, xlab="Year", ylab="Discoveries", type="h",
-#'      labels=labs.tmp, at=1:10, col="blue", yaxt="n")
-#'  )
+#' dis <- as.vector(sapply(1:91, function(x) discoveries[x:(x+9)]))
+#' years <- outer(0:9, 1860:1951,"+")
+#' anim.plot(years, dis, times=rep(1:100, each=10), xlab="Year", ylab="Discoveries", type="h",
+#'      col="blue", xlim=years[c(1,10),], lwd=8, lab=c(10,5,7))
+#'      
+#' ## chick weight
+#' ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
+#' anim.plot(weight ~ chn | Time, data=ChickWeight, col=as.numeric(Diet), 
+#'      pch=as.numeric(Diet), smooth=2)
 #' @export
 anim.plot <- function(...) UseMethod("anim.plot")
 
