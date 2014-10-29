@@ -19,7 +19,7 @@ Draw an animated histogram.
 Parameters \code{x, density, angle, col} and \code{border} are all
 "chunked", i.e. first recycled to the length of \code{times} or \code{x}
 (whichever is longer), then split according to the unique values of \code{times}.
-See \code{anim.plot} for more details.
+See \code{\link{anim.plot}} for more details.
 }
 \examples{
 anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000),

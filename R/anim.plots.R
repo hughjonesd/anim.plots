@@ -25,8 +25,9 @@
   #if (exists(".old.ani.options")) ani.options(.old.ani.options)
 }
 
-.do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, slice.args=list(), chunk.args=list(), window=t,
-  oth.args=list(), arg.dims=list(), chunkargs.ref.length=NULL) {
+.do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, window=t,
+      slice.args=list(), chunk.args=list(), oth.args=list(), arg.dims=list(), 
+      chunkargs.ref.length=NULL) {
   # slice.args we take a slice and drop a dimension
   # chunk.args we cut without dropping
   # oth.args we leave alone
@@ -42,7 +43,6 @@
     }
   }
   
-  times <- sort(times)
   utimes <- unique(times)
   nframes <- length(utimes)
   intervals <- if (use.times) c(diff(utimes), 0) else c(rep(1, nframes-1), 0)
@@ -56,6 +56,11 @@
         suppressWarnings(chunk.args[[ar]] <- rep(chunk.args[[ar]], 
         length=chunkargs.ref.length))
 
+  for (ca in names(chunk.args)) {
+    chunk.args[[ca]] <- chunk.args[[ca]][order(times)]
+  }
+  times <- sort(times)
+  
   mycalls <- list()
   .setup.anim()
   for (t in 1:nframes) {
@@ -193,8 +198,7 @@ anim.barplot.default <- function(height, times=NULL,
 #' 
 #' @param x,y vectors of x and y coordinates. These can be passed in any way 
 #'   accepted by \code{\link{xy.coords}}.
-#' @param times a vector of times. If NULL and \code{x} is a matrix, a sequence
-#'   from 1 to the last dimension of \code{x} will be used.
+#' @param times a vector of times. 
 #' @param show if false, do not show plot; just return calls.
 #' @param speed animation speed.
 #' @param window what window of times to show in each animation. The default,
@@ -263,10 +267,11 @@ anim.plot <- function(...) UseMethod("anim.plot")
 
 #' @export 
 #' @rdname anim.plot
-anim.plot.default <- function (x, y=NULL, times, speed=1, use.times=TRUE, window=t, 
-  xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
-  pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
-  smooth=NULL, ...) {  
+anim.plot.default <- function (x, y=NULL, times=seq(1:length(x)), speed=1, 
+      use.times=TRUE, window=t, 
+      xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
+      pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
+      smooth=NULL, ...) {  
   
   args <- list(...)
   if (! "xlab" %in% names(args)) args$xlab <- deparse(substitute(x))
@@ -276,14 +281,8 @@ anim.plot.default <- function (x, y=NULL, times, speed=1, use.times=TRUE, window
   y <- xy$y
   args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
   args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
-  #   if (! is.null(smooth)) {
-  #     for (ma in setdiff(names(mat.args), "col")) if (is.matrix(mat.args[[ma]])) 
-  #           mat.args[[ma]] <- .interp(mat.args[[ma]], smooth)
-  #     for (va in names(vec.args)) if (length(vec.args[[va]]) > 1) vec.args[[va]] <- 
-  #           .interp(vec.args[[va]], smooth) 
-  #     if (is.matrix(mat.args$col)) mat.args$col <- .col.interp(mat.args$col, smooth)
-  #   } 
-  
+
+  if (is.null(times)) times <- 1:length(x)
   
   chunk.args <- list(x=x, y=y, col=col, pch=pch, cex=cex)
   slice.args <- c(list(asp=asp, lty=lty, lwd=lwd, xaxp=xaxp, yaxp=yaxp), args)

@@ -7,8 +7,8 @@
 \usage{
 anim.plot(...)
 
-\method{anim.plot}{default}(x, y = NULL, times, speed = 1,
-  use.times = TRUE, window = t, xlim = NULL, ylim = NULL,
+\method{anim.plot}{default}(x, y = NULL, times = seq(1:length(x)),
+  speed = 1, use.times = TRUE, window = t, xlim = NULL, ylim = NULL,
   col = par("col"), xaxp = NULL, yaxp = NULL, pch = par("pch"),
   cex = 1, labels = NULL, asp = NULL, lty = par("lty"),
   lwd = par("lwd"), smooth = NULL, ...)
@@ -22,8 +22,7 @@ anim.plot(...)
 \item{x,y}{vectors of x and y coordinates. These can be passed in any way
 accepted by \code{\link{xy.coords}}.}
 
-\item{times}{a vector of times. If NULL and \code{x} is a matrix, a sequence
-from 1 to the last dimension of \code{x} will be used.}
+\item{times}{a vector of times.}
 
 \item{speed}{animation speed.}
 
