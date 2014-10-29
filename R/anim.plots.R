@@ -1,6 +1,5 @@
 
 #' @import animation
-#' @import Formula
 
 # TODO:
 # - why do you require a matrix? why not just
@@ -161,15 +160,13 @@ anim.plot.default <- function (x, y, times, speed=1, use.times=TRUE, xlim=NULL, 
 anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NULL, ...) {
   if (missing(x) || !inherits(x, "formula")) 
     stop("'x' missing or invalid")
-  fml <- as.Formula(x)
-  if (any(length(fml) != c(1,2))) stop("Formula must be like: y ~ x | t")
   
   # cargo-culted from plot.formula
   m <- match.call(expand.dots=FALSE)
   eframe <- parent.frame()
   md <- eval(m$data, eframe)
   dots <- lapply(m$..., eval, md, eframe)
-  mf <- model.frame(fml, data=md, na.action=na.action, lhs=1, rhs=1:2)
+  mf <- model.frame(x, data=md, na.action=na.action)
   subset.expr <- m$subset
   if (!missing(subset)) {
     s <- eval(subset.expr, data, eframe)
@@ -180,47 +177,74 @@ anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NUL
   }
   
   # get levels of t. 
-  tm <- model.part(fml, data=mf, rhs=2, drop=TRUE)
-  x <- model.part(fml, data=mf, rhs=1, drop=TRUE)
-  y <- model.part(fml, data=mf, lhs=1, drop=TRUE)
+  tm <- mf[,3]
+  x <- mf[,2]
+  y <- mf[,1]
   # we are basically praying here:
   dots <- lapply(dots, function(z) if (length(z)==length(tm)) z[order(tm)] else z) 
   x <- x[order(tm)]
   y <- y[order(tm)]
   tm <- tm[order(tm)]
-  # now for each individual value of tm put x and y into matrices
-  colsize <- length(unique(tm))
-  nr <- max(table(tm))
-  X <- Y <- matrix(NA, ncol=colsize, nrow=nr)
-  dotmats <- list()
-  margs <- c("col", "pch", "cex", "labels")
-  for (dotarg in margs) if (dotarg %in% names(dots) && length(dots[[dotarg]]) == 
-        tm) dotmats[[dotarg]] <- matrix(NA, ncol=colsize, nrow=nr)
-  for (i in 1:colsize) {
-    tmi <- unique(tm)[i]
-    l <- 1:length(tm[tm==tmi])
-    X[l,i] <- x[tm==tmi]
-    Y[l,i] <- y[tm==tmi]
-    for (dotarg in margs) if (dotarg %in% names(dotmats)) 
-          dotmats[[dotarg]][l,i] <- dots[[dotarg]][tm==tmi]
-    # how to handle these? It has to be same for each value of tm
-    # vec.args <- list(asp=asp, lty=lty, lwd=lwd)
-  }
-  for (dotarg in margs) if (dotarg %in% names(dotmats)) dots[[dotarg]] <- 
-        dotmats[[dotarg]][l,i] 
-  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(fml)[2] 
-  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(fml)[1]
-  if (! "interval" %in% names(dots)) dots$interval <- diff(tm)
-  do.call("anim.plot", c(list(x=X, y=Y), dots))
+  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(x)[2] 
+  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(x)[1]
+  do.call("anim.plot", c(list(x=x, y=y, times=tm), dots))
   # work out matrices for each value of the second part in order
   # do other values come from within data?
 }
 
-anim.barplot <- function(height, width=1, space=NULL, col=NULL, smooth=NULL, ...) {
-  # if nec, interpolate
-  # plot data
-}
 
+#' Create an animated barplot.
+#' 
+#' @param height a vector, matrix or array. If a vector it is divided up by 
+#'   \code{times} and \code{\link{barplot}} is called on each chunk. If a
+#'   matrix, \code{\link{barplot}} is called on each column. If an array, 
+#'   \code{\link{barplot}} is called on each matrix of form \code{height[,,i]}.
+#'   
+#' @examples
+#' anim.barplot(1:100, times=rep(1:10, each=10), ylim=c(0,100))
+#' ## barplot with a matrix
+#' ChickWeight$wq <- cut(ChickWeight$weight, 5)
+#' tbl <- as.array(xtabs(~ wq + Diet + Time, data=ChickWeight))
+#' anim.barplot(tbl, xlab="Diet", ylab="N", legend.text=paste("Quintile", 1:5))
+#' anim.barplot(tbl, xlab="Diet", ylab="N", beside=TRUE, ylim=c(0,20),
+#'    legend.text=paste("Quintile", 1:5))
+#'    
+#' @export
+anim.barplot <- function(...) UseMethod("anim.barplot")
+
+#' @export
+anim.barplot.default <- function(height, times=NULL, 
+      show=TRUE, speed=1, use.times=TRUE, width=1, space=NULL, names.arg=NULL, 
+      density=NULL, angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
+      ylim=NULL, xlab=NULL, ylab=NULL, main=NULL, sub=NULL, offset=NULL, 
+      legend.text=NULL, ...) {
+  # plot data
+  slice.args <- list(height=height, space=space, xlim=xlim, ylim=ylim, main=main, 
+        sub=sub, xlab=xlab, ylab=ylab, legend.text=legend.text)
+  
+  # in barplot:
+  # height is matrix or vector; space is 1, 2 or length(height); width is length(height)
+  # so is names.arg, density, angle, col, border; legend.text is TRUE or nrow(height)
+  # if height is a matrix and beside = FALSE then we want ncol(height)
+  args <- list(...)
+  chop.args <- list(width=width, names.arg=names.arg, density=density, 
+        angle=angle, col=col, border=border, offset=offset)
+  
+  ltdim <- if (is.logical(legend.text)) 0 else 1
+  
+  oth.args <- args
+  if (is.vector(height)) chop.args$height=height else slice.args$height=height
+  hdim <- if(is.matrix(height)) 1 else 2
+  if (is.null(times)) {
+    if (is.array(height)) times <- 1:tail(dim(height), 1) else stop("'times' not specified")
+  }
+
+  arg.dims <- list(height=hdim, space=1, xlim=1, ylim=1, main=0, sub=0, xlab=0, 
+        ylab=0, space=1, legend.text=ltdim)
+  .do.loop(barplot, times=times, use.times=use.times, show=show, speed=speed, 
+        slice.args=slice.args, chop.args=chop.args, oth.args=oth.args, 
+        arg.dims=arg.dims)
+}
 
 #' Create an animated plot.
 #' 
@@ -269,16 +293,16 @@ anim.barplot <- function(height, width=1, space=NULL, col=NULL, smooth=NULL, ...
 #' ## changing line width - a whole-plot parameter
 #' anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
 #'      
-#' ## discoveries 1860-1959
+#' ## discoveries 1860-1959: moving window
 #' dis <- as.vector(sapply(1:91, function(x) discoveries[x:(x+9)]))
 #' years <- outer(0:9, 1860:1951,"+")
 #' anim.plot(years, dis, times=rep(1:100, each=10), xlab="Year", ylab="Discoveries", type="h",
 #'      col="blue", xlim=years[c(1,10),], lwd=8, lab=c(10,5,7))
 #'      
-#' ## chick weight
+#' ## Formula interface
 #' ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
-#' anim.plot(weight ~ chn | Time, data=ChickWeight, col=as.numeric(Diet), 
-#'      pch=as.numeric(Diet), smooth=2)
+#' anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
+#'      pch=as.numeric(Diet), speed=3)
 #' @export
 anim.plot <- function(...) UseMethod("anim.plot")
 

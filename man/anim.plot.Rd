@@ -65,10 +65,15 @@ anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
 ## changing line width - a whole-plot parameter
 anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
 
-## discoveries 1860-1959
+## discoveries 1860-1959: moving window
 dis <- as.vector(sapply(1:91, function(x) discoveries[x:(x+9)]))
 years <- outer(0:9, 1860:1951,"+")
 anim.plot(years, dis, times=rep(1:100, each=10), xlab="Year", ylab="Discoveries", type="h",
-     col="blue", xlim=years[c(1,10),])
+     col="blue", xlim=years[c(1,10),], lwd=8, lab=c(10,5,7))
+
+## Formula interface
+ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
+anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet),
+     pch=as.numeric(Diet), speed=3)
 }
 
