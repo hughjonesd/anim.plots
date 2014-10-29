@@ -4,7 +4,7 @@
 # TODO:
 #
 # - easy way to annotate an existing plot with points, legend, axes, etc.
-# curve, hist, density, boxplot?, stripchart?, heatmap, mosaic
+# curve, hist, density, stripchart?
 # maps with colours?
 # plot3d - is this possible?
 # generic function interface?
@@ -262,6 +262,7 @@ anim.plot <- function(...) UseMethod("anim.plot")
 
 
 #' @export 
+#' @rdname anim.plot
 anim.plot.default <- function (x, y=NULL, times, speed=1, use.times=TRUE, window=t, 
   xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
   pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
@@ -295,6 +296,7 @@ anim.plot.default <- function (x, y=NULL, times, speed=1, use.times=TRUE, window
 }
 
 #' @export 
+#' @rdname anim.plot
 anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NULL, ...) {
   if (missing(x) || !inherits(x, "formula")) 
     stop("'x' missing or invalid")
@@ -334,6 +336,8 @@ anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NUL
 #' 
 #' @param x,y,z,... parameters passed to \code{\link{contour}}
 #' @param times,speed,use.times,window,show see \code{\link{anim.plot}} for details.
+#' @param fn underlying contour function to use. For \code{anim.filled.contour}
+#'   this defaults to \code{\link{filled.contour}}.
 #' 
 #' @examples
 #' tmp <- volcano
@@ -350,12 +354,15 @@ anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NUL
 anim.contour <- function(...) UseMethod("anim.contour")
 
 #' @export
+#' @rdname anim.contour
 anim.filled.contour <- function(...) UseMethod("anim.filled.contour")
 
 #' @export
+#' @rdname anim.contour
 anim.filled.contour.default <- function(...) anim.contour.default(..., fn=filled.contour)
 
 #' @export
+#' @rdname anim.contour
 anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window=t, 
       show=TRUE, fn=contour, ...) {
   if (missing(z)) {
@@ -378,4 +385,35 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
         arg.dims=list(z=2, x=1, y=1, nlevels=0, levels=1, 
         labels=1, labcex=0, drawlabels=0, xlim=1, ylim=1, zlim=1, vfont=1,
         axes=0, frame.plot=0, col=1, lty=1, lwd=1, color.palette=1))
+}
+
+#' Draw an animated histogram.
+#' 
+#' @param x,density,angle,col,border,... parameters passed to \code{\link{hist}}.
+#' @param times,show,speed,use.times,window see \code{\link{anim.plot}}.
+#' 
+#' @details
+#' Parameters \code{x, density, angle, col} and \code{border} are all
+#' "chunked", i.e. first recycled to the length of \code{times} or \code{x}
+#' (whichever is longer), then split according to the unique values of \code{times}.
+#' See \code{\link{anim.plot}} for more details.
+#' 
+#' @examples
+#' anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
+#'      breaks=c(5,10,20,50,100,200, 500, 1000))
+#' @export
+anim.hist <- function(x, times, show=TRUE, speed=1, use.times=TRUE, window=t, 
+      density=NULL, angle=NULL, col=NULL, border=NULL, ...) {
+  
+  dots <- list(...)
+  if (! "breaks" %in% names(dots)) dots$breaks = "Sturges"
+  if (! "xlab" %in% names(dots)) dots$xlab <- ""
+  if (! "main" %in% names(dots)) dots$main <- "Histogram"
+    
+  dbr <- if (is.matrix(dots$breaks)) 1 else 0
+  .do.loop(hist, times=times, show=show, speed=speed, use.times=use.times, 
+        window=substitute(window), chunk.args=list(x=x, density=density, 
+        angle=angle, col=col, border=border), slice.args=dots, 
+        arg.dims=list(breaks=dbr, xlim=1, ylim=1, xlab=1, x=1),
+        chunkargs.ref.length=max(length(x), length(times)))
 }
