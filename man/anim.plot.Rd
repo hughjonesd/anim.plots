@@ -8,48 +8,43 @@ anim.plot(...)
 \arguments{
 \item{...}{Other arguments passed to \code{plot}.}
 
-\item{x}{a matrix or vector. If a matrix, each column is plotted in a single
-frame of the animation. If a vector, the same values are plotted in each
-frame. Either \code{x} or \code{y} must be a matrix.}
+\item{x,y}{vectors of x and y values.}
 
-\item{y}{a matrix or vector.}
+\item{times}{a vector of times. If NULL and \code{x} is a matrix, a sequence
+from 1 to the last dimension of \code{x} will be used.}
 
-\item{interval}{how many seconds to wait between each frame.}
+\item{show}{if false, do not show plot; just return calls.}
 
-\item{xlim}{These and subsequent arguments are the same as in
+\item{speed}{animation speed.}
+
+\item{use.times}{if \code{TRUE}, animation speed is determined by the
+\code{times} argument. If \code{FALSE}, animation speed is constant.}
+
+\item{xlim,ylim,col,pch,labels,cex,lty,lwd,asp}{arguments passed to
 \code{\link{plot}}.}
-
-\item{ylim}{}
-
-\item{col}{}
-
-\item{pch}{}
-
-\item{labels}{}
-
-\item{cex}{}
-
-\item{lty}{}
-
-\item{lwd}{}
-
-\item{asp}{}
-
-\item{smooth}{Interpolate data by linear smoothing? If NULL, no smoothing is
-done. If e.g. \code{smooth=2}, the number of plots will be doubled.}
 }
 \description{
 \code{anim.plot}
 }
 \details{
-Parameters \code{xlim, ylim, col, pch, labels} and \code{cex} can be
-matrices. Each column will apply to a single frame of the animation.
+Each unique level of \code{times} will generate a single frame of animation.
+The frames will be ordered by \code{times}.
 
-Parameters \code{asp, lwd} and \code{lty} can be vectors of length > 1, in
-which case each value will apply to a single frame.
+In general:
 
-When \code{smooth > 1}, parameters are interpolated where appropriate
-(including colours).
+\itemize{
+\item Parameters that apply to each point of the plot, such as
+\code{xlim, ylim, col, pch, labels} and \code{cex}, can be passed as vectors
+which will be recycled to \code{length(times)}.
+\item Parameters that apply
+to the plot as a whole, and can have length > 1, such as \code{xlim} and \code{ylim}, can be passed as vectors or matrices. If vectors, the
+same vector will be passed to every frame. If matrices, column \code{i} will
+be passed to the \code{i}'th frame.
+\item Parameters that apply to the plot
+as a whole, and always have length 1, such as \code{xlab} and \code{main},
+can be passed as vectors and will be
+recycled to the number of frames.
+}
 }
 \examples{
 x <- rep(1:100/10, 10)

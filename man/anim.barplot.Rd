@@ -7,9 +7,54 @@ anim.barplot(...)
 }
 \arguments{
 \item{height}{a vector, matrix or array. If a vector it is divided up by
-  \code{times} and \code{\link{barplot}} is called on each chunk. If a
-  matrix, \code{\link{barplot}} is called on each column. If an array,
-  \code{\link{barplot}} is called on each matrix of form \code{height[,,i]}.}
+\code{times} and \code{\link{barplot}} is called on each chunk. If a
+matrix, \code{\link{barplot}} is called on each column. If an array,
+\code{\link{barplot}} is called on each matrix of form \code{height[,,i]}.}
+
+\item{times}{a vector of times. If NULL and \code{height} is a matrix,
+the last dimension of \code{height} will be used.}
+
+\item{show}{if false, do not show plot; just return calls.}
+
+\item{speed}{higher is faster.}
+
+\item{use.times}{if \code{TRUE}, animation speed is determined by the
+\code{times} argument. If \code{FALSE}, animation speed is constant.}
+
+\item{width}{arguments passed to \code{\link{barplot}}. Arguments \code{width,
+names.arg, density, angle, col, border} and \code{offset} may be either vectors
+of length \code{length(tbl)} or matrices with one column for each unique value of times.
+Other arguments should be length 1 or vectors.}
+
+\item{space}{}
+
+\item{names.arg}{}
+
+\item{density}{}
+
+\item{angle}{}
+
+\item{col}{}
+
+\item{border}{}
+
+\item{horiz}{}
+
+\item{xlim}{}
+
+\item{ylim}{}
+
+\item{xlab}{}
+
+\item{ylab}{}
+
+\item{main}{}
+
+\item{sub}{}
+
+\item{offset}{}
+
+\item{legend.text}{}
 }
 \description{
 Create an animated barplot.
@@ -19,7 +64,8 @@ anim.barplot(1:100, times=rep(1:10, each=10), ylim=c(0,100))
 ## barplot with a matrix
 ChickWeight$wq <- cut(ChickWeight$weight, 5)
 tbl <- as.array(xtabs(~ wq + Diet + Time, data=ChickWeight))
-anim.barplot(tbl, xlab="Diet", ylab="N")
-anim.barplot(tbl, xlab="Diet", ylab="N", beside=TRUE, legend.text=paste("Quintile", 1:5))
+anim.barplot(tbl, xlab="Diet", ylab="N", legend.text=paste("Quintile", 1:5))
+anim.barplot(tbl, xlab="Diet", ylab="N", beside=TRUE, ylim=c(0,20),
+   legend.text=paste("Quintile", 1:5))
 }
 
