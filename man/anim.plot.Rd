@@ -8,7 +8,8 @@ anim.plot(...)
 \arguments{
 \item{...}{Other arguments passed to \code{plot}.}
 
-\item{x,y}{vectors of x and y values.}
+\item{x,y}{vectors of x and y coordinates. These can be passed in any way
+accepted by \code{\link{xy.coords}}.}
 
 \item{times}{a vector of times. If NULL and \code{x} is a matrix, a sequence
 from 1 to the last dimension of \code{x} will be used.}
@@ -16,6 +17,10 @@ from 1 to the last dimension of \code{x} will be used.}
 \item{show}{if false, do not show plot; just return calls.}
 
 \item{speed}{animation speed.}
+
+\item{window}{what window of times to show in each animation. The default,
+\code{t}, shows just plots from time t. To draw a plot incrementally,
+use \code{window=1:t}.}
 
 \item{use.times}{if \code{TRUE}, animation speed is determined by the
 \code{times} argument. If \code{FALSE}, animation speed is constant.}
@@ -50,21 +55,26 @@ recycled to the number of frames.
 x <- rep(1:100/10, 10)
 times <- rep(1:10, each=100)
 y <- sin(x*times/4)
-anim.plot(x,y,times, ylab="Sine wave", type="l")
-anim.plot(x,y,times, ylab="Sine wave", type="l", fg="red", col="blue")
+anim.plot(x,y,times, type="l")
+anim.plot(x,y,times, type="l", fg="red", col="blue")
 ## changing colours - a per-point parameter
 cols <- (x+9*times)/100 # length 1000
 anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
 anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
 
 ## changing line width - a whole-plot parameter
-anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
+anim.plot(x, y, times, lwd=matrix(1:10, ncol=10), type="l")
+
+## incremental plot using window
+anim.plot(1:10, 1:10, times=1:10, window=1:t)
+
+## moving window
+anim.plot(1:10, 1:10, times=1:10, window=(t-2):t)
 
 ## discoveries 1860-1959: moving window
-dis <- as.vector(sapply(1:91, function(x) discoveries[x:(x+9)]))
-years <- outer(0:9, 1860:1951,"+")
-anim.plot(years, dis, times=rep(1:100, each=10), xlab="Year", ylab="Discoveries", type="h",
-     col="blue", xlim=years[c(1,10),], lwd=8, lab=c(10,5,7))
+xlim <- rbind(1860:1959,1870:1969)
+anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim,
+     xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
 
 ## Formula interface
 ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))

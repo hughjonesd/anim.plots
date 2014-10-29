@@ -4,14 +4,9 @@
 # TODO:
 #
 # - easy way to annotate an existing plot with points, legend, axes, etc.
-# curve, hist, density, boxplot?, stripchart?, heatmap, mosaic, contour
+# curve, hist, density, boxplot?, stripchart?, heatmap, mosaic
 # maps with colours?
-# plot a line being drawn? (more generally, some incremental=TRUE argument?)
-# or a window? http://alstatr.blogspot.co.uk/2014/02/r-animating-2d-and-3d-plots.html
-# perhaps window=1:t gives 'incremental' and window=(t-10):t gives a window?
-# and we can easily just do t %in% window...
 # plot3d - is this possible?
-# generic plot interface? - e.g. plot.density (maybe use xy.coords in .default)
 # generic function interface?
 # smoothing function?
 # make barplot respect matrix parameters; also vectors should go in time order
@@ -30,7 +25,7 @@
   #if (exists(".old.ani.options")) ani.options(.old.ani.options)
 }
 
-.do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, slice.args=list(), chunk.args=list(),
+.do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, slice.args=list(), chunk.args=list(), window=t,
   oth.args=list(), arg.dims=list(), chunkargs.ref.length=NULL) {
   # slice.args we take a slice and drop a dimension
   # chunk.args we cut without dropping
@@ -47,27 +42,33 @@
     }
   }
   
-  for (ar in names(slice.args)) if (! ar %in% names(arg.dims)) 
-        arg.dims[[ar]] <- 0
-  if (! is.null(chunkargs.ref.length)) for (ar in names(chunk.args)) 
-        chunk.args[[ar]] <- rep(chunk.args[[ar]], chunkargs.ref.length)
   times <- sort(times)
   utimes <- unique(times)
   nframes <- length(utimes)
   intervals <- if (use.times) c(diff(utimes), 0) else c(rep(1, nframes-1), 0)
-  adn <- names(arg.dims)
+  
+  for (ar in names(slice.args)) {
+    if (! ar %in% names(arg.dims)) arg.dims[[ar]] <- 0
+    if (arg.dims[[ar]]==0) suppressWarnings(slice.args[[ar]] <- 
+          rep(slice.args[[ar]], length=nframes))
+  }
+  if (! is.null(chunkargs.ref.length)) for (ar in names(chunk.args)) 
+        suppressWarnings(chunk.args[[ar]] <- rep(chunk.args[[ar]], 
+        length=chunkargs.ref.length))
 
   mycalls <- list()
   .setup.anim()
-  for (i in 1:nframes) { 
+  for (t in 1:nframes) {
+    win.t <- eval(window)
+    win.t <- win.t[win.t %in% 1:nframes]
     args.t <- list()
     for (an in names(slice.args)) {
       aa <- slice.args[[an]]
       dl <- mydiml(aa)
-      args.t[[an]] <- if (dl <= arg.dims[[an]]) aa else switch(dl+1, aa, aa[i], 
-            aa[,i], aa[,,i])
+      args.t[[an]] <- if (dl <= arg.dims[[an]]) aa else switch(dl+1, aa, aa[t], 
+            aa[,t], aa[,,t])
     }
-    idx <- times==utimes[i]
+    idx <- times %in% utimes[win.t]
     for (cn in names(chunk.args)) {
       ca <- chunk.args[[cn]]
       dl <- mydiml(ca)
@@ -78,8 +79,8 @@
     if (show) {
       eval(cl)
       ani.record()
-      ani.pause(intervals[i]/speed)
-      attr(cl, "interval") <- intervals[i]
+      ani.pause(intervals[t]/speed)
+      attr(cl, "interval") <- intervals[t]
     }
     mycalls <- c(mycalls, cl)
   } 
@@ -154,7 +155,7 @@ anim.barplot <- function(...) UseMethod("anim.barplot")
 
 #' @export
 anim.barplot.default <- function(height, times=NULL, 
-      show=TRUE, speed=1, use.times=TRUE, width=1, space=NULL, names.arg=NULL, 
+      show=TRUE, speed=1, use.times=TRUE, window=t, width=1, space=NULL, names.arg=NULL, 
       density=NULL, angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
       ylim=NULL, xlab=NULL, ylab=NULL, main=NULL, sub=NULL, offset=NULL, 
       legend.text=NULL, ...) {
@@ -181,20 +182,24 @@ anim.barplot.default <- function(height, times=NULL,
 
   arg.dims <- list(height=hdim, space=1, xlim=1, ylim=1, main=0, sub=0, xlab=0, 
         ylab=0, space=1, legend.text=ltdim)
-  .do.loop(barplot, times=times, use.times=use.times, show=show, speed=speed, 
-        slice.args=slice.args, chunk.args=chunk.args, oth.args=oth.args, 
-        arg.dims=arg.dims)
+  .do.loop(barplot, times=times, use.times=use.times, window=substitute(window),
+        show=show, speed=speed, slice.args=slice.args, chunk.args=chunk.args, 
+        oth.args=oth.args, arg.dims=arg.dims)
 }
 
 #' Create an animated plot.
 #' 
 #' \code{anim.plot}
 #' 
-#' @param x,y vectors of x and y values.
+#' @param x,y vectors of x and y coordinates. These can be passed in any way 
+#'   accepted by \code{\link{xy.coords}}.
 #' @param times a vector of times. If NULL and \code{x} is a matrix, a sequence
 #'   from 1 to the last dimension of \code{x} will be used.
 #' @param show if false, do not show plot; just return calls.
 #' @param speed animation speed.
+#' @param window what window of times to show in each animation. The default,
+#'   \code{t}, shows just plots from time t. To draw a plot incrementally,
+#'   use \code{window=1:t}. 
 #' @param use.times if \code{TRUE}, animation speed is determined by the 
 #'   \code{times} argument. If \code{FALSE}, animation speed is constant.
 #' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp arguments passed to 
@@ -227,21 +232,26 @@ anim.barplot.default <- function(height, times=NULL,
 #' x <- rep(1:100/10, 10)
 #' times <- rep(1:10, each=100)
 #' y <- sin(x*times/4)
-#' anim.plot(x,y,times, ylab="Sine wave", type="l")
-#' anim.plot(x,y,times, ylab="Sine wave", type="l", fg="red", col="blue")
+#' anim.plot(x,y,times, type="l")
+#' anim.plot(x,y,times, type="l", fg="red", col="blue")
 #' ## changing colours - a per-point parameter
 #' cols <- (x+9*times)/100 # length 1000
 #' anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
 #' anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
 #' 
 #' ## changing line width - a whole-plot parameter
-#' anim.plot(x, y, lwd=matrix(1:10, ncol=10), type="l")
-#'      
+#' anim.plot(x, y, times, lwd=matrix(1:10, ncol=10), type="l")
+#'           
+#' ## incremental plot using window
+#' anim.plot(1:10, 1:10, times=1:10, window=1:t)
+#' 
+#' ## moving window
+#' anim.plot(1:10, 1:10, times=1:10, window=(t-2):t)
+#' 
 #' ## discoveries 1860-1959: moving window
-#' dis <- as.vector(sapply(1:91, function(x) discoveries[x:(x+9)]))
-#' years <- outer(0:9, 1860:1951,"+")
-#' anim.plot(years, dis, times=rep(1:100, each=10), xlab="Year", ylab="Discoveries", type="h",
-#'      col="blue", xlim=years[c(1,10),], lwd=8, lab=c(10,5,7))
+#' xlim <- rbind(1860:1959,1870:1969)
+#' anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim,  
+#'      xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
 #'      
 #' ## Formula interface
 #' ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
@@ -252,28 +262,19 @@ anim.plot <- function(...) UseMethod("anim.plot")
 
 
 #' @export 
-anim.plot.default <- function (x, y, times, speed=1, use.times=TRUE, xlim=NULL, ylim=NULL, col=par("col"), 
+anim.plot.default <- function (x, y=NULL, times, speed=1, use.times=TRUE, window=t, 
+  xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
   pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
   smooth=NULL, ...) {  
   
-  x <- as.vector(x)
-  y <- as.vector(y) # consider doing sthg like xy.coords?
   args <- list(...)
-  args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
-  args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
   if (! "xlab" %in% names(args)) args$xlab <- deparse(substitute(x))
   if (! "ylab" %in% names(args)) args$ylab <- deparse(substitute(y))
-  
-  # x, y should be chopped. xlim and ylim should be chopped if dim==2.
-  # xlab and ylab should be sliced or other: not one value per point
-  # same for asp, lty, lwd. NB: these can be "sliced" by taking one value.
-  # col, pch, cex, should be chopped.
-  # you could say, if col is a matrix, we apply it once for each frame?
-  # labels' length could vary?
-  #  mat.args <- list(x=x, y=y, xlim=xlim, ylim=ylim, col=col, pch=pch, cex=cex,
-  #  vec.args <- list(asp=asp, lty=lty, lwd=lwd)
-  #   labels=labels)
-  
+  xy <- xy.coords(x, y, recycle=TRUE)
+  x <- xy$x
+  y <- xy$y
+  args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
+  args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
   #   if (! is.null(smooth)) {
   #     for (ma in setdiff(names(mat.args), "col")) if (is.matrix(mat.args[[ma]])) 
   #           mat.args[[ma]] <- .interp(mat.args[[ma]], smooth)
@@ -284,12 +285,13 @@ anim.plot.default <- function (x, y, times, speed=1, use.times=TRUE, xlim=NULL, 
   
   
   chunk.args <- list(x=x, y=y, col=col, pch=pch, cex=cex)
-  slice.args <- c(list(asp=asp, lty=lty, lwd=lwd), args)
+  slice.args <- c(list(asp=asp, lty=lty, lwd=lwd, xaxp=xaxp, yaxp=yaxp), args)
   
-  .do.loop(plot, times=times, use.times=use.times, speed=speed, 
-    chunk.args=chunk.args, slice.args=slice.args, arg.dims=list(
-      xlab=0, ylab=0, xlim=1, ylim=1, lwd=0, lty=0, asp=0,
-      x=1, y=1, col=1, pch=1, cex=1, type=0), chunkargs.ref.length=max(length(x), length(y)))
+  .do.loop(plot, times=times, use.times=use.times, speed=speed, window=substitute(window),
+        chunk.args=chunk.args, slice.args=slice.args, arg.dims=list(
+        xlab=0, ylab=0, xlim=1, ylim=1, xaxp=1, yaxp=1, lwd=0, lty=0, asp=0, panel.first=1, panel.last=1,
+        x=1, y=1, col=1, pch=1, cex=1, type=0), chunkargs.ref.length=max(length(x), 
+        length(y)))
 }
 
 #' @export 
@@ -328,4 +330,52 @@ anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NUL
   # do other values come from within data?
 }
 
+#' Create an animated contour plot
+#' 
+#' @param x,y,z,... parameters passed to \code{\link{contour}}
+#' @param times,speed,use.times,window,show see \code{\link{anim.plot}} for details.
+#' 
+#' @examples
+#' tmp <- volcano
+#' tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
+#' cplot <- array(NA, dim=c(87,61,20))
+#' cplot[,,1] <- tmp
+#' cplot[,,20] <- volcano
+#' cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
+#' cplot <- aperm(cplot, c(2,3,1))
+#' anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
+#' anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, 
+#'    color.palette=terrain.colors)
+#' @export
+anim.contour <- function(...) UseMethod("anim.contour")
 
+#' @export
+anim.filled.contour <- function(...) UseMethod("anim.filled.contour")
+
+#' @export
+anim.filled.contour.default <- function(...) anim.contour.default(..., fn=filled.contour)
+
+#' @export
+anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window=t, 
+      show=TRUE, fn=contour, ...) {
+  if (missing(z)) {
+    z <- x 
+    x <- seq(0,1, length.out=dim(z)[1])
+    y <- seq(0,1, length.out=dim(z)[2])
+  }
+  if (missing(x)) x <- seq(0,1, length.out=dim(z)[1])
+  if (missing(y)) y <- seq(0,1, length.out=dim(z)[2])
+  dots <- list(...)
+  slice.args <- list(z=z)
+  slice.args$x <- x
+  slice.args$y <- y
+  if (! "zlim" %in% names(dots)) dots$zlim <- range(z, finite=TRUE)
+  if (! "xlim" %in% names(dots)) dots$xlim <- range(x, finite=TRUE)
+  if (! "ylim" %in% names(dots)) dots$ylim <- range(y, finite=TRUE)
+  
+  .do.loop(fn, times=times, show=show, use.times=use.times,
+        slice.args=c(slice.args, dots), 
+        arg.dims=list(z=2, x=1, y=1, nlevels=0, levels=1, 
+        labels=1, labcex=0, drawlabels=0, xlim=1, ylim=1, zlim=1, vfont=1,
+        axes=0, frame.plot=0, col=1, lty=1, lwd=1, color.palette=1))
+}
