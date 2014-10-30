@@ -5,7 +5,31 @@
 \usage{
 anim.curve(expr, from = 0, to = 1, n = 255, times, type = "l", ...)
 }
+\arguments{
+\item{expr}{a function which takes two arguments, or an expression involving
+\code{x} and \code{t}.}
+
+\item{n}{how many points to evaluate the function at (for each animation)}
+
+\item{times}{these values will be passed in to \code{expr} to create each frame.}
+
+\item{type,...}{parameters passed to \code{\link{anim.plot.default}}}
+}
 \description{
 This function is the animated version of \code{\link{curve}}.
+}
+\details{
+Note that \code{times} is interpreted differently here than elsewhere. In
+particular it cannot be a length-1 vector.
+}
+\examples{
+anim.curve(x^t, times=10:50/10, n=20)
+anim.curve(sin(x*t), times=1:30, n=100, speed=12, col="darkgreen", from=-1, to=1)
+
+## curve is constant in t, but window moves.
+## NB: 'from' and 'to' control where the expression is evaluated.
+## 'xlim' just controls the window.
+anim.curve(sin(cos(-x)*exp(x/2)), times=0:100/10, from=-5, to=10, n=500,
+     col="red", lwd=2, xlim=rbind(top <- seq(-5, 10, 1/10), top+5))
 }
 
