@@ -402,7 +402,7 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
 #' anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
 #'      breaks=c(5,10,20,50,100,200, 500, 1000))
 #' @export
-anim.hist <- function(x, times, show=TRUE, speed=1, use.times=TRUE, window=t, 
+anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t, 
       density=NULL, angle=NULL, col=NULL, border=NULL, ...) {
   
   dots <- list(...)
@@ -416,4 +416,42 @@ anim.hist <- function(x, times, show=TRUE, speed=1, use.times=TRUE, window=t,
         angle=angle, col=col, border=border), slice.args=dots, 
         arg.dims=list(breaks=dbr, xlim=1, ylim=1, xlab=1, x=1),
         chunkargs.ref.length=max(length(x), length(times)))
+}
+
+#' Draw an animated curve.
+#' 
+#' This function is the animated version of \code{\link{curve}}.
+#' 
+#' @param expr a function which takes two arguments, or an expression involving
+#'    \code{x} and \code{t}.
+#' @param n how many points to evaluate the function at (for each animation)
+#' @param times these values will be passed in to \code{expr} to create each frame.
+#' @param type,... parameters passed to \code{\link{anim.plot.default}}
+#' 
+#' @examples
+#' anim.curve(x^t, times=10:50/10, n=20)
+#' anim.curve(sin(x*t), times=1:30, n=100, speed=12, col="darkgreen", from=-1, to=1)
+#' 
+#' ## curve is constant in t, but window moves. 
+#' ## NB: 'from' and 'to' control where the expression is evaluated. 
+#' ## 'xlim' just controls the window.
+#' anim.curve(sin(cos(-x)*exp(x/2)), times=0:100/10, from=-5, to=10, n=500, 
+#'      col="red", lwd=2, xlim=rbind(top <- seq(-5, 10, 1/10), top+5))
+#' @export
+anim.curve <- function(expr, from=0, to=1, n=255, times, type="l", ...) {
+  sexpr <- substitute(expr)
+  if (is.name(sexpr)) {
+    expr <- call(as.character(sexpr), as.name("x"), as.name("t"))
+  } else {
+    expr <- sexpr
+  }
+  x <- seq.int(from, to, length.out=n)
+  
+  y <- outer(x, times, function (x,t) {
+    ll <- list(x=x, t=t)
+    eval(expr, envir=ll, enclos=parent.frame())
+  })
+  y <- as.vector(y)
+  times <- rep(times, each=length(x))
+  anim.plot(x=x, y=y, times=times, type=type, ...)
 }

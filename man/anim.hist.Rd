@@ -3,7 +3,7 @@
 \alias{anim.hist}
 \title{Draw an animated histogram.}
 \usage{
-anim.hist(x, times, show = TRUE, speed = 1, use.times = TRUE,
+anim.hist(x, times, speed = 1, show = TRUE, use.times = TRUE,
   window = t, density = NULL, angle = NULL, col = NULL, border = NULL,
   ...)
 }
