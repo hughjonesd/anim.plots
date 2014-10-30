@@ -4,7 +4,7 @@
 # TODO:
 #
 # - easy way to annotate an existing plot with points, legend, axes, etc.
-# curve, hist, density, stripchart?
+# density, segments?
 # maps with colours?
 # plot3d - is this possible?
 # generic function interface?
@@ -151,9 +151,11 @@
 #' ## barplot with a matrix
 #' ChickWeight$wq <- cut(ChickWeight$weight, 5)
 #' tbl <- as.array(xtabs(~ wq + Diet + Time, data=ChickWeight))
-#' anim.barplot(tbl, xlab="Diet", ylab="N", legend.text=paste("Quintile", 1:5))
+#' ptbl <- prop.table(tbl, 2:3)
+#' anim.barplot(ptbl, xlab="Diet", ylab="N", xlim=c(0,8), legend.text=paste(
+#'      "Quintile", 1:5), col=1:5)
 #' anim.barplot(tbl, xlab="Diet", ylab="N", beside=TRUE, ylim=c(0,20),
-#'    legend.text=paste("Quintile", 1:5))
+#'    legend.text=paste("Quintile", 1:5), col=1:5)
 #'    
 #' @export
 anim.barplot <- function(...) UseMethod("anim.barplot")
@@ -161,35 +163,34 @@ anim.barplot <- function(...) UseMethod("anim.barplot")
 #' @export
 anim.barplot.default <- function(height, times=NULL, 
       show=TRUE, speed=1, use.times=TRUE, window=t, width=1, space=NULL, names.arg=NULL, 
-      density=NULL, angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
+      beside=FALSE, density=NULL, angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
       ylim=NULL, xlab=NULL, ylab=NULL, main=NULL, sub=NULL, offset=NULL, 
       legend.text=NULL, ...) {
   # plot data
   slice.args <- list(height=height, space=space, xlim=xlim, ylim=ylim, main=main, 
-        sub=sub, xlab=xlab, ylab=ylab, legend.text=legend.text)
-  
-  # in barplot:
-  # height is matrix or vector; space is 1, 2 or length(height); width is length(height)
-  # so is names.arg, density, angle, col, border; legend.text is TRUE or nrow(height)
-  # if height is a matrix and beside = FALSE then we want ncol(height)
-  args <- list(...)
-  chunk.args <- list(width=width, names.arg=names.arg, density=density, 
-        angle=angle, col=col, border=border, offset=offset)
-  
+        sub=sub, xlab=xlab, ylab=ylab, legend.text=legend.text, width=width, 
+        names.arg=names.arg, density=density, angle=angle, border=border, 
+        offset=offset, col=col)
+
+  args <- list(...)  
   ltdim <- if (is.logical(legend.text)) 0 else 1
-  
   oth.args <- args
+  oth.args$beside <- beside
+  chunk.args <- list()
   if (is.vector(height)) chunk.args$height=height else slice.args$height=height
+  
   hdim <- if(is.matrix(height)) 1 else 2
   if (is.null(times)) {
     if (is.array(height)) times <- 1:tail(dim(height), 1) else stop("'times' not specified")
   }
+  crl <- if(is.vector(height)) max(length(height), length(times))
 
   arg.dims <- list(height=hdim, space=1, xlim=1, ylim=1, main=0, sub=0, xlab=0, 
-        ylab=0, space=1, legend.text=ltdim)
+        ylab=0, space=1, legend.text=ltdim, col=1, density=1, angle=1, names.arg=1,
+        border=1, offset=1, width=1)
   .do.loop(barplot, times=times, use.times=use.times, window=substitute(window),
         show=show, speed=speed, slice.args=slice.args, chunk.args=chunk.args, 
-        oth.args=oth.args, arg.dims=arg.dims)
+        oth.args=oth.args, arg.dims=arg.dims, chunkargs.ref.length=crl)
 }
 
 #' Create an animated plot.
