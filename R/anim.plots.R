@@ -2,22 +2,19 @@
 #' @import animation
 
 # TODO:
-#
 # - easy way to annotate an existing plot with points, legend, axes, etc.
+# replay(plots, speed=, frames=); 
+# not panel.first or last...
 # density, segments?
 # maps with colours?
 # plot3d - is this possible?
 # generic function interface?
 # smoothing function?
-# make barplot respect matrix parameters; also vectors should go in time order
-# (obscure bug with ncol??)
-# make sure panel.first and panel.last work?
 
-
-.setup.anim <- function () {
+.setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()
-  dev.control('enable')
-  ani.record(reset=TRUE)
+  if (dev.control.enable) dev.control('enable')
+  ani.record(reset=reset)
   # if (! is.null(interval)) .old.ani.options <<- ani.options(interval=interval)
 }
 
@@ -62,7 +59,8 @@
   times <- sort(times)
   
   mycalls <- list()
-  .setup.anim()
+  class(mycalls) <- "anim.frames"
+  attr(mycalls, "speed") <- speed
   for (t in 1:nframes) {
     win.t <- eval(window)
     win.t <- win.t[win.t %in% 1:nframes]
@@ -81,17 +79,13 @@
     }
 
     cl <- as.call(c(fn, args.t, oth.args)) # or match.call?
-    if (show) {
-      eval(cl)
-      ani.record()
-      ani.pause(intervals[t]/speed)
-      attr(cl, "interval") <- intervals[t]
-    }
-    mycalls <- c(mycalls, cl)
+    attr(cl, "interval") <- intervals[t]
+    mycalls[[t]] <- cl
   } 
-  .teardown.anim()
-  class(mycalls) <- "anim.frames"
-  attr(mycalls, "speed") <- speed
+  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines), 
+        identical, fn))
+  if (show) replay(mycalls)
+  
   return(invisible(mycalls))
 }
 
@@ -112,6 +106,46 @@
   approx(1:size, obj, xout)$y
 }
 
+#' Replay an \code{anim.frames} object
+#' 
+#' Replay all or some of the frames of an object.
+#' 
+#' @param fr an \code{anim.frames} object
+#' @param speed a new speed
+#' @param frames numeric vector specifying which frames to replay
+#' @param dev.control.enable whether to call \code{dev.control('enable')}. 
+#'    In most cases the automatic setting will be right.
+#' 
+#' @examples
+#' 
+#' myplot <- anim.plot(1:10, 1:10, speed=3)
+#' 
+#' replay(myplot, speed=5)
+#' replay(myplot, frames=c(1,5,6,10))
+#' 
+#' @export
+replay <- function(...) UseMethod("replay")
+
+#' @export
+#' @rdname replay
+replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
+  after=NULL, before=NULL) {
+  before2 <- substitute(before)
+  after2 <- substitute(after)
+  .setup.anim(dev.control.enable=attr(fr, "dev.control.enable"))
+  for (t in frames) {
+    if (! missing(before)) eval(before2)
+    eval(fr[[t]])
+    if (! missing(after)) eval(after2)
+    ani.record()
+    ani.pause(attr(fr[[t]], "interval")/speed)
+  }
+  .teardown.anim()
+} 
+  
+#' @export
+#' @rdname replay
+plot.anim.frames <- replay.anim.frames
 
 
 #' Create an animated barplot.
@@ -178,10 +212,14 @@ anim.barplot.default <- function(height, times=NULL,
   oth.args$beside <- beside
   chunk.args <- list()
   if (is.vector(height)) chunk.args$height=height else slice.args$height=height
-  
+
   hdim <- if(is.matrix(height)) 1 else 2
   if (is.null(times)) {
     if (is.array(height)) times <- 1:tail(dim(height), 1) else stop("'times' not specified")
+  } else if (length(times)==1) {
+    lng <- if (is.array(height)) tail(dim(height), 1) else length(height)
+    if (lng %% times != 0) warning("'height' length is not an exact multiple of 'times'")
+    times <- rep(1:times, each=lng/times)
   }
   crl <- if(is.vector(height)) max(length(height), length(times))
 
@@ -199,7 +237,8 @@ anim.barplot.default <- function(height, times=NULL,
 #' 
 #' @param x,y vectors of x and y coordinates. These can be passed in any way 
 #'   accepted by \code{\link{xy.coords}}.
-#' @param times a vector of times. 
+#' @param times a vector of times. If \code{times} is length one, there will
+#'   be that many frames, equally divided over the length of \code{x} and \code{y}.
 #' @param show if false, do not show plot; just return calls.
 #' @param speed animation speed.
 #' @param window what window of times to show in each animation. The default,
@@ -237,8 +276,8 @@ anim.barplot.default <- function(height, times=NULL,
 #' x <- rep(1:100/10, 10)
 #' times <- rep(1:10, each=100)
 #' y <- sin(x*times/4)
-#' anim.plot(x,y,times, type="l")
-#' anim.plot(x,y,times, type="l", fg="red", col="blue")
+#' anim.plot(x,y,times, type="l", col="orange", lwd=2)
+#' 
 #' ## changing colours - a per-point parameter
 #' cols <- (x+9*times)/100 # length 1000
 #' anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
@@ -247,11 +286,14 @@ anim.barplot.default <- function(height, times=NULL,
 #' ## changing line width - a whole-plot parameter
 #' anim.plot(x, y, times, lwd=matrix(1:10, ncol=10), type="l")
 #'           
+#' ## times as a single number
+#' anim.plot(1:10, 1:10, times=5)
+#'            
 #' ## incremental plot using window
-#' anim.plot(1:10, 1:10, times=1:10, window=1:t)
+#' anim.plot(1:10, 1:10, window=1:t)
 #' 
 #' ## moving window
-#' anim.plot(1:10, 1:10, times=1:10, window=(t-2):t)
+#' anim.plot(1:10, 1:10, window=(t-2):t)
 #' 
 #' ## discoveries 1860-1959: moving window
 #' xlim <- rbind(1860:1959,1870:1969)
@@ -262,17 +304,43 @@ anim.barplot.default <- function(height, times=NULL,
 #' ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
 #' anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
 #'      pch=as.numeric(Diet), speed=3)
+#'  
+#'  ## Earthquakes this week
+#'  eq = read.table(
+#'      file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
+#'      fill=TRUE, sep=",", header=T)
+#'      eq$time <- as.numeric(strptime(eq$Datetime, "%A, %B %d, %Y %X UTC"))
+#'      eq <- eq[-1,]
+#'  library(maps)
+#'  map('world')
+#'  tmp <- anim.plot(Lat ~ Lon + time, data=eq, fn=points, cex=Magnitude, col=rgb(
+#'        1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
+#'  replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 #' @export
 anim.plot <- function(...) UseMethod("anim.plot")
+
+#' @export
+#' @rdname anim.plot
+anim.points <- function(...) UseMethod("anim.points")
+
+#' @export
+#' @rdname anim.plot
+anim.lines <-function(...) UseMethod("anim.lines")
+
+#' @export
+#' @rdname anim.plot
+anim.text <-function(...) UseMethod("anim.text")
+
+
 
 
 #' @export 
 #' @rdname anim.plot
-anim.plot.default <- function (x, y=NULL, times=seq(1:length(x)), speed=1, 
-      use.times=TRUE, window=t, 
-      xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
-      pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
-      smooth=NULL, ...) {  
+anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
+  use.times=TRUE, window=t, 
+  xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
+  pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
+  smooth=NULL, fn=plot, ...) {  
   
   args <- list(...)
   if (! "xlab" %in% names(args)) args$xlab <- deparse(substitute(x))
@@ -280,19 +348,21 @@ anim.plot.default <- function (x, y=NULL, times=seq(1:length(x)), speed=1,
   xy <- xy.coords(x, y, recycle=TRUE)
   x <- xy$x
   y <- xy$y
-  args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
-  args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
-
-  if (is.null(times)) times <- 1:length(x)
+  #args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
+  #args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
   
+  if (length(times)==1) {
+    lng <- length(x)
+    if (lng %% times != 0) warning("'height' length is not an exact multiple of 'times'")
+    times <- rep(1:times, each=lng/times)
+  }
   chunk.args <- list(x=x, y=y, col=col, pch=pch, cex=cex)
   slice.args <- c(list(asp=asp, lty=lty, lwd=lwd, xaxp=xaxp, yaxp=yaxp), args)
-  
-  .do.loop(plot, times=times, use.times=use.times, speed=speed, window=substitute(window),
-        chunk.args=chunk.args, slice.args=slice.args, arg.dims=list(
-        xlab=0, ylab=0, xlim=1, ylim=1, xaxp=1, yaxp=1, lwd=0, lty=0, asp=0, panel.first=1, panel.last=1,
-        x=1, y=1, col=1, pch=1, cex=1, type=0), chunkargs.ref.length=max(length(x), 
-        length(y)))
+  .do.loop(fn, times=times, speed=speed, show=show, use.times=use.times, 
+    window=substitute(window), chunk.args=chunk.args, slice.args=slice.args, 
+    arg.dims=list(xlab=0, ylab=0, xlim=1, ylim=1, xaxp=1, yaxp=1, lwd=0, 
+      lty=0, asp=0, panel.first=1, panel.last=1, x=1, y=1, col=1, pch=1, cex=1, 
+      type=0), chunkargs.ref.length=max(length(x), length(y)))
 }
 
 #' @export 
@@ -317,20 +387,35 @@ anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NUL
   }
   
   # get levels of t. 
-  tm <- mf[,3]
   x <- mf[,2]
   y <- mf[,1]
+  tm <- if (ncol(mf) >= 3) mf[,3] else 1:length(x)
+  
+  # why doesn't ordering happen happen OK in .do.loop?
+  ot <- order(tm)
   # we are basically praying here:
-  dots <- lapply(dots, function(z) if (length(z)==length(tm)) z[order(tm)] else z) 
-  x <- x[order(tm)]
-  y <- y[order(tm)]
-  tm <- tm[order(tm)]
-  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(x)[2] 
-  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(x)[1]
+  dots <- lapply(dots, function(z) if (length(z)==length(tm)) z[ot] else z) 
+  
+  x <- x[ot]
+  y <- y[ot]
+  tm <- tm[ot]
+  if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(mf)[2] 
+  if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(mf)[1]
   do.call("anim.plot", c(list(x=x, y=y, times=tm), dots))
-  # work out matrices for each value of the second part in order
-  # do other values come from within data?
 }
+
+#' @export 
+#' @rdname anim.plot
+anim.points.default <- function(...) anim.plot.default(..., fn=points)
+
+#' @export 
+#' @rdname anim.plot
+anim.lines.default <- function(...) anim.plot.default(..., fn=lines)
+
+#' @export 
+#' @rdname anim.plot
+anim.text.default <- function(...) anim.plot.default(..., fn=text)
+
 
 #' Create an animated contour plot
 #' 
@@ -427,6 +512,10 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 #' @param n how many points to evaluate the function at (for each animation)
 #' @param times these values will be passed in to \code{expr} to create each frame.
 #' @param type,... parameters passed to \code{\link{anim.plot.default}}
+#' 
+#' @details
+#' Note that \code{times} is interpreted differently here than elsewhere. In
+#' particular it cannot be a length-1 vector.
 #' 
 #' @examples
 #' anim.curve(x^t, times=10:50/10, n=20)
