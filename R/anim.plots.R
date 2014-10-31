@@ -2,10 +2,15 @@
 #' @import animation
 
 # TODO:
-# density, segments, arrows, etc.
+# density, segments, arrows, stars, etc.
 # plot3d - is this possible?
 # smoothing function?
 # compose two plots together? in separate windows?
+# capture data from call in environment for "after" (and even "before")
+# you can do this with as.list(call) which gives you all arguments
+# in a fairly unstructured way. That may be enough.
+# save() or saveGIF() etc. methods?
+
 .setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()
   if (dev.control.enable) dev.control('enable')
@@ -111,14 +116,23 @@
 #' @param frames numeric vector specifying which frames to replay
 #' @param dev.control.enable whether to call \code{dev.control('enable')}. 
 #'    In most cases the automatic setting will be right.
+#' @param before an expression to evaluate before each frame is plotted
+#' @param after an expression to evaluate after each frame is plotted
+#' 
+#' @details
+#' \code{before} and \code{after} will have the arguments from the
+#' frame's call available in their environment - see the example below.
 #' 
 #' @examples
 #' 
 #' myplot <- anim.plot(1:10, 1:10, speed=3)
-#' 
 #' replay(myplot, speed=5)
 #' replay(myplot, frames=c(1,5,6,10))
 #' 
+#' myplot <- anim.plot(x<-rnorm(100), x+rnorm(100,0,3), 20, window=1:t, 
+#'      show=FALSE, main="Regressions as sample size increases")
+#' replay(myplot, after=abline(lm(y~x), col="red"))
+#'  
 #' @export
 replay <- function(...) UseMethod("replay")
 
@@ -130,9 +144,10 @@ replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
   after2 <- substitute(after)
   .setup.anim(dev.control.enable=attr(fr, "dev.control.enable"))
   for (t in frames) {
-    if (! missing(before)) eval(before2)
+    argl <- as.list(fr[[t]])
+    if (! missing(before)) eval(before2, argl)
     eval(fr[[t]])
-    if (! missing(after)) eval(after2)
+    if (! missing(after)) eval(after2, argl)
     ani.record()
     ani.pause(attr(fr[[t]], "interval")/speed)
   }
@@ -242,9 +257,8 @@ anim.barplot.default <- function(height, times=NULL,
 #'   use \code{window=1:t}. 
 #' @param use.times if \code{TRUE}, animation speed is determined by the 
 #'   \code{times} argument. If \code{FALSE}, animation speed is constant.
-#' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp arguments passed to 
+#' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp,... arguments passed to 
 #'   \code{\link{plot}}.
-#' @param ... Other arguments passed to \code{plot}.
 #'   
 #' @details
 #' 
@@ -254,17 +268,17 @@ anim.barplot.default <- function(height, times=NULL,
 #' In general:
 #' 
 #' \itemize{ 
-#' \item Parameters that apply to each point of the plot, such as
-#' \code{xlim, ylim, col, pch, labels} and \code{cex}, can be passed as vectors
+#' \item Parameters that apply to each point of the plot, such as 
+#' \code{xlim, ylim, col, pch, labels} and \code{cex}, can be passed as vectors 
 #' which will be recycled to \code{length(times)}. 
 #' \item Parameters that apply
-#' to the plot as a whole, and can have length > 1, such as \code{xlim} and \code{ylim}, can be passed as vectors or matrices. If vectors, the
-#' same vector will be passed to every frame. If matrices, column \code{i} will
-#' be passed to the \code{i}'th frame. 
-#' \item Parameters that apply to the plot
-#' as a whole, and always have length 1, such as \code{xlab} and \code{main},
-#' can be passed as vectors and will be
-#' recycled to the number of frames. 
+#' to the plot as a whole, and always have length 1, such as \code{xlab} and
+#' \code{main}, can be passed as vectors and will be recycled to the number of
+#' frames. 
+#' \item Parameters that apply to the plot as a whole, and can have
+#' length > 1, such as \code{xlim} and \code{ylim}, can be passed as vectors or
+#' matrices. If vectors, the same vector will be passed to every frame. If
+#' matrices, column \code{i} will be passed to the \code{i}'th frame. 
 #' }
 #' 
 #' @examples
@@ -583,3 +597,76 @@ anim.curve <- function(expr, from=0, to=1, n=255, times, type="l", ...) {
   times <- rep(times, each=length(x))
   anim.plot(x=x, y=y, times=times, type=type, ...)
 }
+
+#' Save an anim.frames object in various formats.
+#' 
+#' These functions simply call replay on the object and then call
+#' \code{\link{animation::saveGIF}} and friends on the result.
+#' 
+#' @param obj an \code{anim.frames} object
+#' @param ... arguments passed to \code{\link{animation::saveGIF}} and such
+#' 
+#' @examples
+#' 
+#' \dontrun{
+#' tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
+#' saveGIF(tmp, "filename.gif")
+#' 
+#' ## for anything more complex. Note the curlies:
+#' saveGIF({replay(tmp, after=legend("topleft", legend="My legend"))},
+#'  "filename.gif")
+#' }
+#' 
+#' @export
+saveGIF <- function(...) UseMethod("saveGIF")
+
+#' @export
+saveGIF.anim.frames <- function(obj, ...) animation::saveGIF(replay(obj), 
+  interval=sapply(obj, attr, "interval"), ...)
+
+#' @export
+saveGIF.default <- animation::saveGIF
+
+#' @export
+saveHTML <- function(...) UseMethod("saveHTML")
+
+#' @export
+saveHTML.anim.frames <- function(obj, ...) animation::saveHTML(replay(obj),
+      interval=sapply(obj, attr, "interval"), ...)
+
+#' @export
+saveHTML.default <- animation::saveHTML
+
+#' @export
+saveVideo <- function(...) UseMethod("saveVideo")
+
+#' @export
+saveVideo.anim.frames <- function(obj, ...) animation::saveVideo(replay(obj),
+      interval=sapply(obj, attr, "interval"),...)
+
+#' @export
+saveVideo.default <- animation::saveVideo
+
+
+#' @export
+saveLatex <- function(...) UseMethod("saveLatex")
+
+#' @export
+saveLatex.anim.frames <- function(obj, ...) animation::saveLatex(replay(obj),
+  interval=sapply(obj, attr, "interval"),...)
+
+#' @export
+saveLatex.default <- animation::saveLatex
+
+
+#' @export
+saveSWF <- function(...) UseMethod("saveSWF")
+
+#' @export
+saveSWF.anim.frames <- function(obj, ...) animation::saveSWF(replay(obj), 
+  interval=sapply(obj, attr, "interval"), ...)
+
+#' @export
+saveSWF.default <- animation::saveSWF
+
+

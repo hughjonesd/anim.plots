@@ -47,8 +47,6 @@ anim.symbols(...)
 \method{anim.text}{formula}(x, ...)
 }
 \arguments{
-\item{...}{Other arguments passed to \code{plot}.}
-
 \item{x,y}{vectors of x and y coordinates. These can be passed in any way
 accepted by \code{\link{xy.coords}}.}
 
@@ -66,8 +64,8 @@ be that many frames, equally divided over the length of \code{x} and \code{y}.}
 \code{t}, shows just plots from time t. To draw a plot incrementally,
 use \code{window=1:t}.}
 
-\item{xlim,ylim,col,pch,labels,cex,lty,lwd,asp}{arguments passed to
-\code{\link{plot}}.}
+\item{xlim,ylim,col,pch,labels,cex,lty,lwd,asp,...}{arguments passed to
+  \code{\link{plot}}.}
 }
 \description{
 \code{anim.plot}
@@ -83,13 +81,13 @@ In general:
 \code{xlim, ylim, col, pch, labels} and \code{cex}, can be passed as vectors
 which will be recycled to \code{length(times)}.
 \item Parameters that apply
-to the plot as a whole, and can have length > 1, such as \code{xlim} and \code{ylim}, can be passed as vectors or matrices. If vectors, the
-same vector will be passed to every frame. If matrices, column \code{i} will
-be passed to the \code{i}'th frame.
-\item Parameters that apply to the plot
-as a whole, and always have length 1, such as \code{xlab} and \code{main},
-can be passed as vectors and will be
-recycled to the number of frames.
+to the plot as a whole, and always have length 1, such as \code{xlab} and
+\code{main}, can be passed as vectors and will be recycled to the number of
+frames.
+\item Parameters that apply to the plot as a whole, and can have
+length > 1, such as \code{xlim} and \code{ylim}, can be passed as vectors or
+matrices. If vectors, the same vector will be passed to every frame. If
+matrices, column \code{i} will be passed to the \code{i}'th frame.
 }
 }
 \examples{
