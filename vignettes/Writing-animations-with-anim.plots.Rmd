@@ -52,7 +52,6 @@ by changing the `xlim` and `ylim` parameters.
  x <- rnorm(4000); y<- rnorm(4000)
  x <- rep(x, 40); y <- rep(y, 40)
  xlims <- 4*2^(-(1:40/10))
- # matrices w
  ylims <- xlims <- rbind(xlims, -xlims) 
  anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims, 
        col=rgb(0,1,.5,.3), pch=19)
