@@ -11,6 +11,7 @@ output: html_document
 
 
 ```{r, echo=FALSE}
+library(knitr)
 par(bg="white")
 ```
 
@@ -49,8 +50,10 @@ you might have to use a matrix. Here we zoom in on a distribution of points
 by changing the `xlim` and `ylim` parameters.
 
 ```{r, fig.show='animate'}
- x <- rnorm(4000); y<- rnorm(4000)
- x <- rep(x, 40); y <- rep(y, 40)
+ x <- rnorm(4000)
+ y<- rnorm(4000)
+ x <- rep(x, 40)
+ y <- rep(y, 40)
  xlims <- 4*2^(-(1:40/10))
  ylims <- xlims <- rbind(xlims, -xlims) 
  anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims, 
