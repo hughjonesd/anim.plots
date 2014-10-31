@@ -37,5 +37,15 @@ cplot <- aperm(cplot, c(2,3,1))
 anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
 anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10,
    color.palette=terrain.colors)
+
+if (require("plot3D")) {
+ xlim <- -4:0*10
+ ylim <- (xlim + 40)/2
+ xlim <- rbind(xlim, xlim+60)
+ ylim <- rbind(ylim, ylim+60)
+ anim.contour(Hypsometry$x, Hypsometry$y, Hypsometry$z, times=5,
+       levels=c(seq(0,500, 50), seq(600,1500,100)), xlim=xlim, ylim=ylim,
+       col=c("black", rev(topo.colors(15))))
+}
 }
 

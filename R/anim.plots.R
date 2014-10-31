@@ -4,12 +4,7 @@
 # TODO:
 # density, segments, arrows, stars, etc.
 # plot3d - is this possible?
-# smoothing function?
 # compose two plots together? in separate windows?
-# capture data from call in environment for "after" (and even "before")
-# you can do this with as.list(call) which gives you all arguments
-# in a fairly unstructured way. That may be enough.
-# save() or saveGIF() etc. methods?
 
 .setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()
@@ -114,10 +109,9 @@
 #' @param fr an \code{anim.frames} object
 #' @param speed a new speed
 #' @param frames numeric vector specifying which frames to replay
-#' @param dev.control.enable whether to call \code{dev.control('enable')}. 
-#'    In most cases the automatic setting will be right.
 #' @param before an expression to evaluate before each frame is plotted
 #' @param after an expression to evaluate after each frame is plotted
+#' @param ... other arguments (not currently used)
 #' 
 #' @details
 #' \code{before} and \code{after} will have the arguments from the
@@ -139,7 +133,7 @@ replay <- function(...) UseMethod("replay")
 #' @export
 #' @rdname replay
 replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
-  after=NULL, before=NULL) {
+  after=NULL, before=NULL, ...) {
   before2 <- substitute(before)
   after2 <- substitute(after)
   .setup.anim(dev.control.enable=attr(fr, "dev.control.enable"))
@@ -153,11 +147,6 @@ replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
   }
   .teardown.anim()
 } 
-  
-#' @export
-#' @rdname replay
-plot.anim.frames <- replay.anim.frames
-
 
 #' Create an animated barplot.
 #' 
@@ -166,31 +155,17 @@ plot.anim.frames <- replay.anim.frames
 #'   matrix, \code{\link{barplot}} is called on each column. If an array, 
 #'   \code{\link{barplot}} is called on each matrix of form \code{height[,,i]}.
 #' @param times a vector of times. If NULL and \code{height} is a matrix,
-#'   the last dimension of \code{height} will be used.
-#' @param show if false, do not show plot; just return calls.
-#' @param speed higher is faster.
-#' @param use.times if \code{TRUE}, animation speed is determined by the
-#' \code{times} argument. If \code{FALSE}, animation speed is constant.
-#' @param width arguments passed to \code{\link{barplot}}. Arguments \code{width, 
-#' names.arg, density, angle, col, border} and \code{offset} may be either vectors
-#' of length \code{length(tbl)} or matrices with one column for each unique value of times.
-#' Other arguments should be length 1 or vectors.
-#' @param space
-#' @param names.arg
-#' @param density
-#' @param angle
-#' @param col
-#' @param border
-#' @param horiz
-#' @param xlim
-#' @param ylim
-#' @param xlab
-#' @param ylab
-#' @param main
-#' @param sub
-#' @param offset
-#' @param legend.text
+#'   the last dimension of \code{height} will be used
+#' @param show,speed,use.times,window see \code{\link{anim.plot}} 
+#' @param width,space,beside,names.arg,density,angle,col,border,horiz,xlim,ylim,xlab,ylab,main,sub,offset,legend.text,... arguments passed to \code{\link{barplot}}. 
 #'  
+#' @details
+#' 
+#' Arguments \code{width, names.arg, density, angle, col, border} 
+#' and \code{offset} may be either vectors
+#' of length \code{length(tbl)} or matrices with one column for each unique 
+#' value of \code{times}. Other arguments should be length 1 or vectors.
+#' 
 #' @examples
 #' anim.barplot(1:100, times=rep(1:10, each=10), ylim=c(0,100))
 #' ## barplot with a matrix
@@ -206,6 +181,7 @@ plot.anim.frames <- replay.anim.frames
 anim.barplot <- function(...) UseMethod("anim.barplot")
 
 #' @export
+#' @rdname anim.barplot
 anim.barplot.default <- function(height, times=NULL, 
       show=TRUE, speed=1, use.times=TRUE, window=t, width=1, space=NULL, names.arg=NULL, 
       beside=FALSE, density=NULL, angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
@@ -226,7 +202,8 @@ anim.barplot.default <- function(height, times=NULL,
 
   hdim <- if(is.matrix(height)) 1 else 2
   if (is.null(times)) {
-    if (is.array(height)) times <- 1:tail(dim(height), 1) else stop("'times' not specified")
+    if (is.array(height)) times <- 1:tail(dim(height), 1) else 
+          stop("'times' not specified")
   } else if (length(times)==1) {
     lng <- if (is.array(height)) tail(dim(height), 1) else length(height)
     if (lng %% times != 0) warning("'height' length is not an exact multiple of 'times'")
@@ -257,8 +234,13 @@ anim.barplot.default <- function(height, times=NULL,
 #'   use \code{window=1:t}. 
 #' @param use.times if \code{TRUE}, animation speed is determined by the 
 #'   \code{times} argument. If \code{FALSE}, animation speed is constant.
-#' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp,... arguments passed to 
+#' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp,xaxp,yaxp,... arguments passed to 
 #'   \code{\link{plot}}.
+#' @param fn function called to create each frame
+#' @param data a data frame from where the values in \code{formula} should be 
+#'    taken
+#' @param formula a \code{\link{formula}} such as \code{y ~ x + time}
+#' @param subset a vector specifying which rows of \code{data} to use
 #'   
 #' @details
 #' 
@@ -327,16 +309,17 @@ anim.barplot.default <- function(height, times=NULL,
 #'        col=rgb(0,0,0,.3), pch=19)
 #'  
 #'  ## Earthquakes this week
-#'  eq = read.table(
-#'      file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
-#'      fill=TRUE, sep=",", header=T)
-#'      eq$time <- as.numeric(strptime(eq$Datetime, "%A, %B %d, %Y %X UTC"))
-#'      eq <- eq[-1,]
-#'  library(maps)
-#'  map('world')
-#'  tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
-#'        1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
-#'  replay(tmp, before=map('world', fill=TRUE, col="wheat"))
+#'  if (require("maps")) {
+#'    eq = read.table(
+#'        file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
+#'        fill=TRUE, sep=",", header=TRUE)
+#'    eq$time <- as.numeric(strptime(eq$Datetime, "%A, %B %d, %Y %X UTC"))
+#'  eq <- eq[-1,]
+#'    map('world')
+#'    tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
+#'          1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
+#'    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
+#'  }
 #' @export
 anim.plot <- function(...) UseMethod("anim.plot")
 
@@ -355,10 +338,9 @@ anim.text <-function(...) UseMethod("anim.text")
 #' @export 
 #' @rdname anim.plot
 anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
-  use.times=TRUE, window=t, 
-  xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, yaxp=NULL,
-  pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), lwd=par("lwd"), 
-  smooth=NULL, fn=plot, ...) {  
+  use.times=TRUE, window=t, xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, 
+  yaxp=NULL, pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), 
+  lwd=par("lwd"), fn=plot, ...) {  
   
   args <- list(...)
   if (! "xlab" %in% names(args)) args$xlab <- deparse(substitute(x))
@@ -389,17 +371,17 @@ anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
 
 #' @export 
 #' @rdname anim.plot
-anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NULL,
+anim.plot.formula <- function(formula, data=parent.frame(), subset=NULL, 
       fn=plot, ...) {
-  if (missing(x) || !inherits(x, "formula")) 
-    stop("'x' missing or invalid")
+  if (missing(formula) || ! inherits(formula, "formula")) 
+    stop("'formula' missing or invalid")
   
   # cargo-culted from plot.formula
   m <- match.call(expand.dots=FALSE)
-  eframe <- parent.frame() # this is OK
+  eframe <- parent.frame() 
   md <- eval(m$data, eframe)
   dots <- lapply(m$..., eval, md, eframe) 
-  mf <- model.frame(x, data=md, na.action=na.action)
+  mf <- model.frame(formula, data=md)
   subset.expr <- m$subset
   if (!missing(subset)) {
     s <- eval(subset.expr, data, eframe)
@@ -446,7 +428,7 @@ anim.symbols <- function(...) anim.plot.default(..., fn=symbols)
 
 #' @export 
 #' @rdname anim.plot
-anim.points.formula <- function(x, ...) {
+anim.points.formula <- function(formula, ...) {
   m <- match.call(expand.dots=TRUE)
   fn <- as.character(m[[1]])
   fn <- sub("anim.([a-z]+).formula", "\\1", fn)
@@ -475,9 +457,6 @@ anim.text.formula <- anim.points.formula
 #' 
 #' @examples
 #' 
-#' xlim <- 
-#' anim.contour(volcano, times=1:50, xlim=xlim, ylim=ylim)
-#' 
 #' tmp <- volcano
 #' tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
 #' cplot <- array(NA, dim=c(87,61,20))
@@ -488,6 +467,16 @@ anim.text.formula <- anim.points.formula
 #' anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
 #' anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, 
 #'    color.palette=terrain.colors)
+#'    
+#' if (require("plot3D")) {
+#'  xlim <- -4:0*10
+#'  ylim <- (xlim + 40)/2
+#'  xlim <- rbind(xlim, xlim+60)
+#'  ylim <- rbind(ylim, ylim+60)
+#'  anim.contour(Hypsometry$x, Hypsometry$y, Hypsometry$z, times=5, 
+#'        levels=c(seq(0,500, 50), seq(600,1500,100)), xlim=xlim, ylim=ylim,
+#'        col=c("black", rev(topo.colors(15))))
+#' }
 #' @export
 anim.contour <- function(...) UseMethod("anim.contour")
 
@@ -517,7 +506,7 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
   if (! "zlim" %in% names(dots)) dots$zlim <- range(z, finite=TRUE)
   if (! "xlim" %in% names(dots)) dots$xlim <- range(x, finite=TRUE)
   if (! "ylim" %in% names(dots)) dots$ylim <- range(y, finite=TRUE)
-  
+  if (length(times)==1) times <- 1:times
   .do.loop(fn, times=times, show=show, use.times=use.times,
         slice.args=c(slice.args, dots), 
         arg.dims=list(z=2, x=1, y=1, nlevels=0, levels=1, 
@@ -562,13 +551,18 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 #' 
 #' @param expr a function which takes two arguments, or an expression involving
 #'    \code{x} and \code{t}.
-#' @param n how many points to evaluate the function at (for each animation)
-#' @param times these values will be passed in to \code{expr} to create each frame.
+#' @param x values of \code{x} at which the function will be evaluated in each frame.
+#'    Alternatively, you may specify \code{from, to} and \code{n}.
+#' @param from,to endpoints of \code{x}
+#' @param n number of values of \code{x} at which the function will be evaluated
+#'   for each frame
+#' @param times vector of values of \code{t} at which the function will be 
+#'   evaluated. Each unique value creates a single animation frame.
 #' @param type,... parameters passed to \code{\link{anim.plot.default}}
 #' 
 #' @details
 #' Note that \code{times} is interpreted differently here than elsewhere. In
-#' particular it cannot be a length-1 vector.
+#' particular, it cannot be a length-1 vector.
 #' 
 #' @examples
 #' anim.curve(x^t, times=10:50/10, n=20)
@@ -580,14 +574,14 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 #' anim.curve(sin(cos(-x)*exp(x/2)), times=0:100/10, from=-5, to=10, n=500, 
 #'      col="red", lwd=2, xlim=rbind(top <- seq(-5, 10, 1/10), top+5))
 #' @export
-anim.curve <- function(expr, from=0, to=1, n=255, times, type="l", ...) {
+anim.curve <- function(expr, x=NULL, from=0, to=1, n=255, times, type="l", ...) {
   sexpr <- substitute(expr)
   if (is.name(sexpr)) {
     expr <- call(as.character(sexpr), as.name("x"), as.name("t"))
   } else {
     expr <- sexpr
   }
-  x <- seq.int(from, to, length.out=n)
+  if (is.null(x)) x <- seq.int(from, to, length.out=n)
   
   y <- outer(x, times, function (x,t) {
     ll <- list(x=x, t=t)
@@ -600,73 +594,37 @@ anim.curve <- function(expr, from=0, to=1, n=255, times, type="l", ...) {
 
 #' Save an anim.frames object in various formats.
 #' 
-#' These functions simply call replay on the object and then call
+#' This function simply calls replay on the object and then calls
 #' \code{\link{animation::saveGIF}} and friends on the result.
 #' 
 #' @param obj an \code{anim.frames} object
-#' @param ... arguments passed to \code{\link{animation::saveGIF}} and such
+#' @param type one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'
+#' @param ... arguments passed to e.g. \code{\link{saveGIF}}
+#' 
+#' @details
+#' 
+#' For most of the underlying functions, the \code{times} parameter
+#' will be ignored as if you had set \code{use.times=FALSE}.
 #' 
 #' @examples
 #' 
 #' \dontrun{
 #' tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
-#' saveGIF(tmp, "filename.gif")
+#' anim.save(tmp, type="GIF", movie.name="filename.gif")
 #' 
 #' ## for anything more complex. Note the curlies:
 #' saveGIF({replay(tmp, after=legend("topleft", legend="My legend"))},
 #'  "filename.gif")
 #' }
-#' 
 #' @export
-saveGIF <- function(...) UseMethod("saveGIF")
-
-#' @export
-saveGIF.anim.frames <- function(obj, ...) animation::saveGIF(replay(obj), 
-  interval=sapply(obj, attr, "interval"), ...)
-
-#' @export
-saveGIF.default <- animation::saveGIF
-
-#' @export
-saveHTML <- function(...) UseMethod("saveHTML")
-
-#' @export
-saveHTML.anim.frames <- function(obj, ...) animation::saveHTML(replay(obj),
-      interval=sapply(obj, attr, "interval"), ...)
-
-#' @export
-saveHTML.default <- animation::saveHTML
-
-#' @export
-saveVideo <- function(...) UseMethod("saveVideo")
-
-#' @export
-saveVideo.anim.frames <- function(obj, ...) animation::saveVideo(replay(obj),
-      interval=sapply(obj, attr, "interval"),...)
-
-#' @export
-saveVideo.default <- animation::saveVideo
-
-
-#' @export
-saveLatex <- function(...) UseMethod("saveLatex")
-
-#' @export
-saveLatex.anim.frames <- function(obj, ...) animation::saveLatex(replay(obj),
-  interval=sapply(obj, attr, "interval"),...)
-
-#' @export
-saveLatex.default <- animation::saveLatex
-
-
-#' @export
-saveSWF <- function(...) UseMethod("saveSWF")
-
-#' @export
-saveSWF.anim.frames <- function(obj, ...) animation::saveSWF(replay(obj), 
-  interval=sapply(obj, attr, "interval"), ...)
-
-#' @export
-saveSWF.default <- animation::saveSWF
-
+anim.save <- function(obj, type, ...) {
+  stopifnot(type %in% c("GIF", "Video", "SWF", "HTML", "Latex"))
+  fn <- as.name(paste("save", type, sep=""))
+  mf <- match.call(expand.dots=FALSE)
+  mf[[1]] <- fn
+  mf$obj <- NULL
+  mf$expr <- substitute(replay(obj))
+  mf$type <- NULL
+  eval(mf)
+}
 

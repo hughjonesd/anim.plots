@@ -27,10 +27,10 @@ anim.text(...)
   show = TRUE, use.times = TRUE, window = t, xlim = NULL, ylim = NULL,
   col = par("col"), xaxp = NULL, yaxp = NULL, pch = par("pch"),
   cex = 1, labels = NULL, asp = NULL, lty = par("lty"),
-  lwd = par("lwd"), smooth = NULL, fn = plot, ...)
+  lwd = par("lwd"), fn = plot, ...)
 
-\method{anim.plot}{formula}(x, data = parent.frame(), subset = NULL,
-  na.action = NULL, fn = plot, ...)
+\method{anim.plot}{formula}(formula, data = parent.frame(), subset = NULL,
+  fn = plot, ...)
 
 \method{anim.points}{default}(...)
 
@@ -40,11 +40,11 @@ anim.text(...)
 
 anim.symbols(...)
 
-\method{anim.points}{formula}(x, ...)
+\method{anim.points}{formula}(formula, ...)
 
-\method{anim.lines}{formula}(x, ...)
+\method{anim.lines}{formula}(formula, ...)
 
-\method{anim.text}{formula}(x, ...)
+\method{anim.text}{formula}(formula, ...)
 }
 \arguments{
 \item{x,y}{vectors of x and y coordinates. These can be passed in any way
@@ -64,8 +64,17 @@ be that many frames, equally divided over the length of \code{x} and \code{y}.}
 \code{t}, shows just plots from time t. To draw a plot incrementally,
 use \code{window=1:t}.}
 
-\item{xlim,ylim,col,pch,labels,cex,lty,lwd,asp,...}{arguments passed to
-  \code{\link{plot}}.}
+\item{xlim,ylim,col,pch,labels,cex,lty,lwd,asp,xaxp,yaxp,...}{arguments passed to
+\code{\link{plot}}.}
+
+\item{fn}{function called to create each frame}
+
+\item{formula}{a \code{\link{formula}} such as \code{y ~ x + time}}
+
+\item{data}{a data frame from where the values in \code{formula} should be
+taken}
+
+\item{subset}{a vector specifying which rows of \code{data} to use}
 }
 \description{
 \code{anim.plot}
@@ -136,15 +145,16 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
        col=rgb(0,0,0,.3), pch=19)
 
  ## Earthquakes this week
- eq = read.table(
-     file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt",
-     fill=TRUE, sep=",", header=T)
-     eq$time <- as.numeric(strptime(eq$Datetime, "\%A, \%B \%d, \%Y \%X UTC"))
-     eq <- eq[-1,]
- library(maps)
- map('world')
- tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
-       1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)
- replay(tmp, before=map('world', fill=TRUE, col="wheat"))
+ if (require("maps")) {
+   eq = read.table(
+       file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt",
+       fill=TRUE, sep=",", header=TRUE)
+   eq$time <- as.numeric(strptime(eq$Datetime, "\%A, \%B \%d, \%Y \%X UTC"))
+ eq <- eq[-1,]
+   map('world')
+   tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
+         1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)
+   replay(tmp, before=map('world', fill=TRUE, col="wheat"))
+ }
 }
 

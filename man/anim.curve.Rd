@@ -3,15 +3,23 @@
 \alias{anim.curve}
 \title{Draw an animated curve.}
 \usage{
-anim.curve(expr, from = 0, to = 1, n = 255, times, type = "l", ...)
+anim.curve(expr, x = NULL, from = 0, to = 1, n = 255, times,
+  type = "l", ...)
 }
 \arguments{
 \item{expr}{a function which takes two arguments, or an expression involving
 \code{x} and \code{t}.}
 
-\item{n}{how many points to evaluate the function at (for each animation)}
+\item{x}{values of \code{x} at which the function will be evaluated in each frame.
+Alternatively, you may specify \code{from, to} and \code{n}.}
 
-\item{times}{these values will be passed in to \code{expr} to create each frame.}
+\item{from,to}{endpoints of \code{x}}
+
+\item{n}{number of values of \code{x} at which the function will be evaluated
+for each frame}
+
+\item{times}{vector of values of \code{t} at which the function will be
+evaluated. Each unique value creates a single animation frame.}
 
 \item{type,...}{parameters passed to \code{\link{anim.plot.default}}}
 }
@@ -20,7 +28,7 @@ This function is the animated version of \code{\link{curve}}.
 }
 \details{
 Note that \code{times} is interpreted differently here than elsewhere. In
-particular it cannot be a length-1 vector.
+particular, it cannot be a length-1 vector.
 }
 \examples{
 anim.curve(x^t, times=10:50/10, n=20)
