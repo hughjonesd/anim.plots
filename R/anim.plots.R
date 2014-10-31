@@ -2,15 +2,10 @@
 #' @import animation
 
 # TODO:
-# - easy way to annotate an existing plot with points, legend, axes, etc.
-# replay(plots, speed=, frames=); 
-# not panel.first or last...
-# density, segments?
-# maps with colours?
+# density, segments, arrows, etc.
 # plot3d - is this possible?
-# generic function interface?
 # smoothing function?
-
+# compose two plots together? in separate windows?
 .setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()
   if (dev.control.enable) dev.control('enable')
@@ -62,7 +57,8 @@
   class(mycalls) <- "anim.frames"
   attr(mycalls, "speed") <- speed
   for (t in 1:nframes) {
-    win.t <- eval(window)
+    # hack for anim.lines.formula
+    win.t <- if (is.character(window)) eval(parse(text=window)) else eval(window)
     win.t <- win.t[win.t %in% 1:nframes]
     args.t <- list()
     for (an in names(slice.args)) {
@@ -82,7 +78,7 @@
     attr(cl, "interval") <- intervals[t]
     mycalls[[t]] <- cl
   } 
-  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines), 
+  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines, text), 
         identical, fn))
   if (show) replay(mycalls)
   
@@ -295,15 +291,27 @@ anim.barplot.default <- function(height, times=NULL,
 #' ## moving window
 #' anim.plot(1:10, 1:10, window=(t-2):t)
 #' 
-#' ## discoveries 1860-1959: moving window
+#' ## discoveries 1860-1959
 #' xlim <- rbind(1860:1959,1870:1969)
 #' anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim,  
 #'      xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
 #'      
 #' ## Formula interface
 #' ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
-#' anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
+#' tmp <- anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
 #'      pch=as.numeric(Diet), speed=3)
+#' 
+#' # adding extra arguments:
+#' replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4))
+#'  
+#'  ## Zooming in:
+#'  x <- rnorm(4000); y<- rnorm(4000)
+#'  x <- rep(x, 40); y <- rep(y, 40)
+#'  xlims <- 4*2^(-(1:40/10))
+#'  # matrices w
+#'  ylims <- xlims <- rbind(xlims, -xlims) 
+#'  anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims, 
+#'        col=rgb(0,0,0,.3), pch=19)
 #'  
 #'  ## Earthquakes this week
 #'  eq = read.table(
@@ -313,7 +321,7 @@ anim.barplot.default <- function(height, times=NULL,
 #'      eq <- eq[-1,]
 #'  library(maps)
 #'  map('world')
-#'  tmp <- anim.plot(Lat ~ Lon + time, data=eq, fn=points, cex=Magnitude, col=rgb(
+#'  tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
 #'        1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
 #'  replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 #' @export
@@ -331,9 +339,6 @@ anim.lines <-function(...) UseMethod("anim.lines")
 #' @rdname anim.plot
 anim.text <-function(...) UseMethod("anim.text")
 
-
-
-
 #' @export 
 #' @rdname anim.plot
 anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
@@ -348,8 +353,8 @@ anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
   xy <- xy.coords(x, y, recycle=TRUE)
   x <- xy$x
   y <- xy$y
-  #args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
-  #args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
+  args$xlim <- if (is.null(xlim)) range(x[is.finite(x)]) else xlim
+  args$ylim <- if (is.null(ylim)) range(y[is.finite(y)]) else ylim
   
   if (length(times)==1) {
     lng <- length(x)
@@ -358,6 +363,10 @@ anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
   }
   chunk.args <- list(x=x, y=y, col=col, pch=pch, cex=cex)
   slice.args <- c(list(asp=asp, lty=lty, lwd=lwd, xaxp=xaxp, yaxp=yaxp), args)
+  if (identical(fn, text)) {
+    chunk.args$labels <- labels
+    slice.args$labels <- NULL
+  }
   .do.loop(fn, times=times, speed=speed, show=show, use.times=use.times, 
     window=substitute(window), chunk.args=chunk.args, slice.args=slice.args, 
     arg.dims=list(xlab=0, ylab=0, xlim=1, ylim=1, xaxp=1, yaxp=1, lwd=0, 
@@ -367,15 +376,16 @@ anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
 
 #' @export 
 #' @rdname anim.plot
-anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NULL, ...) {
+anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NULL,
+      fn=plot, ...) {
   if (missing(x) || !inherits(x, "formula")) 
     stop("'x' missing or invalid")
   
   # cargo-culted from plot.formula
   m <- match.call(expand.dots=FALSE)
-  eframe <- parent.frame()
+  eframe <- parent.frame() # this is OK
   md <- eval(m$data, eframe)
-  dots <- lapply(m$..., eval, md, eframe)
+  dots <- lapply(m$..., eval, md, eframe) 
   mf <- model.frame(x, data=md, na.action=na.action)
   subset.expr <- m$subset
   if (!missing(subset)) {
@@ -401,7 +411,7 @@ anim.plot.formula <- function(x, data=parent.frame(), subset=NULL, na.action=NUL
   tm <- tm[ot]
   if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(mf)[2] 
   if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(mf)[1]
-  do.call("anim.plot", c(list(x=x, y=y, times=tm), dots))
+  do.call("anim.plot", c(list(x=x, y=y, times=tm, fn=fn), dots))
 }
 
 #' @export 
@@ -416,6 +426,27 @@ anim.lines.default <- function(...) anim.plot.default(..., fn=lines)
 #' @rdname anim.plot
 anim.text.default <- function(...) anim.plot.default(..., fn=text)
 
+#' @export 
+#' @rdname anim.plot
+anim.points.formula <- function(x, ...) {
+  m <- match.call(expand.dots=TRUE)
+  fn <- as.character(m[[1]])
+  fn <- sub("anim.([a-z]+).formula", "\\1", fn)
+  if (fn=="lines") m[["window"]] <- "t:(t+1)" # e.g. lines(1,1) won't work...
+  fn <- eval(as.name(fn))
+  m[[1]] <- quote(anim.plot.formula)
+  m[["fn"]] <- fn
+  eval(m)
+}
+
+#' @export 
+#' @rdname anim.plot
+anim.lines.formula <- anim.points.formula
+
+#' @export 
+#' @rdname anim.plot
+anim.text.formula <- anim.points.formula
+
 
 #' Create an animated contour plot
 #' 
@@ -425,14 +456,14 @@ anim.text.default <- function(...) anim.plot.default(..., fn=text)
 #'   this defaults to \code{\link{filled.contour}}.
 #' 
 #' @examples
-#' tmp <- volcano
-#' tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
-#' cplot <- array(NA, dim=c(87,61,20))
-#' cplot[,,1] <- tmp
-#' cplot[,,20] <- volcano
-#' cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
-#' cplot <- aperm(cplot, c(2,3,1))
-#' anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
+# tmp <- volcano
+# tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
+# cplot <- array(NA, dim=c(87,61,20))
+# cplot[,,1] <- tmp
+# cplot[,,20] <- volcano
+# cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
+# cplot <- aperm(cplot, c(2,3,1))
+# anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
 #' anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, 
 #'    color.palette=terrain.colors)
 #' @export
@@ -484,8 +515,8 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
 #' See \code{\link{anim.plot}} for more details.
 #' 
 #' @examples
-#' anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
-#'      breaks=c(5,10,20,50,100,200, 500, 1000))
+# anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
+#      breaks=c(5,10,20,50,100,200, 500, 1000))
 #' @export
 anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t, 
       density=NULL, angle=NULL, col=NULL, border=NULL, ...) {

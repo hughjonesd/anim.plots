@@ -2,13 +2,16 @@
 \name{anim.plot}
 \alias{anim.lines}
 \alias{anim.lines.default}
+\alias{anim.lines.formula}
 \alias{anim.plot}
 \alias{anim.plot.default}
 \alias{anim.plot.formula}
 \alias{anim.points}
 \alias{anim.points.default}
+\alias{anim.points.formula}
 \alias{anim.text}
 \alias{anim.text.default}
+\alias{anim.text.formula}
 \title{Create an animated plot.}
 \usage{
 anim.plot(...)
@@ -26,13 +29,19 @@ anim.text(...)
   lwd = par("lwd"), smooth = NULL, fn = plot, ...)
 
 \method{anim.plot}{formula}(x, data = parent.frame(), subset = NULL,
-  na.action = NULL, ...)
+  na.action = NULL, fn = plot, ...)
 
 \method{anim.points}{default}(...)
 
 \method{anim.lines}{default}(...)
 
 \method{anim.text}{default}(...)
+
+\method{anim.points}{formula}(x, ...)
+
+\method{anim.lines}{formula}(x, ...)
+
+\method{anim.text}{formula}(x, ...)
 }
 \arguments{
 \item{...}{Other arguments passed to \code{plot}.}
@@ -103,15 +112,27 @@ anim.plot(1:10, 1:10, window=1:t)
 ## moving window
 anim.plot(1:10, 1:10, window=(t-2):t)
 
-## discoveries 1860-1959: moving window
+## discoveries 1860-1959
 xlim <- rbind(1860:1959,1870:1969)
 anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim,
      xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
 
 ## Formula interface
 ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
-anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet),
+tmp <- anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet),
      pch=as.numeric(Diet), speed=3)
+
+# adding extra arguments:
+replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4))
+
+ ## Zooming in:
+ x <- rnorm(4000); y<- rnorm(4000)
+ x <- rep(x, 40); y <- rep(y, 40)
+ xlims <- 4*2^(-(1:40/10))
+ # matrices w
+ ylims <- xlims <- rbind(xlims, -xlims)
+ anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims,
+       col=rgb(0,0,0,.3), pch=19)
 
  ## Earthquakes this week
  eq = read.table(
@@ -121,7 +142,7 @@ anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet),
      eq <- eq[-1,]
  library(maps)
  map('world')
- tmp <- anim.plot(Lat ~ Lon + time, data=eq, fn=points, cex=Magnitude, col=rgb(
+ tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
        1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)
  replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 }
