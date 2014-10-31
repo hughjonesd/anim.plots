@@ -498,9 +498,10 @@ anim.filled.contour.default <- function(...) anim.contour.default(..., fn=filled
 
 #' @export
 #' @rdname anim.contour
-anim.persp <- function(..., fn=persp) {
+anim.persp <- function(...) {
   m <- match.call(expand.dots=TRUE)
   m[[1]] <- quote(anim.contour)
+  m$fn <- quote(persp)
   eval(m)
 }
 
