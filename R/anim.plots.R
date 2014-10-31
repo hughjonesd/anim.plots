@@ -78,7 +78,7 @@
     attr(cl, "interval") <- intervals[t]
     mycalls[[t]] <- cl
   } 
-  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines, text), 
+  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines, text, symbols), 
         identical, fn))
   if (show) replay(mycalls)
   
@@ -427,6 +427,11 @@ anim.text.default <- function(...) anim.plot.default(..., fn=text)
 
 #' @export 
 #' @rdname anim.plot
+anim.symbols <- function(...) anim.plot.default(..., fn=symbols)
+
+
+#' @export 
+#' @rdname anim.plot
 anim.points.formula <- function(x, ...) {
   m <- match.call(expand.dots=TRUE)
   fn <- as.character(m[[1]])
@@ -455,6 +460,10 @@ anim.text.formula <- anim.points.formula
 #'   this defaults to \code{\link{filled.contour}}.
 #' 
 #' @examples
+#' 
+#' xlim <- 
+#' anim.contour(volcano, times=1:50, xlim=xlim, ylim=ylim)
+#' 
 #' tmp <- volcano
 #' tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
 #' cplot <- array(NA, dim=c(87,61,20))

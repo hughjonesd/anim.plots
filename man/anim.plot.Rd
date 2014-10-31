@@ -9,6 +9,7 @@
 \alias{anim.points}
 \alias{anim.points.default}
 \alias{anim.points.formula}
+\alias{anim.symbols}
 \alias{anim.text}
 \alias{anim.text.default}
 \alias{anim.text.formula}
@@ -36,6 +37,8 @@ anim.text(...)
 \method{anim.lines}{default}(...)
 
 \method{anim.text}{default}(...)
+
+anim.symbols(...)
 
 \method{anim.points}{formula}(x, ...)
 
