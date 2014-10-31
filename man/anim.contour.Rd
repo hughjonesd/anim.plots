@@ -4,7 +4,8 @@
 \alias{anim.contour.default}
 \alias{anim.filled.contour}
 \alias{anim.filled.contour.default}
-\title{Create an animated contour plot}
+\alias{anim.persp}
+\title{Create an animated contour plot or perspective plot}
 \usage{
 anim.contour(...)
 
@@ -12,19 +13,20 @@ anim.filled.contour(...)
 
 \method{anim.filled.contour}{default}(...)
 
+anim.persp(..., fn = persp)
+
 \method{anim.contour}{default}(x, y, z, times, speed = 1, use.times = TRUE,
   window = t, show = TRUE, fn = contour, ...)
 }
 \arguments{
-\item{x,y,z,...}{parameters passed to \code{\link{contour}}}
+\item{fn}{underlying function to use.}
+
+\item{x,y,z,...}{parameters passed to \code{\link{contour}} or \code{\link{persp}}}
 
 \item{times,speed,use.times,window,show}{see \code{\link{anim.plot}} for details.}
-
-\item{fn}{underlying contour function to use. For \code{anim.filled.contour}
-  this defaults to \code{\link{filled.contour}}.}
 }
 \description{
-Create an animated contour plot
+Create an animated contour plot or perspective plot of 3D data.
 }
 \examples{
 tmp <- volcano
@@ -37,6 +39,13 @@ cplot <- aperm(cplot, c(2,3,1))
 anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
 anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10,
    color.palette=terrain.colors)
+
+cplot2 <- apply(cplot, 1:2, function(x) seq(0, x[20], length.out=20))
+dim(cplot2)
+cplot2 <- aperm(cplot2, c(2,3,1))
+par(bg="white")
+anim.persp(z=cplot2, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
+theta=30, speed=5, border=NA, r=3, col="yellowgreen", shade=.5, box=FALSE)
 
 if (require("plot3D")) {
  xlim <- -4:0*10
