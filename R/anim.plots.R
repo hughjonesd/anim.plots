@@ -268,7 +268,6 @@ anim.barplot.default <- function(height, times=NULL,
 #' }
 #' 
 #' @examples
-#' 
 #' x <- rep(1:100/10, 10)
 #' times <- rep(1:10, each=100)
 #' y <- sin(x*times/4)
@@ -456,14 +455,14 @@ anim.text.formula <- anim.points.formula
 #'   this defaults to \code{\link{filled.contour}}.
 #' 
 #' @examples
-# tmp <- volcano
-# tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
-# cplot <- array(NA, dim=c(87,61,20))
-# cplot[,,1] <- tmp
-# cplot[,,20] <- volcano
-# cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
-# cplot <- aperm(cplot, c(2,3,1))
-# anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
+#' tmp <- volcano
+#' tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
+#' cplot <- array(NA, dim=c(87,61,20))
+#' cplot[,,1] <- tmp
+#' cplot[,,20] <- volcano
+#' cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
+#' cplot <- aperm(cplot, c(2,3,1))
+#' anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
 #' anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, 
 #'    color.palette=terrain.colors)
 #' @export
@@ -514,9 +513,9 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
 #' (whichever is longer), then split according to the unique values of \code{times}.
 #' See \code{\link{anim.plot}} for more details.
 #' 
-#' @examples
-# anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
-#      breaks=c(5,10,20,50,100,200, 500, 1000))
+#' @examples 
+#' anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
+#'      breaks=c(5,10,20,50,100,200, 500, 1000))
 #' @export
 anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t, 
       density=NULL, angle=NULL, col=NULL, border=NULL, ...) {

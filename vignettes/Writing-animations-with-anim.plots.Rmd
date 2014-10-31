@@ -19,6 +19,8 @@ on a little package called `anim.plots` which adds some syntactic sugar to this.
 It provides a few commands, similar to the standard R graphics, to create
 animated plots. Here's a quick demo.
 
+Code is available at [http://github.com/hughjonesd/anim.plots]
+
 ```{r, fig.show='animate'}
 library(anim.plots)
 anim.plot(1:5, 1:5, col="green")
@@ -120,13 +122,11 @@ anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
 
 ```
 
-Finally here's a quick demo I cooked up. This shows last weeks' earthquakes
+Finally here's a quick demo I cooked up. This shows last week's earthquakes
 on the world map.
 
 
 ```{r, fig.show='animate'}
-
-
 
 eq = read.table(
      file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
