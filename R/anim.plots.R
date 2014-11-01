@@ -2,9 +2,33 @@
 #' @import animation
 
 # TODO:
-# density, segments, arrows, stars, etc.
+# density, segments, arrows, stars, polygons, etc.
 # plot3d - is this possible? persp is done...
-# compose two plots together? in separate windows?
+# compose two plots together? 
+# how to save while respecting intervals: interpolate data for frames
+# in .do.loop:  
+# EXAMPLE:
+# ht <- 40
+# x <- rep(1, ht)
+# y <- 1:ht
+# intervals <- jitter(ht:1/20) # in seconds
+# times <- cumsum(intervals)
+# ani.record(reset=T)
+# 
+# framerate <- 50 # per second
+# intervals <- round(intervals*framerate)
+# 
+# # interpolate data? But, can I do this in general?
+# # if so, the whole .do.loop would have to be rewritten to, indeed, smooth stuff.
+# # a set of "smoothable" parameters.
+# # if it were told to smooth, the intervals would be replaced by 1 and smoothed
+# # versions of everything would be created. The resulting plot would be recorded.
+# 
+# # e.g. if intervals are 5,4,3,2,1. in [ x[1] , x[2] ) we want 5 intervals, etc.
+# # in general for every variable: take x as sequence along it. it as y. then create xout
+# spaced <- seq(min(times), max(times), length.out=max(times))
+# x <- approx(times, x, xout=spaced)$y
+# y <- approx(times, y, xout=spaced)$y
 
 .setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()
@@ -616,6 +640,7 @@ anim.curve <- function(expr, x=NULL, from=0, to=1, n=255, times, type="l", ...) 
 #' 
 #' @param obj an \code{anim.frames} object
 #' @param type one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'
+#' @param filename file to save to
 #' @param ... arguments passed to e.g. \code{\link{saveGIF}}
 #' 
 #' @details
@@ -627,14 +652,14 @@ anim.curve <- function(expr, x=NULL, from=0, to=1, n=255, times, type="l", ...) 
 #' 
 #' \dontrun{
 #' tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
-#' anim.save(tmp, type="GIF", movie.name="filename.gif")
+#' anim.save(tmp, "GIF", "filename.gif")
 #' 
 #' ## for anything more complex. Note the curlies:
 #' saveGIF({replay(tmp, after=legend("topleft", legend="My legend"))},
 #'  "filename.gif")
 #' }
 #' @export
-anim.save <- function(obj, type, ...) {
+anim.save <- function(obj, type, filename, ...) {
   stopifnot(type %in% c("GIF", "Video", "SWF", "HTML", "Latex"))
   fn <- as.name(paste("save", type, sep=""))
   mf <- match.call(expand.dots=FALSE)
@@ -642,6 +667,13 @@ anim.save <- function(obj, type, ...) {
   mf$obj <- NULL
   mf$expr <- substitute(replay(obj))
   mf$type <- NULL
+  switch(type, 
+    "GIF"=mf$movie.name <- filename, 
+    "Video"=mf$video.name <- filename,
+    "SWF"=mf$swf.name <- filename, 
+    "HTML"=mf$htmlfile <- filename, 
+    "Latex"=mf$latex.filename <- filename
+  )
   eval(mf)
 }
 

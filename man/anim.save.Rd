@@ -3,7 +3,7 @@
 \alias{anim.save}
 \title{Save an anim.frames object in various formats.}
 \usage{
-anim.save(obj, type, ...)
+anim.save(obj, type, filename, ...)
 }
 \arguments{
 \item{obj}{an \code{anim.frames} object}
@@ -23,7 +23,7 @@ will be ignored as if you had set \code{use.times=FALSE}.
 \examples{
 \dontrun{
 tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
-anim.save(tmp, type="GIF", movie.name="filename.gif")
+anim.save(tmp, "GIF", "filename.gif")
 
 ## for anything more complex. Note the curlies:
 saveGIF({replay(tmp, after=legend("topleft", legend="My legend"))},
