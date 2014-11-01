@@ -13,17 +13,17 @@ anim.filled.contour(...)
 
 \method{anim.filled.contour}{default}(...)
 
-anim.persp(..., fn = persp)
+anim.persp(...)
 
 \method{anim.contour}{default}(x, y, z, times, speed = 1, use.times = TRUE,
   window = t, show = TRUE, fn = contour, ...)
 }
 \arguments{
-\item{fn}{underlying function to use.}
-
 \item{x,y,z,...}{parameters passed to \code{\link{contour}} or \code{\link{persp}}}
 
 \item{times,speed,use.times,window,show}{see \code{\link{anim.plot}} for details.}
+
+\item{fn}{underlying function to use.}
 }
 \description{
 Create an animated contour plot or perspective plot of 3D data.
