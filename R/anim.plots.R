@@ -140,7 +140,10 @@
 #' 
 #' @details
 #' \code{before} and \code{after} will have the arguments from the
-#' frame's call available in their environment - see the example below.
+#' frame's call available in their environment - see the example.
+#' 
+#' The \code{plot} method for an \code{anim.frames} object simply calls 
+#' \code{replay}.
 #' 
 #' @examples
 #' 
@@ -171,8 +174,13 @@ replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
     ani.pause(attr(fr[[t]], "interval")/speed)
   }
   .teardown.anim()
+  invisible()
 } 
 
+#' @export
+#' @rdname replay
+plot.anim.frames <- function(x, ...) replay(x, ...)
+  
 #' Create an animated barplot.
 #' 
 #' @param height a vector, matrix or array. If a vector it is divided up by 
