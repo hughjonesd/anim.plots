@@ -41,7 +41,6 @@ anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10,
    color.palette=terrain.colors)
 
 cplot2 <- apply(cplot, 1:2, function(x) seq(0, x[20], length.out=20))
-dim(cplot2)
 cplot2 <- aperm(cplot2, c(2,3,1))
 par(bg="white")
 anim.persp(z=cplot2, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
