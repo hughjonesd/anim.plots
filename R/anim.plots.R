@@ -559,7 +559,7 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
   if (! "ylim" %in% names(dots)) dots$ylim <- range(y, finite=TRUE)
   if (length(times)==1) times <- 1:times
   .do.loop(fn, times=times, show=show, use.times=use.times,
-        window=window, window.process=window.process,
+        window=substitute(window), window.process=window.process,
         slice.args=c(slice.args, dots), 
         arg.dims=list(z=2, x=1, y=1, nlevels=0, levels=1, 
         labels=1, labcex=0, drawlabels=0, xlim=1, ylim=1, zlim=1, vfont=1,
@@ -692,5 +692,5 @@ anim.save <- function(obj, type, filename, ...) {
 merge <- function(..., speed=NULL) {
   
   
-}  
+ 
 }
