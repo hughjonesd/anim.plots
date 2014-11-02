@@ -98,7 +98,7 @@
       args.t[[cn]] <- switch(dl+1, ca, ca[idx], ca[,idx, drop=FALSE])
     }
 
-    if (! is.null(window.process)) args.t <- window.process(args.t)
+    if (! is.null(window.process)) args.t <- window.process(args.t, times[idx])
     cl <- as.call(c(fn, args.t, oth.args)) # or match.call?
     attr(cl, "interval") <- intervals[t]
     mycalls[[t]] <- cl
