@@ -42,8 +42,7 @@ anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10,
 
 cplot2 <- apply(cplot, 1:2, function(x) seq(0, x[20], length.out=20))
 cplot2 <- aperm(cplot2, c(2,3,1))
-par(bg="white")
-anim.persp(z=cplot2, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
+anim.persp(z=cplot, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
 theta=30, speed=5, border=NA, r=3, col="yellowgreen", shade=.5, box=FALSE)
 
 if (require("plot3D")) {

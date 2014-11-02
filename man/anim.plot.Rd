@@ -152,8 +152,10 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
    eq$time <- as.numeric(strptime(eq$Datetime, "\%A, \%B \%d, \%Y \%X UTC"))
  eq <- eq[-1,]
    map('world')
+   maxdepth <- max(max(eq$Depth), 200)
    tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
-         1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)
+         1-Depth/maxdepth, 0, Depth/maxdepth,.7), pch=19, speed=3600*12,
+         show=FALSE)
    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
  }
 }
