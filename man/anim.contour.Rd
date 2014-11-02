@@ -16,7 +16,7 @@ anim.filled.contour(...)
 anim.persp(...)
 
 \method{anim.contour}{default}(x, y, z, times, speed = 1, use.times = TRUE,
-  window = t, show = TRUE, fn = contour, ...)
+  window = t, window.process = NULL, show = TRUE, fn = contour, ...)
 }
 \arguments{
 \item{x,y,z,...}{parameters passed to \code{\link{contour}} or \code{\link{persp}}}

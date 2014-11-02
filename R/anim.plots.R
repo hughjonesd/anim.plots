@@ -42,8 +42,8 @@
 }
 
 .do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, window=t,
-      slice.args=list(), chunk.args=list(), oth.args=list(), arg.dims=list(), 
-      chunkargs.ref.length=NULL) {
+      window.process=NULL, slice.args=list(), chunk.args=list(), oth.args=list(), 
+      arg.dims=list(), chunkargs.ref.length=NULL) {
   # slice.args we take a slice and drop a dimension
   # chunk.args we cut without dropping
   # oth.args we leave alone
@@ -98,6 +98,7 @@
       args.t[[cn]] <- switch(dl+1, ca, ca[idx], ca[,idx, drop=FALSE])
     }
 
+    if (! is.null(window.process)) args.t <- window.process(args.t)
     cl <- as.call(c(fn, args.t, oth.args)) # or match.call?
     attr(cl, "interval") <- intervals[t]
     mycalls[[t]] <- cl
@@ -207,8 +208,9 @@ anim.barplot <- function(...) UseMethod("anim.barplot")
 #' @export
 #' @rdname anim.barplot
 anim.barplot.default <- function(height, times=NULL, 
-      show=TRUE, speed=1, use.times=TRUE, window=t, width=1, space=NULL, names.arg=NULL, 
-      beside=FALSE, density=NULL, angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
+      show=TRUE, speed=1, use.times=TRUE, window=t, window.process=NULL, 
+      width=1, space=NULL, names.arg=NULL, beside=FALSE, density=NULL, 
+      angle=NULL, col=NULL, border=NULL, horiz=FALSE, xlim=NULL, 
       ylim=NULL, xlab=NULL, ylab=NULL, main=NULL, sub=NULL, offset=NULL, 
       legend.text=NULL, ...) {
   # plot data
@@ -239,7 +241,8 @@ anim.barplot.default <- function(height, times=NULL,
         ylab=0, space=1, legend.text=ltdim, col=1, density=1, angle=1, names.arg=1,
         border=1, offset=1, width=1)
   .do.loop(barplot, times=times, use.times=use.times, window=substitute(window),
-        show=show, speed=speed, slice.args=slice.args, chunk.args=chunk.args, 
+        window.process=window.process, show=show, speed=speed, 
+        slice.args=slice.args, chunk.args=chunk.args, 
         oth.args=oth.args, arg.dims=arg.dims, chunkargs.ref.length=crl)
 }
 
@@ -362,9 +365,9 @@ anim.text <-function(...) UseMethod("anim.text")
 #' @export 
 #' @rdname anim.plot
 anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
-  use.times=TRUE, window=t, xlim=NULL, ylim=NULL, col=par("col"), xaxp=NULL, 
-  yaxp=NULL, pch=par("pch"), cex=1, labels=NULL, asp=NULL, lty=par("lty"), 
-  lwd=par("lwd"), fn=plot, ...) {  
+      use.times=TRUE, window=t, window.process=NULL, xlim=NULL, ylim=NULL, 
+      col=par("col"), xaxp=NULL, yaxp=NULL, pch=par("pch"), cex=1, labels=NULL, 
+      asp=NULL, lty=par("lty"), lwd=par("lwd"), fn=plot, ...) {  
   
   args <- list(...)
   if (! "xlab" %in% names(args)) args$xlab <- deparse(substitute(x))
@@ -387,10 +390,11 @@ anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
     slice.args$labels <- NULL
   }
   .do.loop(fn, times=times, speed=speed, show=show, use.times=use.times, 
-    window=substitute(window), chunk.args=chunk.args, slice.args=slice.args, 
-    arg.dims=list(xlab=0, ylab=0, xlim=1, ylim=1, xaxp=1, yaxp=1, lwd=0, 
-      lty=0, asp=0, panel.first=1, panel.last=1, x=1, y=1, col=1, pch=1, cex=1, 
-      type=0), chunkargs.ref.length=max(length(x), length(y)))
+        window=substitute(window), window.process=window.process, 
+        chunk.args=chunk.args, slice.args=slice.args, 
+        arg.dims=list(xlab=0, ylab=0, xlim=1, ylim=1, xaxp=1, yaxp=1, lwd=0, 
+        lty=0, asp=0, panel.first=1, panel.last=1, x=1, y=1, col=1, pch=1, cex=1, 
+        type=0), chunkargs.ref.length=max(length(x), length(y)))
 }
 
 #' @export 
@@ -532,7 +536,7 @@ anim.persp <- function(...) {
 #' @export
 #' @rdname anim.contour
 anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window=t, 
-      show=TRUE, fn=contour, ...) {
+      window.process=NULL, show=TRUE, fn=contour, ...) {
   if (missing(z)) {
     z <- x 
     x <- seq(0,1, length.out=dim(z)[1])
@@ -549,6 +553,7 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
   if (! "ylim" %in% names(dots)) dots$ylim <- range(y, finite=TRUE)
   if (length(times)==1) times <- 1:times
   .do.loop(fn, times=times, show=show, use.times=use.times,
+        window=window, window.process=window.process,
         slice.args=c(slice.args, dots), 
         arg.dims=list(z=2, x=1, y=1, nlevels=0, levels=1, 
         labels=1, labcex=0, drawlabels=0, xlim=1, ylim=1, zlim=1, vfont=1,
@@ -570,8 +575,8 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
 #' anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
 #'      breaks=c(5,10,20,50,100,200, 500, 1000))
 #' @export
-anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t, 
-      density=NULL, angle=NULL, col=NULL, border=NULL, ...) {
+anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
+      window.process=NULL, density=NULL, angle=NULL, col=NULL, border=NULL, ...) {
   
   dots <- list(...)
   if (! "breaks" %in% names(dots)) dots$breaks = "Sturges"
@@ -580,10 +585,10 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
     
   dbr <- if (is.matrix(dots$breaks)) 1 else 0
   .do.loop(hist, times=times, show=show, speed=speed, use.times=use.times, 
-        window=substitute(window), chunk.args=list(x=x, density=density, 
-        angle=angle, col=col, border=border), slice.args=dots, 
-        arg.dims=list(breaks=dbr, xlim=1, ylim=1, xlab=1, x=1),
-        chunkargs.ref.length=max(length(x), length(times)))
+        window=substitute(window), window.process=window.process, 
+        chunk.args=list(x=x, density=density, angle=angle, col=col, 
+        border=border), slice.args=dots, arg.dims=list(breaks=dbr, xlim=1, 
+        ylim=1, xlab=1, x=1), chunkargs.ref.length=max(length(x), length(times)))
 }
 
 #' Draw an animated curve.
