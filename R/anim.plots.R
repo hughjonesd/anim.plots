@@ -4,7 +4,6 @@
 # TODO:
 # density, segments, arrows, stars, polygons, etc.
 # plot3d - is this possible? persp is done...
-# compose two plots together? 
 # how to save while respecting intervals: interpolate data for frames
 # in .do.loop:  
 # EXAMPLE:
@@ -104,7 +103,7 @@
   attr(mycalls, "speed") <- speed
   attr(mycalls, "times") <- if (use.times) utimes else order(utimes)
   attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines, text,
-        symbols), identical, fn))
+        symbols, segments, arrows), identical, fn))
   if (show) replay(mycalls)
   
   return(invisible(mycalls))
@@ -126,6 +125,20 @@
   ))
   approx(1:size, obj, xout)$y
 }
+
+.plot.segments <- function(..., fn=quote(segments)) {
+  mc <- match.call()
+  dots <- list(...)
+  if (! "xlab" %in% names(dots)) dots$xlab <- ""
+  if (! "ylab" %in% names(dots)) dots$ylab <- ""
+  plot(0,0,xlim=dots$xlim, ylim=dots$ylim, type="n", xlab=dots$xlab,
+    ylab=dots$ylab, main=dots$main, sub=dots$sub)
+  mc[[1]] <- fn
+  mc$fn <- NULL
+  eval(mc)
+}
+
+.plot.arrows <- function(...) .plot.segments(..., fn=quote(arrows))
 
 #' Replay an \code{anim.frames} object
 #' 
@@ -269,6 +282,7 @@ anim.barplot.default <- function(height, times=NULL,
 #' @param window what window of times to show in each animation. The default,
 #'   \code{t}, shows just plots from time t. To draw a plot incrementally,
 #'   use \code{window=1:t}. 
+#' @param window.process function to call on each window of each times. See details.
 #' @param use.times if \code{TRUE}, animation speed is determined by the 
 #'   \code{times} argument. If \code{FALSE}, animation speed is constant.
 #' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp,xaxp,yaxp,... arguments passed to 
@@ -299,6 +313,12 @@ anim.barplot.default <- function(height, times=NULL,
 #' matrices. If vectors, the same vector will be passed to every frame. If
 #' matrices, column \code{i} will be passed to the \code{i}'th frame. 
 #' }
+#' 
+#' \code{window.process} should be a function which takes
+#' two arguments: a list of potential arguments for the underlying
+#' call to \code{plot}, and a vector of times. The function should return
+#' the list of arguments after modification. This allows e.g. drawing 
+#' "trails" of plot points. See the example
 #' 
 #' @examples
 #' x <- rep(1:100/10, 10)
@@ -344,6 +364,16 @@ anim.barplot.default <- function(height, times=NULL,
 #'  ylims <- xlims <- rbind(xlims, -xlims) 
 #'  anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims, 
 #'        col=rgb(0,0,0,.3), pch=19)
+#'  
+#'  ## window.process to create a faded "trail":
+#'  anim.plot(1:100, 1:100, speed=13, pch=15, window=(t-3):t, 
+#'        window.process=function(args, times){
+#'          times <- times - min(times) 
+#'          alpha <- times/max(times)
+#'          alpha[is.na(alpha)] <- 1
+#'          args$col <- rgb(0,0,1, alpha)
+#'          return(args)
+#'        })
 #'  
 #'  ## Earthquakes this week
 #'  if (require("maps")) {
@@ -492,8 +522,9 @@ anim.text.formula <- anim.points.formula
 #' 
 #' Create an animated contour plot or perspective plot of 3D data.
 #' 
-#' @param x,y,z,... parameters passed to \code{\link{contour}} or \code{\link{persp}}
-#' @param times,speed,use.times,window,show see \code{\link{anim.plot}} for details.
+#' @param x,y,z,... arguments passed to \code{\link{contour}} or \code{\link{persp}}
+#' @param times,speed,use.times,window,window.process,show see 
+#'    \code{\link{anim.plot}} for details.
 #' @param fn underlying function to use.
 #' 
 #' @examples
@@ -573,7 +604,8 @@ anim.contour.default <- function(x, y, z, times, speed=1, use.times=TRUE, window
 #' Draw an animated histogram.
 #' 
 #' @param x,density,angle,col,border,... parameters passed to \code{\link{hist}}.
-#' @param times,show,speed,use.times,window see \code{\link{anim.plot}}.
+#' @param times,show,speed,use.times,window,window.process see 
+#'    \code{\link{anim.plot}}.
 #' 
 #' @details
 #' Parameters \code{x, density, angle, col} and \code{border} are all
@@ -600,6 +632,52 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
         border=border), slice.args=dots, arg.dims=list(breaks=dbr, xlim=1, 
         ylim=1, xlab=1, x=1), chunkargs.ref.length=max(length(x), length(times)))
 }
+
+
+#' Draw an animation of line segments between points.
+#' @export
+#' 
+#' @examples
+#' anim.segments(x0=rep(1:5, 5), y0=rep(1:5, each=5), y1=rep(2:6, each=5), 
+#'      times=rep(1:5, each=5) )
+#' @export
+anim.segments <- function(x0, y0, x1=x0, y1=y0, times, speed=1, show=TRUE, 
+      use.times=TRUE, window=t, window.process=NULL, fn=segments, 
+      col=NULL, lty=NULL, lwd=NULL, ...) {
+  
+  dots <- list(...)
+  if (! "xlim" %in% names(dots)) dots$xlim <- range(c(x0, x1), na.rm=T)
+  if (! "ylim" %in% names(dots)) dots$ylim <- range(c(y0, y1), na.rm=T)
+  chunk.args <- list(x0=x0, y0=y0, x1=x1, y1=y1, col=col, lty=lty, lwd=lwd)
+  for (ca in c("length", "angle", "code")) if (ca %in% names(dots)) 
+        chunk.args[[ca]] <- dots[[ca]]
+  crl <- max(length(x0), length(x1), length(y0), length(y1), na.rm=T)
+  if (length(times)==1) {
+    if (crl %% times != 0) warning(
+          "length of longest vector is not an exact multiple of 'times'")
+    times <- rep(1:times, each=crl/times)
+  }
+  .do.loop(fn, times=times, show=show, speed=speed, use.times=use.times, 
+        window=substitute(window), window.process=window.process, 
+        chunk.args=chunk.args,   
+        slice.args=dots, arg.dims=list(xlim=1, ylim=1), chunkargs.ref.length=crl)
+}
+
+
+#' @export
+#' @rdname anim.segments
+anim.arrows <- function(...) anim.segments(...)
+
+#' @export
+#' @rdname anim.segments
+anim.segmentplot <- function(...) anim.segments(..., 
+      fn=anim.plots:::.plot.segments)
+
+
+#' @export
+#' @rdname anim.segments
+anim.arrowplot <- function(...) anim.segments(..., 
+      fn=anim.plots:::.plot.arrows)
 
 #' Draw an animated curve.
 #' 
