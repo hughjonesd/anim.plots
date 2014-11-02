@@ -19,9 +19,10 @@ anim.persp(...)
   window = t, window.process = NULL, show = TRUE, fn = contour, ...)
 }
 \arguments{
-\item{x,y,z,...}{parameters passed to \code{\link{contour}} or \code{\link{persp}}}
+\item{x,y,z,...}{arguments passed to \code{\link{contour}} or \code{\link{persp}}}
 
-\item{times,speed,use.times,window,show}{see \code{\link{anim.plot}} for details.}
+\item{times,speed,use.times,window,window.process,show}{see
+\code{\link{anim.plot}} for details.}
 
 \item{fn}{underlying function to use.}
 }

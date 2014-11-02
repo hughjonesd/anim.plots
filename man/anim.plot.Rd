@@ -64,6 +64,8 @@ be that many frames, equally divided over the length of \code{x} and \code{y}.}
 \code{t}, shows just plots from time t. To draw a plot incrementally,
 use \code{window=1:t}.}
 
+\item{window.process}{function to call on each window of each times. See details.}
+
 \item{xlim,ylim,col,pch,labels,cex,lty,lwd,asp,xaxp,yaxp,...}{arguments passed to
 \code{\link{plot}}.}
 
@@ -98,6 +100,12 @@ length > 1, such as \code{xlim} and \code{ylim}, can be passed as vectors or
 matrices. If vectors, the same vector will be passed to every frame. If
 matrices, column \code{i} will be passed to the \code{i}'th frame.
 }
+
+\code{window.process} should be a function which takes
+two arguments: a list of potential arguments for the underlying
+call to \code{plot}, and a vector of times. The function should return
+the list of arguments after modification. This allows e.g. drawing
+"trails" of plot points. See the example
 }
 \examples{
 x <- rep(1:100/10, 10)
@@ -143,6 +151,16 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
  ylims <- xlims <- rbind(xlims, -xlims)
  anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims,
        col=rgb(0,0,0,.3), pch=19)
+
+ ## window.process to create a faded "trail":
+ anim.plot(1:100, 1:100, speed=13, pch=15, window=(t-3):t,
+       window.process=function(args, times){
+         times <- times - min(times)
+         alpha <- times/max(times)
+         alpha[is.na(alpha)] <- 1
+         args$col <- rgb(0,0,1, alpha)
+         return(args)
+       })
 
  ## Earthquakes this week
  if (require("maps")) {

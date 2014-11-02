@@ -10,7 +10,8 @@ anim.hist(x, times, speed = 1, show = TRUE, use.times = TRUE,
 \arguments{
 \item{x,density,angle,col,border,...}{parameters passed to \code{\link{hist}}.}
 
-\item{times,show,speed,use.times,window}{see \code{\link{anim.plot}}.}
+\item{times,show,speed,use.times,window,window.process}{see
+   \code{\link{anim.plot}}.}
 }
 \description{
 Draw an animated histogram.
