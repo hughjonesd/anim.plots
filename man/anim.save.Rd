@@ -10,6 +10,8 @@ anim.save(obj, type, filename, ...)
 
 \item{type}{one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'}
 
+\item{filename}{file to save to}
+
 \item{...}{arguments passed to e.g. \code{\link{saveGIF}}}
 }
 \description{
