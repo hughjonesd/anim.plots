@@ -61,7 +61,6 @@
   
   utimes <- unique(times)
   nframes <- length(utimes)
-  intervals <- if (use.times) c(diff(utimes), 0) else c(rep(1, nframes-1), 0)
   
   for (ar in names(slice.args)) {
     if (! ar %in% names(arg.dims)) arg.dims[[ar]] <- 0
@@ -76,10 +75,9 @@
     chunk.args[[ca]] <- chunk.args[[ca]][order(times)]
   }
   times <- sort(times)
+  utimes <- unique(times) # redo to make it correctly ordered
   
   mycalls <- list()
-  class(mycalls) <- "anim.frames"
-  attr(mycalls, "speed") <- speed
   for (t in 1:nframes) {
     # hack for anim.lines.formula
     win.t <- if (is.character(window)) eval(parse(text=window)) else eval(window)
@@ -100,11 +98,13 @@
 
     if (! is.null(window.process)) args.t <- window.process(args.t, times[idx])
     cl <- as.call(c(fn, args.t, oth.args)) # or match.call?
-    attr(cl, "interval") <- intervals[t]
     mycalls[[t]] <- cl
   } 
-  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines, text, symbols), 
-        identical, fn))
+  class(mycalls) <- "anim.frames"
+  attr(mycalls, "speed") <- speed
+  attr(mycalls, "times") <- if (use.times) utimes else order(utimes)
+  attr(mycalls, "dev.control.enable") <- ! any(sapply(list(points, lines, text,
+        symbols), identical, fn))
   if (show) replay(mycalls)
   
   return(invisible(mycalls))
@@ -165,13 +165,15 @@ replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
   before2 <- substitute(before)
   after2 <- substitute(after)
   .setup.anim(dev.control.enable=attr(fr, "dev.control.enable"))
+  times <- attr(fr, "times")
+  intervals <- c(diff(times), 0)
   for (t in frames) {
     argl <- as.list(fr[[t]])
     if (! missing(before)) eval(before2, argl)
     eval(fr[[t]])
     if (! missing(after)) eval(after2, argl)
     ani.record()
-    ani.pause(attr(fr[[t]], "interval")/speed)
+    ani.pause(intervals[t]/speed)
   }
   .teardown.anim()
   invisible()
@@ -351,8 +353,10 @@ anim.barplot.default <- function(height, times=NULL,
 #'    eq$time <- as.numeric(strptime(eq$Datetime, "%A, %B %d, %Y %X UTC"))
 #'  eq <- eq[-1,]
 #'    map('world')
+#'    maxdepth <- max(max(eq$Depth), 200)
 #'    tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
-#'          1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
+#'          1-Depth/maxdepth, 0, Depth/maxdepth,.7), pch=19, speed=3600*12, 
+#'          show=FALSE)   
 #'    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 #'  }
 #' @export
@@ -688,9 +692,59 @@ anim.save <- function(obj, type, filename, ...) {
   eval(mf)
 }
 
-#' Merge anim.frames
-merge <- function(..., speed=NULL) {
-  
-  
- 
+#' Merge anim.frames objects
+#' 
+#' Merge two or more anim.frames objects to create a new anim.frames object
+#' 
+#' @param ... anim.frames objects returned from, e.g. \code{\link{anim.plot}}
+#' @param speed speed for the merged object. This may be left unspecified only
+#'    if all objects have the same speed.
+#'
+#' @details
+#' If two or more calls in the merged animation are at the same time, calls
+#' from the earlier object in \code{...} will be run first. 
+#' 
+#' If you merge two animations from \code{\link{anim.plot}}, plot.window will be
+#' called before each frame of the merged animation. This may not be what
+#' you want. Instead, use \code{anim.points} or similar for all but the first
+#' animation.
+#' 
+#' 
+#' @examples
+#' tmp <- anim.plot(1:5, 1:5, speed=2)
+#' tmp2 <- anim.plot(1:5, 5:1, col="red", speed=2)
+#' ## Not what you want:
+#' replay(merge(tmp, tmp2))
+#' 
+#' ## better:
+#' tmp3 <- anim.points(1:5, 5:1,col="red", speed=2)
+#' newf <- merge(tmp, tmp3)
+#' replay(newf)
+#' ## NB: result of the merge looks different from the two
+#' ## individual animations
+#' 
+#' ## not the same:
+#' newf2 <- merge(tmp2, tmp) 
+#' ## points will be called before plot!
+#' replay(newf2)
+#' @export
+merge.anim.frames <- function(..., speed=NULL) {
+  frs <- list(...)
+  speeds <- sapply(frs, attr, "speed")
+  if (is.null(speed)) if (max(speeds) > min(speeds)) {
+    stop("'speed' not specified but some objects have different speeds")
+  } else {
+    speed <- max(speeds)
+  }
+  times <- c(sapply(frs, attr, "times"))
+  tiebreaks <- sapply(1:length(frs), function(x) rep(x, length(frs[[x]])))
+  newfr <- unlist(frs, recursive=FALSE)
+  newfr <- newfr[order(times, tiebreaks)]
+  times <- sort(times)
+  class(newfr) <- "anim.frames"
+  attr(newfr, "times") <- times
+  attr(newfr, "speed") <- speed
+  # maybe this is the wrong way to think about it?
+  attr(newfr, "dev.control.enable") <- any(sapply(frs, attr, "dev.control.enable"))
+  newfr
 }
