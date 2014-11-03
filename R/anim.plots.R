@@ -2,7 +2,8 @@
 #' @import animation
 
 # TODO:
-# density, segments, arrows, stars, polygons, etc.
+# segments/arrows documentation. 
+# density, stars, polygons?
 # plot3d - is this possible? persp is done...
 # how to save while respecting intervals: interpolate data for frames
 # in .do.loop:  
@@ -389,6 +390,17 @@ anim.barplot.default <- function(height, times=NULL,
 #'          show=FALSE)   
 #'    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 #'  }
+#'  
+#'  ## Minard's plot
+#'  if (require('maps')) {
+#'    map('world', xlim=c(22, 40), ylim=c(52,58))
+#'    title("March of the Grande Armee on Moscow")
+#'    points(cities$long, cities$lat, pch=18)
+#'    text(cities$long, cities$lat, labels=cities$city, pos=4, cex=.7)
+#'    with(troops[troops$group==1,], anim.lines(x=long, 
+#'          y=lat, window=t:(t+1), speed=3, lwd=survivors/10000))
+#' }
+#' 
 #' @export
 anim.plot <- function(...) UseMethod("anim.plot")
 
@@ -633,14 +645,34 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 }
 
 
-#' Draw an animation of line segments between points.
-#' @export
+#' Draw an animation of line segments or arrows.
+#' 
+#' @param x0,y0,x1,y1,col,lty,lwd,... arguments passed to \code{\link{segments}} or
+#'     \code{\link{arrows}}
+#' @param times,speed,show,use.times,window,window.process see \code{\link{anim.plot}} for details
+#' 
+#' @details
+#' 
+#' \code{anim.segments} and \code{anim.arrows} draw lines on to an existing plot.
+#' If you want to redraw the plot between each frame, use \code{anim.arrowplot}
+#' or \code{anim.segmentplot}.
 #' 
 #' @examples
 #' anim.segments(x0=rep(1:5, 5), y0=rep(1:5, each=5), y1=rep(2:6, each=5), 
 #'      times=rep(1:5, each=5) )
+#'  
+#' if (require('maps')) {
+#'    map('world', xlim=c(22, 40), ylim=c(52,58))
+#'    title("March of the Grande Armee on Moscow")
+#'     points(cities$long, cities$lat, pch=18)
+#'    text(cities$long, cities$lat, labels=cities$city, pos=4, cex=.7)
+#'    with(troops[troops$group==1,], anim.segments(x0=long[1:35], x1=long[2:36], 
+#'          y0=lat[1:35], y1=lat[2:36], speed=3, lwd=survivors/10000, 
+#'          col=rgb(0.5,0.5,0.5,0.7), lend="square"))
+#' }    
+#' 
 #' @export
-anim.segments <- function(x0, y0, x1=x0, y1=y0, times, speed=1, show=TRUE, 
+anim.segments <- function(x0, y0, x1=x0, y1=y0, times=NULL, speed=1, show=TRUE, 
       use.times=TRUE, window=t, window.process=NULL, fn=segments, 
       col=NULL, lty=NULL, lwd=NULL, ...) {
   
@@ -651,6 +683,7 @@ anim.segments <- function(x0, y0, x1=x0, y1=y0, times, speed=1, show=TRUE,
   for (ca in c("length", "angle", "code")) if (ca %in% names(dots)) 
         chunk.args[[ca]] <- dots[[ca]]
   crl <- max(length(x0), length(x1), length(y0), length(y1), na.rm=T)
+  if (is.null(times)) times <- 1:crl
   if (length(times)==1) {
     if (crl %% times != 0) warning(
           "length of longest vector is not an exact multiple of 'times'")
@@ -665,7 +698,8 @@ anim.segments <- function(x0, y0, x1=x0, y1=y0, times, speed=1, show=TRUE,
 
 #' @export
 #' @rdname anim.segments
-anim.arrows <- function(...) anim.segments(...)
+anim.arrows <- function(..., length=0.25, angle=30, code=2) anim.segments(...,
+      length=length, angle=angle, code=code, fn=arrows)
 
 #' @export
 #' @rdname anim.segments
@@ -825,3 +859,18 @@ merge.anim.frames <- function(..., speed=NULL) {
   attr(newfr, "dev.control.enable") <- any(sapply(frs, attr, "dev.control.enable"))
   newfr
 }
+
+
+
+#' Troop numbers for the Grande Armee's march on Moscow.
+#' @name troops
+NULL
+
+#' Cities near the Grande Armee's march on Moscow.
+#' @name cities
+NULL
+
+#' Temperatures for the Grande Armee's march on Moscow.
+#' @name temps
+NULL
+

@@ -177,5 +177,15 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
          show=FALSE)
    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
  }
+
+ ## Minard's plot
+ if (require('maps')) {
+   map('world', xlim=c(22, 40), ylim=c(52,58))
+   title("March of the Grande Armee on Moscow")
+   points(cities$long, cities$lat, pch=18)
+   text(cities$long, cities$lat, labels=cities$city, pos=4, cex=.7)
+   with(troops[troops$group==1,], anim.lines(x=long,
+         y=lat, window=t:(t+1), speed=3, lwd=survivors/10000))
+}
 }
 
