@@ -2,7 +2,6 @@
 #' @import animation
 
 # TODO:
-# segments/arrows documentation. 
 # density, stars, polygons?
 # plot3d - is this possible? persp is done...
 # how to save while respecting intervals: interpolate data for frames
@@ -647,9 +646,10 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 
 #' Draw an animation of line segments or arrows.
 #' 
-#' @param x0,y0,x1,y1,col,lty,lwd,... arguments passed to \code{\link{segments}} or
+#' @param x0,y0,x1,y1,col,lty,lwd,length,angle,code,... arguments passed to \code{\link{segments}} or
 #'     \code{\link{arrows}}
 #' @param times,speed,show,use.times,window,window.process see \code{\link{anim.plot}} for details
+#' @param fn underlying function to use
 #' 
 #' @details
 #' 
@@ -657,38 +657,45 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 #' If you want to redraw the plot between each frame, use \code{anim.arrowplot}
 #' or \code{anim.segmentplot}.
 #' 
+#' If both \code{x1} and \code{y1} are missing, then segments are plotted
+#' from the current time to the following time in each frame. If only \code{x1}
+#' is missing it is set equal to \code{x0}, similarly if only \code{y1} is 
+#' missing.
+#' 
 #' @examples
 #' anim.segments(x0=rep(1:5, 5), y0=rep(1:5, each=5), y1=rep(2:6, each=5), 
 #'      times=rep(1:5, each=5) )
 #'  
-#' if (require('maps')) {
-#'    map('world', xlim=c(22, 40), ylim=c(52,58))
-#'    title("March of the Grande Armee on Moscow")
-#'     points(cities$long, cities$lat, pch=18)
-#'    text(cities$long, cities$lat, labels=cities$city, pos=4, cex=.7)
-#'    with(troops[troops$group==1,], anim.segments(x0=long[1:35], x1=long[2:36], 
-#'          y0=lat[1:35], y1=lat[2:36], speed=3, lwd=survivors/10000, 
-#'          col=rgb(0.5,0.5,0.5,0.7), lend="square"))
-#' }    
+#' ## Short version
+#' anim.arrowplot(rep(1:5, 5), rep(1:5, each=5), times=5)
 #' 
 #' @export
-anim.segments <- function(x0, y0, x1=x0, y1=y0, times=NULL, speed=1, show=TRUE, 
+anim.segments <- function(x0, y0, x1=NULL, y1=NULL, times=NULL, speed=1, show=TRUE, 
       use.times=TRUE, window=t, window.process=NULL, fn=segments, 
       col=NULL, lty=NULL, lwd=NULL, ...) {
-  
   dots <- list(...)
   if (! "xlim" %in% names(dots)) dots$xlim <- range(c(x0, x1), na.rm=T)
   if (! "ylim" %in% names(dots)) dots$ylim <- range(c(y0, y1), na.rm=T)
-  chunk.args <- list(x0=x0, y0=y0, x1=x1, y1=y1, col=col, lty=lty, lwd=lwd)
-  for (ca in c("length", "angle", "code")) if (ca %in% names(dots)) 
-        chunk.args[[ca]] <- dots[[ca]]
+  
   crl <- max(length(x0), length(x1), length(y0), length(y1), na.rm=T)
   if (is.null(times)) times <- 1:crl
   if (length(times)==1) {
     if (crl %% times != 0) warning(
-          "length of longest vector is not an exact multiple of 'times'")
+      "length of longest vector is not an exact multiple of 'times'")
     times <- rep(1:times, each=crl/times)
   }
+  
+  if (is.null(x1) && is.null(y1)) {
+    x1 <- x0[times > min(times)]
+    x0 <- x0[times < max(times)]
+    y1 <- y0[times > min(times)]
+    y0 <- y0[times < max(times)]
+    times <- times[times > min(times)]
+  } else if (is.null(x1)) x1 <- x0 else if (is.null(y1)) y1 <- y0
+  
+  chunk.args <- list(x0=x0, y0=y0, x1=x1, y1=y1, col=col, lty=lty, lwd=lwd)
+  for (ca in c("length", "angle", "code")) if (ca %in% names(dots)) 
+        chunk.args[[ca]] <- dots[[ca]]
   .do.loop(fn, times=times, show=show, speed=speed, use.times=use.times, 
         window=substitute(window), window.process=window.process, 
         chunk.args=chunk.args,   

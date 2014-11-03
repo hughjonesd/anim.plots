@@ -6,7 +6,7 @@
 \alias{anim.segments}
 \title{Draw an animation of line segments or arrows.}
 \usage{
-anim.segments(x0, y0, x1 = x0, y1 = y0, times = NULL, speed = 1,
+anim.segments(x0, y0, x1 = NULL, y1 = NULL, times = NULL, speed = 1,
   show = TRUE, use.times = TRUE, window = t, window.process = NULL,
   fn = segments, col = NULL, lty = NULL, lwd = NULL, ...)
 
@@ -17,10 +17,12 @@ anim.segmentplot(...)
 anim.arrowplot(...)
 }
 \arguments{
-\item{x0,y0,x1,y1,col,lty,lwd,...}{arguments passed to \code{\link{segments}} or
+\item{x0,y0,x1,y1,col,lty,lwd,length,angle,code,...}{arguments passed to \code{\link{segments}} or
 \code{\link{arrows}}}
 
 \item{times,speed,show,use.times,window,window.process}{see \code{\link{anim.plot}} for details}
+
+\item{fn}{underlying function to use}
 }
 \description{
 Draw an animation of line segments or arrows.
@@ -29,19 +31,17 @@ Draw an animation of line segments or arrows.
 \code{anim.segments} and \code{anim.arrows} draw lines on to an existing plot.
 If you want to redraw the plot between each frame, use \code{anim.arrowplot}
 or \code{anim.segmentplot}.
+
+If both \code{x1} and \code{y1} are missing, then segments are plotted
+from the current time to the following time in each frame. If only \code{x1}
+is missing it is set equal to \code{x0}, similarly if only \code{y1} is
+missing.
 }
 \examples{
 anim.segments(x0=rep(1:5, 5), y0=rep(1:5, each=5), y1=rep(2:6, each=5),
      times=rep(1:5, each=5) )
 
-if (require('maps')) {
-   map('world', xlim=c(22, 40), ylim=c(52,58))
-   title("March of the Grande Armee on Moscow")
-    points(cities$long, cities$lat, pch=18)
-   text(cities$long, cities$lat, labels=cities$city, pos=4, cex=.7)
-   with(troops[troops$group==1,], anim.segments(x0=long[1:35], x1=long[2:36],
-         y0=lat[1:35], y1=lat[2:36], speed=3, lwd=survivors/10000,
-         col=rgb(0.5,0.5,0.5,0.7), lend="square"))
-}
+## Short version
+anim.arrowplot(rep(1:5, 5), rep(1:5, each=5), times=5)
 }
 
