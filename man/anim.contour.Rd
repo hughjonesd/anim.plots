@@ -43,17 +43,7 @@ anim.filled.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10,
 
 cplot2 <- apply(cplot, 1:2, function(x) seq(0, x[20], length.out=20))
 cplot2 <- aperm(cplot2, c(2,3,1))
-anim.persp(z=cplot, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
+anim.persp(z=cplot2, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
 theta=30, speed=5, border=NA, r=3, col="yellowgreen", shade=.5, box=FALSE)
-
-if (require("plot3D")) {
- xlim <- -4:0*10
- ylim <- (xlim + 40)/2
- xlim <- rbind(xlim, xlim+60)
- ylim <- rbind(ylim, ylim+60)
- anim.contour(Hypsometry$x, Hypsometry$y, Hypsometry$z, times=5,
-       levels=c(seq(0,500, 50), seq(600,1500,100)), xlim=xlim, ylim=ylim,
-       col=c("black", rev(topo.colors(15))))
-}
 }
 

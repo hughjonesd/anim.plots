@@ -144,7 +144,7 @@
 #' 
 #' Replay all or some of the frames of an object.
 #' 
-#' @param fr an \code{anim.frames} object
+#' @param x an \code{anim.frames} object
 #' @param speed a new speed
 #' @param frames numeric vector specifying which frames to replay
 #' @param before an expression to evaluate before each frame is plotted
@@ -155,8 +155,7 @@
 #' \code{before} and \code{after} will have the arguments from the
 #' frame's call available in their environment - see the example.
 #' 
-#' The \code{plot} method for an \code{anim.frames} object simply calls 
-#' \code{replay}.
+#' The \code{plot} method simply calls \code{replay}.
 #' 
 #' @examples
 #' 
@@ -173,17 +172,17 @@ replay <- function(...) UseMethod("replay")
 
 #' @export
 #' @rdname replay
-replay.anim.frames <- function(fr, frames=1:length(fr), speed=attr(fr, "speed"),
+replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
   after=NULL, before=NULL, ...) {
   before2 <- substitute(before)
   after2 <- substitute(after)
-  .setup.anim(dev.control.enable=attr(fr, "dev.control.enable"))
-  times <- attr(fr, "times")
+  .setup.anim(dev.control.enable=attr(x, "dev.control.enable"))
+  times <- attr(x, "times")
   intervals <- c(diff(times), 0)
   for (t in frames) {
-    argl <- as.list(fr[[t]])
+    argl <- as.list(x[[t]])
     if (! missing(before)) eval(before2, argl)
-    eval(fr[[t]])
+    eval(x[[t]])
     if (! missing(after)) eval(after2, argl)
     ani.record()
     ani.pause(intervals[t]/speed)
@@ -552,18 +551,9 @@ anim.text.formula <- anim.points.formula
 #'    
 #' cplot2 <- apply(cplot, 1:2, function(x) seq(0, x[20], length.out=20))
 #' cplot2 <- aperm(cplot2, c(2,3,1))
-#' anim.persp(z=cplot, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
+#' anim.persp(z=cplot2, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
 #' theta=30, speed=5, border=NA, r=3, col="yellowgreen", shade=.5, box=FALSE)
 #'  
-#' if (require("plot3D")) {
-#'  xlim <- -4:0*10
-#'  ylim <- (xlim + 40)/2
-#'  xlim <- rbind(xlim, xlim+60)
-#'  ylim <- rbind(ylim, ylim+60)
-#'  anim.contour(Hypsometry$x, Hypsometry$y, Hypsometry$z, times=5, 
-#'        levels=c(seq(0,500, 50), seq(600,1500,100)), xlim=xlim, ylim=ylim,
-#'        col=c("black", rev(topo.colors(15))))
-#' }
 #' @export
 anim.contour <- function(...) UseMethod("anim.contour")
 
@@ -711,13 +701,13 @@ anim.arrows <- function(..., length=0.25, angle=30, code=2) anim.segments(...,
 #' @export
 #' @rdname anim.segments
 anim.segmentplot <- function(...) anim.segments(..., 
-      fn=anim.plots:::.plot.segments)
+      fn=.plot.segments)
 
 
 #' @export
 #' @rdname anim.segments
 anim.arrowplot <- function(...) anim.segments(..., 
-      fn=anim.plots:::.plot.arrows)
+      fn=.plot.arrows)
 
 #' Draw an animated curve.
 #' 

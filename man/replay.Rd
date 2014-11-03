@@ -7,7 +7,7 @@
 \usage{
 replay(...)
 
-\method{replay}{anim.frames}(fr, frames = 1:length(fr), speed = attr(fr,
+\method{replay}{anim.frames}(x, frames = 1:length(x), speed = attr(x,
   "speed"), after = NULL, before = NULL, ...)
 
 \method{plot}{anim.frames}(x, ...)
@@ -15,7 +15,7 @@ replay(...)
 \arguments{
 \item{...}{other arguments (not currently used)}
 
-\item{fr}{an \code{anim.frames} object}
+\item{x}{an \code{anim.frames} object}
 
 \item{frames}{numeric vector specifying which frames to replay}
 
@@ -32,8 +32,7 @@ Replay all or some of the frames of an object.
 \code{before} and \code{after} will have the arguments from the
 frame's call available in their environment - see the example.
 
-The \code{plot} method for an \code{anim.frames} object simply calls
-\code{replay}.
+The \code{plot} method simply calls \code{replay}.
 }
 \examples{
 myplot <- anim.plot(1:10, 1:10, speed=3)
