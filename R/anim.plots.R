@@ -407,7 +407,7 @@ anim.text <-function(...) UseMethod("anim.text")
 #' @export 
 #' @rdname anim.plot
 anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
-      use.times=TRUE, window=t, window.process=NULL, xlim=NULL, ylim=NULL, 
+      use.times=TRUE, window=if (identical(fn, lines)) t:(t+1) else t, window.process=NULL, xlim=NULL, ylim=NULL, 
       col=par("col"), xaxp=NULL, yaxp=NULL, pch=par("pch"), cex=1, labels=NULL, 
       asp=NULL, lty=par("lty"), lwd=par("lwd"), fn=plot, ...) {  
   
@@ -502,7 +502,6 @@ anim.points.formula <- function(formula, ...) {
   m <- match.call(expand.dots=TRUE)
   fn <- as.character(m[[1]])
   fn <- sub("anim.([a-z]+).formula", "\\1", fn)
-  if (fn=="lines") m[["window"]] <- "t:(t+1)" # e.g. lines(1,1) won't work...
   fn <- eval(as.name(fn))
   m[[1]] <- quote(anim.plot.formula)
   m[["fn"]] <- fn
