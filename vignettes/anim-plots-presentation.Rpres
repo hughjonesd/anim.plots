@@ -1,121 +1,111 @@
+<link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
 Simple animation with anim.plots
 ========================================================
 author: David Hugh-Jones
 date: 30 October 2014
 
+```{r, echo=FALSE}
+library(knitr)
+opts_knit$set(animation.fun = hook_scianimator)
+```
+
 Animation in R
 ========================================================
-
 
 - Creating animations in R was hard. 
 - Then Yihui Xie wrote the `animation` package. 
 - Plot, record, loop, save....
 - `anim.plots` adds some syntactic sugar to this.
-- Code is available at [http://github.com/hughjonesd/anim.plots]
-
 
 ```{r, echo=FALSE}
+
+opts_chunk$set(interval = 0.25)
 par(bg="white")
 ```
-
-
 
 Simple example
 ========================================================
 
 ```{r, fig.show='animate'}
 library(anim.plots)
-anim.plot(1:5, 1:5, col="green")
+ap <- anim.plot(1:5, 1:5, col="green")
+anim.save(ap, "ap.gif")
 ```
 
 `times` controls the frames
 ========================================================
-
 ```{r, fig.show='animate'}
-x <- rep(1:100/10, 20)
+x <- rep(1:100/10, 20) 
 times <- rep(1:20, each=100) # twenty frames with 100 points each
 y <- sin(x*times/4)
-waves <- anim.plot(x,y,times, type="l", col="orange", lwd=2, speed=2)
+waves <- anim.plot(x,y,times, type="l", col="orange", lwd=2)
 ```
 
 Incremental animations
 ========================================================
-
 - Use `window`:
-
 ```{r, fig.show='animate'}
-anim.plot(rep(1:10,2), rep(2:1, each=10), window=1:t, pch=1:20, ylim=c(0,3), cex=2,
+symbs <- anim.plot(rep(1:10,2), rep(2:1, each=10), window=1:t, pch=1:20, ylim=c(0,3), cex=2,
       col=1:5, xlab=paste("Plot symbols", 1:20))
 ```
 
 
 Parameters
 ========================================================
-
 - Per-point parameters get recycled to the number of points
 - Per-plot parameters get recycled to the number of plot frames
 - For more complex parameters, use a matrix
 
 Example - zooming in
 ========================================================
-
+<small>
 ```{r, fig.show='animate'}
  x <- rnorm(4000); y<- rnorm(4000)
  x <- rep(x, 40); y <- rep(y, 40)
  xlims <- 4*2^(-(1:40/10))
  ylims <- xlims <- rbind(xlims, -xlims) 
- anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims, 
-       col=rgb(0,1,.5,.3), pch=19)
+ anim.plot(x, y, times=40, xlim=xlims, ylim=ylims, col=rgb(0,1,.5,.3), pch=19)
 ```
+</small>
 
 `window` again
 ========================================================
-
-
 ```{r, fig.show='animate'}
 ## discoveries 1860-1959
 xlim <- rbind(1860:1959,1870:1969)
 anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim, col="red",
-     xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
+     xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8)
 ```
 
 Formula interface
 ========================================================
-
 ```{r, fig.show='animate'}
 data(ChickWeight)
 ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
 
 tmp <- anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
-     pch=as.numeric(Diet), speed=3)
+     pch=as.numeric(Diet))
 ```
 
 
-
-Extra plotting commands
+Need to run extra commands?
 ========================================================
-
-- Use `replay`:
-
+- Use `replay` with `before` and `after`:
 ```{r, fig.show='animate'}
 replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4))
 ```
 
 Histogram
 ========================================================
-
-
 ```{r, fig.show='animate'}
 anim.hist(rep(rnorm(5000), 7), times=rep(1:7, each=5000), 
      breaks=c(5,10,20,50,100,200, 500, 1000))
 ```
 
-
-
 Animated curve
 ========================================================
-
-
 ```{r, fig.show='animate'}
 anim.curve(x^t, times=10:50/10, n=20)
 ```
@@ -123,8 +113,10 @@ anim.curve(x^t, times=10:50/10, n=20)
 Contour plot
 ========================================================
 
-
-```{r, fig.show='animate'}
+- One I made earlier
+- `cplot` comes from manipulating the `volcano` dataset
+<small>
+```{r, fig.show='animate', echo=10}
 
 data(volcano)
 tmp <- volcano
@@ -135,26 +127,24 @@ cplot[,,20] <- volcano
 cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
 cplot <- aperm(cplot, c(2,3,1))
 
-anim.contour(z=cplot, times=1:20, speed=3, levels=80 + 1:12*10, lty=c(1,2,2))
-
+anim.contour(z=cplot, times=1:20, levels=80 + 1:12*10, lty=c(1,2,2))
 ```
+</small>
 
 Earthquakes last week
 =============================
-
-- Needs internet access
-
 ```{r, fig.show='animate', echo=FALSE}
 
 eq = read.table(
      file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
      fill=TRUE, sep=",", header=T)
-     eq$time <- as.numeric(strptime(eq$Datetime, "%A, %B %d, %Y %X UTC"))
-     eq <- eq[-1,]
+eq$time <- as.numeric(strptime(eq$Datetime, "%A, %B %d, %Y %X UTC"))
+eq <- eq[-1,]
 library(maps)
 map('world')
+md <- max(200, max(eq$Depth))
 tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
-       1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
+       1-Depth/md, 0, Depth/md,.7), pch=19, speed=3600*12, show=FALSE)   
 replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 
 ```

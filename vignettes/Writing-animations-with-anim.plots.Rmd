@@ -2,9 +2,16 @@
 title: "Animations with anim.plots"
 author: "David Hugh-Jones"
 date: "30 October 2014"
-output: html_document
+output:
+  html_document:
+    fig_height: 3
+    fig_width: 4
+    self_contained: no
 ---
 
+<link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
 <!--
 %\VignetteEngine{knitr::knitr}
 -->
@@ -12,6 +19,7 @@ output: html_document
 
 ```{r, echo=FALSE}
 library(knitr)
+opts_knit$set(animation.fun=hook_scianimator)
 par(bg="white")
 ```
 
@@ -20,7 +28,7 @@ on a little package called `anim.plots` which adds some syntactic sugar to this.
 It provides a few commands, similar to the standard R graphics, to create
 animated plots. Here's a quick demo.
 
-Code is available at [http://github.com/hughjonesd/anim.plots]
+Code is available at http://github.com/hughjonesd/anim.plots
 
 ```{r, fig.show='animate'}
 library(anim.plots)
@@ -137,8 +145,9 @@ eq = read.table(
      eq <- eq[-1,]
 library(maps)
 map('world')
+md <- max(200, max(eq$Depth))
 tmp <- anim.points(Lat ~ Lon + time, data=eq, cex=Magnitude, col=rgb(
-       1-Depth/200, 0, Depth/200,.7), pch=19, speed=3600*12, show=FALSE)   
+       1-Depth/md, 0, Depth/md,.7), pch=19, speed=3600*12, show=FALSE)   
 replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 
 ```
