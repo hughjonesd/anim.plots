@@ -164,10 +164,11 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
        })
 
  ## gapminder plot:
- pl <- palette(adjustcolor(rainbow.colors(23), offset=c(0,0,0,-0.2)))
+ pl <- palette(adjustcolor(rainbow(23), 1, .6, .6, .6,
+       offset=c(0,0,0,-0.1)))
  anim.plot(lifex ~ GDP + year, data=gm_data, log="x",
-     cex=sqrt(pop/10000000), pch=19, col=region, xlab="GDP",
-     ylab="Life expectancy", speed=5, subset=year>1900)
+      cex=sqrt(pop)*0.0004, pch=19, col=region, xlab="GDP",
+      ylab="Life expectancy", speed=5, subset=year>1900)
  palette(pl)
 
  ## Earthquakes this week
