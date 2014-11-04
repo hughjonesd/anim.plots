@@ -22,7 +22,7 @@ matrix, \code{\link{barplot}} is called on each column. If an array,
 \item{times}{a vector of times. If NULL and \code{height} is a matrix,
 the last dimension of \code{height} will be used}
 
-\item{show,speed,use.times,window}{see \code{\link{anim.plot}}}
+\item{show,speed,use.times,window,window.process}{see \code{\link{anim.plot}}}
 
 \item{width,space,beside,names.arg,density,angle,col,border,horiz,xlim,ylim,xlab,ylab,main,sub,offset,legend.text,...}{arguments passed to \code{\link{barplot}}.}
 }

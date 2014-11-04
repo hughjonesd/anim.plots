@@ -16,7 +16,7 @@ anim.save(obj, type, filename, ...)
 }
 \description{
 This function simply calls replay on the object and then calls
-\code{\link{animation::saveGIF}} and friends on the result.
+\code{\link{saveGIF}} and friends on the result.
 }
 \details{
 For most of the underlying functions, the \code{times} parameter

@@ -46,10 +46,6 @@
   # slice.args we take a slice and drop a dimension
   # chunk.args we cut without dropping
   # oth.args we leave alone
-  # individual functions must put things in right boxes
-  # examples: matplot() wants matrices so makes sense to pass in 3d arrays
-  # arrows() wants vectors x0,y0,x1,y1: all pass in as vectors
-  # many functions have xlim=c(a,b) and should usually pass this as oth.args
   mydiml <- function(obj) {
     if (is.null(dim(obj))) {
       if (length(obj)==1 || is.null(obj)) 0 else 1
@@ -203,7 +199,7 @@ plot.anim.frames <- function(x, ...) replay(x, ...)
 #'   \code{\link{barplot}} is called on each matrix of form \code{height[,,i]}.
 #' @param times a vector of times. If NULL and \code{height} is a matrix,
 #'   the last dimension of \code{height} will be used
-#' @param show,speed,use.times,window see \code{\link{anim.plot}} 
+#' @param show,speed,use.times,window,window.process see \code{\link{anim.plot}} 
 #' @param width,space,beside,names.arg,density,angle,col,border,horiz,xlim,ylim,xlab,ylab,main,sub,offset,legend.text,... arguments passed to \code{\link{barplot}}. 
 #'  
 #' @details
@@ -660,13 +656,12 @@ anim.hist <- function(x, times, speed=1, show=TRUE, use.times=TRUE, window=t,
 #' anim.arrowplot(rep(1:5, 5), rep(1:5, each=5), times=5)
 #' 
 #' if (require('maps')) {
-#'    hr <- subset(hurricanes, Yr >= 2008 & lat > 0 & lat < 50 & lon > -95 & 
-#'          lon < -20 & Shour %% 6 == 0)
+#'    hr <- subset(hurricanes, lat > 0 & lat < 50 & lon > -95 & lon < -20 & 
+#'          Shour %% 6 == 0)
 #'    hr$dlat <- cos(hr$diruv/360*2*pi) * hr$maguv / 8
 #'    hr$dlon <- sin(hr$diruv/360*2*pi) * hr$maguv / 8
 #'    hr$name <- sub("\\s+$", "", hr$name)
-#'    map('world', xlim=c(-95,-20), 
-#'          ylim=c(0,50))
+#'    map('world', xlim=c(-95,-20), ylim=c(0,50))
 #'    title("Hurricanes, 2009")
 #'    with(hr[!duplicated(hr$name),], text(lon, lat, 
 #'          labels=paste0(name, "\n", Yr), cex=0.8))
@@ -773,7 +768,7 @@ anim.curve <- function(expr, x=NULL, from=0, to=1, n=255, times, type="l", ...) 
 #' Save an anim.frames object in various formats.
 #' 
 #' This function simply calls replay on the object and then calls
-#' \code{\link{animation::saveGIF}} and friends on the result.
+#' \code{\link{saveGIF}} and friends on the result.
 #' 
 #' @param obj an \code{anim.frames} object
 #' @param type one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'
@@ -886,7 +881,7 @@ NULL
 NULL
 
 
-#' Wind speed data for hurricanes
+#' Wind speed data for hurricanes in 2009
 #' @name hurricanes
 #' @source http://myweb.fsu.edu/jelsner/Data.html
 NULL

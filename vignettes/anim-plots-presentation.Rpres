@@ -31,7 +31,7 @@ Simple example
 ```{r, fig.show='animate'}
 library(anim.plots)
 ap <- anim.plot(1:5, 1:5, col="green")
-anim.save(ap, "ap.gif")
+anim.save(ap, "ap.gif", type="GIF")
 ```
 
 `times` controls the frames
