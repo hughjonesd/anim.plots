@@ -1,6 +1,11 @@
 <link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
+<style type="text/css">
+.reveal code.r {
+   font-size: 1em
+}
+</style>
 Simple animation with anim.plots
 ========================================================
 author: David Hugh-Jones
@@ -30,8 +35,7 @@ Simple example
 
 ```{r, fig.show='animate'}
 library(anim.plots)
-ap <- anim.plot(1:5, 1:5, col="green")
-anim.save(ap, "ap.gif", type="GIF")
+anim.plot(1:5, 1:5, col="green")
 ```
 
 `times` controls the frames
@@ -40,7 +44,7 @@ anim.save(ap, "ap.gif", type="GIF")
 x <- rep(1:100/10, 20) 
 times <- rep(1:20, each=100) # twenty frames with 100 points each
 y <- sin(x*times/4)
-waves <- anim.plot(x,y,times, type="l", col="orange", lwd=2)
+anim.plot(x,y,times, type="l", col="orange", lwd=2)
 ```
 
 Incremental animations

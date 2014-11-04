@@ -9,4 +9,4 @@ library(devtools)
 install_github("hughjonesd/anim.plots")
 ```
 
-For more information see the vignette.
+For more information see the vignette, or [the presentation](http://hughjonesd.github.io/anim-plots-presentation.html)
