@@ -264,6 +264,9 @@ anim.barplot.default <- function(height, times=NULL,
         oth.args=oth.args, arg.dims=arg.dims, chunkargs.ref.length=crl)
 }
 
+# gapminder data: life expectancy, regions (colour), GDP/cap ppp infadjust, pop total,
+# years
+
 #' Create an animated plot.
 #' 
 #' \code{anim.plot}
@@ -370,8 +373,17 @@ anim.barplot.default <- function(height, times=NULL,
 #'          return(args)
 #'        })
 #'  
+#'  ## gapminder plot:
+#'  pl <- palette(adjustcolor(rainbow(23), 1, .6, .6, .6, 
+#'        offset=c(0,0,0,-0.1)))
+#'  anim.plot(lifex ~ GDP + year, data=gm_data, log="x", 
+#'       cex=sqrt(pop)*0.0004, pch=19, col=region, xlab="GDP", 
+#'       ylab="Life expectancy", speed=5, subset=year>1900)
+#'  palette(pl)
+#'  
 #'  ## Earthquakes this week
-#'  if (require("maps")) {
+#'  \dontrun{
+#'  if (require('maps')) {
 #'    eq = read.table(
 #'        file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
 #'        fill=TRUE, sep=",", header=TRUE)
@@ -385,6 +397,7 @@ anim.barplot.default <- function(height, times=NULL,
 #'    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
 #'  }
 #'  
+#'  
 #'  ## Minard's plot
 #'  if (require('maps')) {
 #'    map('world', xlim=c(22, 40), ylim=c(52,58))
@@ -394,7 +407,7 @@ anim.barplot.default <- function(height, times=NULL,
 #'    with(troops[troops$group==1,], anim.lines(x=long, 
 #'          y=lat, window=t:(t+1), speed=3, lwd=survivors/10000))
 #' }
-#' 
+#' }
 #' @export
 anim.plot <- function(...) UseMethod("anim.plot")
 
@@ -868,15 +881,15 @@ merge.anim.frames <- function(..., speed=NULL) {
 
 
 
-#' Troop numbers for the Grande Armee's march on Moscow.
+#' Troop numbers for the Grande Armee's march on Moscow
 #' @name troops
 NULL
 
-#' Cities near the Grande Armee's march on Moscow.
+#' Cities near the Grande Armee's march on Moscow
 #' @name cities
 NULL
 
-#' Temperatures for the Grande Armee's march on Moscow.
+#' Temperatures for the Grande Armee's march on Moscow
 #' @name temps
 NULL
 
@@ -886,3 +899,7 @@ NULL
 #' @source http://myweb.fsu.edu/jelsner/Data.html
 NULL
 
+#' Gapminder GDP, life expectancy and population data
+#' @name gm_data
+#' @source http://gapminder.org
+NULL

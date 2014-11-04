@@ -64,7 +64,6 @@ Parameters
 
 Example - zooming in
 ========================================================
-<small>
 ```{r, fig.show='animate'}
  x <- rnorm(4000); y<- rnorm(4000)
  x <- rep(x, 40); y <- rep(y, 40)
@@ -72,15 +71,15 @@ Example - zooming in
  ylims <- xlims <- rbind(xlims, -xlims) 
  anim.plot(x, y, times=40, xlim=xlims, ylim=ylims, col=rgb(0,1,.5,.3), pch=19)
 ```
-</small>
 
-`window` again
+
+Moving window again
 ========================================================
+- Use `window` again:
 ```{r, fig.show='animate'}
 ## discoveries 1860-1959
 xlim <- rbind(1860:1959,1870:1969)
-anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim, col="red",
-     xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8)
+anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim, col="red", xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8)
 ```
 
 Formula interface
@@ -88,9 +87,7 @@ Formula interface
 ```{r, fig.show='animate'}
 data(ChickWeight)
 ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
-
-tmp <- anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
-     pch=as.numeric(Diet))
+tmp <- anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), pch=as.numeric(Diet))
 ```
 
 
@@ -116,12 +113,9 @@ anim.curve(x^t, times=10:50/10, n=20)
 
 Contour plot
 ========================================================
+- Using a dataset I made earlier
 
-- One I made earlier
-- `cplot` comes from manipulating the `volcano` dataset
-<small>
-```{r, fig.show='animate', echo=10}
-
+```{r, echo=FALSE}
 data(volcano)
 tmp <- volcano
 tmp[] <- 200 - ((row(tmp) - 43)^2 + (col(tmp) - 30)^2)/20
@@ -130,10 +124,25 @@ cplot[,,1] <- tmp
 cplot[,,20] <- volcano
 cplot <- apply(cplot, 1:2, function(x) seq(x[1], x[20], length.out=20))
 cplot <- aperm(cplot, c(2,3,1))
-
+```
+```{r, fig.show='animate'}
 anim.contour(z=cplot, times=1:20, levels=80 + 1:12*10, lty=c(1,2,2))
 ```
-</small>
+
+3D animation
+===========
+
+```{r, echo=FALSE}
+cplot2 <- apply(cplot, 1:2, function(x) seq(0, x[20], length.out=20))
+cplot2 <- aperm(cplot2, c(2,3,1))
+```
+
+```{r, fig.show='animate'}
+anim.persp(z=cplot2, times=1:20, xlab="", ylab="", zlab="Height", phi=45,
+theta=30, speed=5, border=NA, r=3, col="yellowgreen", shade=.5, box=FALSE)
+```
+
+
 
 Earthquakes last week
 =============================

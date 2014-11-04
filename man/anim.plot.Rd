@@ -163,8 +163,16 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
          return(args)
        })
 
+ ## gapminder plot:
+ pl <- palette(adjustcolor(rainbow.colors(23), offset=c(0,0,0,-0.2)))
+ anim.plot(lifex ~ GDP + year, data=gm_data, log="x",
+     cex=sqrt(pop/10000000), pch=19, col=region, xlab="GDP",
+     ylab="Life expectancy", speed=5, subset=year>1900)
+ palette(pl)
+
  ## Earthquakes this week
- if (require("maps")) {
+ \dontrun{
+ if (require('maps')) {
    eq = read.table(
        file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt",
        fill=TRUE, sep=",", header=TRUE)
@@ -178,6 +186,7 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
    replay(tmp, before=map('world', fill=TRUE, col="wheat"))
  }
 
+
  ## Minard's plot
  if (require('maps')) {
    map('world', xlim=c(22, 40), ylim=c(52,58))
@@ -186,6 +195,7 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
    text(cities$long, cities$lat, labels=cities$city, pos=4, cex=.7)
    with(troops[troops$group==1,], anim.lines(x=long,
          y=lat, window=t:(t+1), speed=3, lwd=survivors/10000))
+}
 }
 }
 
