@@ -158,7 +158,7 @@ replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
   before2 <- substitute(before)
   after2 <- substitute(after)
   .setup.anim(dev.control.enable=attr(x, "dev.control.enable"))
-  times <- attr(x, "times")
+  times <- attr(x, "times")/speed
   intervals <- c(diff(times), 0)
   times <- times[frames]
   intervals <- intervals[frames]
@@ -171,7 +171,6 @@ replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
     idx <- sapply(times, function(x) which.max(x <=rts))
     x <- x[idx]
   } 
-  intervals <- intervals/speed
   
   for (t in 1:length(x)) {
     argl <- as.list(x[[t]])
@@ -807,7 +806,8 @@ anim.save <- function(obj, type, filename, smooth.fps=5, ...) {
   mf <- match.call(expand.dots=FALSE)
   mf[[1]] <- fn
   mf$obj <- NULL
-  mf$expr <- substitute(replay(obj, smooth.fps=smooth.fps))
+  mf$expr <- if (inherits(obj, "anim.frames")) substitute(replay(obj,
+        smooth.fps=smooth.fps)) else substitute(obj)
   mf$type <- NULL
   ani.options(interval=1/smooth.fps)
   switch(type, 
