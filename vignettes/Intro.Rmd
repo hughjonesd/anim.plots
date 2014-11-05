@@ -1,0 +1,13 @@
+---
+title: "Intro"
+author: "David Hugh-Jones"
+date: "5 November 2014"
+output: html_document
+---
+
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Intro}
+-->
+
+See http://hughjonesd.github.io/ for an introduction.
