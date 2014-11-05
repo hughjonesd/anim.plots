@@ -31,7 +31,7 @@ anim.text(...)
   lwd = par("lwd"), fn = plot, ...)
 
 \method{anim.plot}{formula}(formula, data = parent.frame(), subset = NULL,
-  fn = plot, ...)
+  fn = plot, window = t, ...)
 
 \method{anim.points}{default}(...)
 
@@ -115,26 +115,19 @@ y <- sin(x*times/4)
 anim.plot(x,y,times, type="l", col="orange", lwd=2)
 
 ## changing colours - a per-point parameter
-cols <- (x+9*times)/100 # length 1000
-anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
 anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
 
 ## changing line width - a whole-plot parameter
-anim.plot(x, y, times, lwd=matrix(1:10, ncol=10), type="l")
+anim.plot(x, y, times, lwd=1:10, type="l")
 
 ## times as a single number
 anim.plot(1:10, 1:10, times=5)
 
-## incremental plot using window
+## incremental plot
 anim.plot(1:10, 1:10, window=1:t)
 
 ## moving window
 anim.plot(1:10, 1:10, window=(t-2):t)
-
-## discoveries 1860-1959
-xlim <- rbind(1860:1959,1870:1969)
-anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim,
-     xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
 
 ## Formula interface
 ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
@@ -146,20 +139,19 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
 
  ## Zooming in:
  x <- rnorm(4000); y<- rnorm(4000)
- x <- rep(x, 40); y <- rep(y, 40)
- xlims <- 4*2^(-(1:40/10))
- # matrices w
+ x <- rep(x, 10); y <- rep(y, 10)
+ xlims <- 4*2^(-(1:10/10))
  ylims <- xlims <- rbind(xlims, -xlims)
- anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims,
+ anim.plot(x, y, times=10, speed=5, xlim=xlims, ylim=ylims,
        col=rgb(0,0,0,.3), pch=19)
 
  ## window.process to create a faded "trail":
- anim.plot(1:100, 1:100, speed=13, pch=15, window=(t-3):t,
+ anim.plot(1:50, 1:50, speed=12, window=t:(t+5),
        window.process=function(args, times){
          times <- times - min(times)
          alpha <- times/max(times)
          alpha[is.na(alpha)] <- 1
-         args$col <- rgb(0,0,1, alpha)
+         args$col <- rgb(0,0,0, alpha)
          return(args)
        })
 
@@ -168,11 +160,11 @@ replay(tmp, after=legend("topleft", legend=paste("Diet", 1:4), pch=1:4, col=1:4)
        offset=c(0,0,0,-0.1)))
  anim.plot(lifex ~ GDP + year, data=gm_data, log="x",
       cex=sqrt(pop)*0.0004, pch=19, col=region, xlab="GDP",
-      ylab="Life expectancy", speed=5, subset=year>1900)
+      ylab="Life expectancy", speed=10, subset=year > 1850 & !year \%\% 5)
  palette(pl)
 
- ## Earthquakes this week
  \dontrun{
+ ## Earthquakes this week
  if (require('maps')) {
    eq = read.table(
        file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt",

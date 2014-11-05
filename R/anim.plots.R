@@ -296,27 +296,20 @@ anim.barplot.default <- function(height, times=NULL,
 #' anim.plot(x,y,times, type="l", col="orange", lwd=2)
 #' 
 #' ## changing colours - a per-point parameter
-#' cols <- (x+9*times)/100 # length 1000
-#' anim.plot(x,y,times, ylab="Sine wave", type="l", col=rgb(cols, 0, 1-cols), lwd=2)
 #' anim.plot(x,y,times, ylab="Sine wave", type="p", col=rainbow(100)[x *10])
 #' 
 #' ## changing line width - a whole-plot parameter
-#' anim.plot(x, y, times, lwd=matrix(1:10, ncol=10), type="l")
+#' anim.plot(x, y, times, lwd=1:10, type="l")
 #'           
 #' ## times as a single number
 #' anim.plot(1:10, 1:10, times=5)
 #'            
-#' ## incremental plot using window
+#' ## incremental plot
 #' anim.plot(1:10, 1:10, window=1:t)
 #' 
 #' ## moving window
 #' anim.plot(1:10, 1:10, window=(t-2):t)
 #' 
-#' ## discoveries 1860-1959
-#' xlim <- rbind(1860:1959,1870:1969)
-#' anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim,  
-#'      xaxp=rbind(xlim, 10), window=t:(t+10), type="h", lwd=8, speed=5)
-#'      
 #' ## Formula interface
 #' ChickWeight$chn <- as.numeric(as.factor(ChickWeight$Chick))
 #' tmp <- anim.plot(weight ~ chn + Time, data=ChickWeight, col=as.numeric(Diet), 
@@ -327,33 +320,32 @@ anim.barplot.default <- function(height, times=NULL,
 #'  
 #'  ## Zooming in:
 #'  x <- rnorm(4000); y<- rnorm(4000)
-#'  x <- rep(x, 40); y <- rep(y, 40)
-#'  xlims <- 4*2^(-(1:40/10))
-#'  # matrices w
+#'  x <- rep(x, 10); y <- rep(y, 10)
+#'  xlims <- 4*2^(-(1:10/10))
 #'  ylims <- xlims <- rbind(xlims, -xlims) 
-#'  anim.plot(x, y, times=40, speed=5, xlim=xlims, ylim=ylims, 
+#'  anim.plot(x, y, times=10, speed=5, xlim=xlims, ylim=ylims, 
 #'        col=rgb(0,0,0,.3), pch=19)
 #'  
 #'  ## window.process to create a faded "trail":
-#'  anim.plot(1:100, 1:100, speed=13, pch=15, window=(t-3):t, 
+#'  anim.plot(1:50, 1:50, speed=12, window=t:(t+5), 
 #'        window.process=function(args, times){
 #'          times <- times - min(times) 
 #'          alpha <- times/max(times)
 #'          alpha[is.na(alpha)] <- 1
-#'          args$col <- rgb(0,0,1, alpha)
+#'          args$col <- rgb(0,0,0, alpha)
 #'          return(args)
 #'        })
-#'  
+#'        
 #'  ## gapminder plot:
 #'  pl <- palette(adjustcolor(rainbow(23), 1, .6, .6, .6, 
 #'        offset=c(0,0,0,-0.1)))
 #'  anim.plot(lifex ~ GDP + year, data=gm_data, log="x", 
 #'       cex=sqrt(pop)*0.0004, pch=19, col=region, xlab="GDP", 
-#'       ylab="Life expectancy", speed=5, subset=year>1900)
+#'       ylab="Life expectancy", speed=10, subset=year > 1850 & !year %% 5)
 #'  palette(pl)
 #'  
-#'  ## Earthquakes this week
 #'  \dontrun{
+#'  ## Earthquakes this week
 #'  if (require('maps')) {
 #'    eq = read.table(
 #'        file="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt", 
@@ -432,7 +424,7 @@ anim.plot.default <- function (x, y=NULL, times=1:length(x), speed=1, show=TRUE,
 #' @export 
 #' @rdname anim.plot
 anim.plot.formula <- function(formula, data=parent.frame(), subset=NULL, 
-      fn=plot, ...) {
+      fn=plot, window=t, ...) {
   if (missing(formula) || ! inherits(formula, "formula")) 
     stop("'formula' missing or invalid")
   
@@ -466,7 +458,7 @@ anim.plot.formula <- function(formula, data=parent.frame(), subset=NULL,
   tm <- tm[ot]
   if (! "xlab" %in% names(dots)) dots$xlab <- all.vars(mf)[2] 
   if (! "ylab" %in% names(dots)) dots$ylab <- all.vars(mf)[1]
-  do.call("anim.plot", c(list(x=x, y=y, times=tm, fn=fn), dots))
+  do.call("anim.plot", c(list(x=x, y=y, times=tm, window=substitute(window), fn=fn), dots))
 }
 
 #' @export 
