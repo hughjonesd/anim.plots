@@ -2,7 +2,7 @@
 #' @import animation
 
 # TODO:
-# density, stars, polygons?
+# density, stars, polygons? 
 # plot3d - is this possible? persp is done...
 # how to save while respecting intervals: interpolate data for frames
 # in .do.loop:  
