@@ -3,17 +3,15 @@ title: "Animations with anim.plots"
 author: "David Hugh-Jones"
 date: "30 October 2014"
 output:
-  html_document:
-    fig_height: 3
-    fig_width: 4
-    self_contained: no
+  html_document
 ---
 
 <link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
 <!--
-%\VignetteEngine{knitr::knitr}
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Writing animations with anim.plots}
 -->
 
 
@@ -21,6 +19,9 @@ output:
 library(knitr)
 opts_knit$set(animation.fun=hook_scianimator)
 par(bg="white")
+# to update: run knit html, then view in browser, then save to inst/doc
+# manually from a terminal, then manually edit HTML to remove absolute 
+# references :-(
 ```
 
 Creating animations in R was hard. Then Yihui Xie wrote the `animation` package. `animation` lets you plot individual frames, then record them. I've been working
