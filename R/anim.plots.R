@@ -4,30 +4,7 @@
 # TODO:
 # density, stars, polygons?
 # plot3d - is this possible? persp is done...
-# how to save while respecting intervals: interpolate data for frames
-# in .do.loop:  
-# EXAMPLE:
-# ht <- 40
-# x <- rep(1, ht)
-# y <- 1:ht
-# intervals <- jitter(ht:1/20) # in seconds
-# times <- cumsum(intervals)
-# ani.record(reset=T)
-# 
-# framerate <- 50 # per second
-# intervals <- round(intervals*framerate)
-# 
-# # interpolate data? But, can I do this in general?
-# # if so, the whole .do.loop would have to be rewritten to, indeed, smooth stuff.
-# # a set of "smoothable" parameters.
-# # if it were told to smooth, the intervals would be replaced by 1 and smoothed
-# # versions of everything would be created. The resulting plot would be recorded.
-# 
-# # e.g. if intervals are 5,4,3,2,1. in [ x[1] , x[2] ) we want 5 intervals, etc.
-# # in general for every variable: take x as sequence along it. it as y. then create xout
-# spaced <- seq(min(times), max(times), length.out=max(times))
-# x <- approx(times, x, xout=spaced)$y
-# y <- approx(times, y, xout=spaced)$y
+# separate smoothing from replay (smooth function)
 
 .setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()
