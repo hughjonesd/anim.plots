@@ -326,7 +326,7 @@ anim.barplot.default <- function(height, times=NULL,
 #' ## changing line width - a whole-plot parameter
 #' anim.plot(x, y, times, lwd=1:10, type="l")
 #'           
-#' ## times as a single number
+#' ## times as a single number 
 #' anim.plot(1:10, 1:10, times=5)
 #'            
 #' ## incremental plot
