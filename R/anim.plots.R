@@ -36,10 +36,6 @@
   # if (! is.null(interval)) .old.ani.options <<- ani.options(interval=interval)
 }
 
-.teardown.anim <- function() {
-  #if (exists(".old.ani.options")) ani.options(.old.ani.options)
-}
-
 .do.loop <- function(fn, times, show=TRUE, speed=1, use.times=TRUE, window=t,
       window.process=NULL, slice.args=list(), chunk.args=list(), oth.args=list(), 
       arg.dims=list(), chunkargs.ref.length=NULL) {
@@ -105,23 +101,6 @@
   return(invisible(mycalls))
 }
 
-.col.interp <- function(colmat, smooth) {
-  ncolours <- (ncol(colmat)-1)*smooth + 1
-  colmat <- t(apply(colmat, 1, function(cl) 
-    colorRampPalette(cl, alpha=TRUE)(ncolours)
-  ))
-  return(colmat) 
-}
-
-.interp <- function (obj, smooth) {
-  size <- if(is.matrix(obj)) ncol(obj) else length(obj)
-  xout <- seq(1, size, 1/smooth) 
-  if (is.matrix(obj)) return(t(apply(obj, 1, function (y)
-    approx(1:size, y, xout)$y)
-  ))
-  approx(1:size, obj, xout)$y
-}
-
 .plot.segments <- function(..., fn=quote(segments)) {
   mc <- match.call()
   dots <- list(...)
@@ -142,6 +121,7 @@
 #' 
 #' @param x an \code{anim.frames} object
 #' @param speed a new speed
+#' @param smooth.fps smooth to how many frames per second
 #' @param frames numeric vector specifying which frames to replay
 #' @param before an expression to evaluate before each frame is plotted
 #' @param after an expression to evaluate after each frame is plotted
@@ -152,6 +132,10 @@
 #' frame's call available in their environment - see the example.
 #' 
 #' The \code{plot} method simply calls \code{replay}.
+#' 
+#' If \code{smooth.fps} is specified, frames will be interpolated at one every
+#' 1/fps seconds. This is useful for saving animations. Note that plot parameters
+#' (e.g. x and y positions)  are not interpolated.
 #' 
 #' @examples
 #' 
@@ -169,21 +153,34 @@ replay <- function(...) UseMethod("replay")
 #' @export
 #' @rdname replay
 replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
-  after=NULL, before=NULL, ...) {
+  smooth.fps, after=NULL, before=NULL, ...) {
+  speed # force eval
   before2 <- substitute(before)
   after2 <- substitute(after)
   .setup.anim(dev.control.enable=attr(x, "dev.control.enable"))
   times <- attr(x, "times")
   intervals <- c(diff(times), 0)
-  for (t in frames) {
+  times <- times[frames]
+  intervals <- intervals[frames]
+  x <- x[frames]
+  rts <- times
+  # times 1,4,5. Plots 1,2,3. fps 2. new times 1, 1.5...5. new plots 1,1,1,1,1,1,2,2,3 
+  if (! missing(smooth.fps)) {
+    times <- seq(min(times), max(times), by=1/smooth.fps)
+    intervals <- c(diff(times), 0)
+    idx <- sapply(times, function(x) which.max(x <=rts))
+    x <- x[idx]
+  } 
+  intervals <- intervals/speed
+  
+  for (t in 1:length(x)) {
     argl <- as.list(x[[t]])
     if (! missing(before)) eval(before2, argl)
     eval(x[[t]])
     if (! missing(after)) eval(after2, argl)
     ani.record()
-    ani.pause(intervals[t]/speed)
+    ani.pause(intervals[t])
   }
-  .teardown.anim()
   invisible()
 } 
 
@@ -264,8 +261,6 @@ anim.barplot.default <- function(height, times=NULL,
         oth.args=oth.args, arg.dims=arg.dims, chunkargs.ref.length=crl)
 }
 
-# gapminder data: life expectancy, regions (colour), GDP/cap ppp infadjust, pop total,
-# years
 
 #' Create an animated plot.
 #' 
@@ -786,12 +781,14 @@ anim.curve <- function(expr, x=NULL, from=0, to=1, n=255, times, type="l", ...) 
 #' @param obj an \code{anim.frames} object
 #' @param type one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'
 #' @param filename file to save to
+#' @param smooth.fps frames per second to plot at
 #' @param ... arguments passed to e.g. \code{\link{saveGIF}}
 #' 
 #' @details
 #' 
-#' For most of the underlying functions, the \code{times} parameter
-#' will be ignored as if you had set \code{use.times=FALSE}.
+#' Most underlying functions in the \code{animation} package save at a constant 
+#' speed, ignoring timings. To get round this, \code{anim.save} replots
+#' frames every 1/\code{smooth.fps} second.
 #' 
 #' @examples
 #' 
@@ -804,14 +801,15 @@ anim.curve <- function(expr, x=NULL, from=0, to=1, n=255, times, type="l", ...) 
 #'  "filename.gif")
 #' }
 #' @export
-anim.save <- function(obj, type, filename, ...) {
+anim.save <- function(obj, type, filename, smooth.fps=5, ...) {
   stopifnot(type %in% c("GIF", "Video", "SWF", "HTML", "Latex"))
   fn <- as.name(paste("save", type, sep=""))
   mf <- match.call(expand.dots=FALSE)
   mf[[1]] <- fn
   mf$obj <- NULL
-  mf$expr <- substitute(replay(obj))
+  mf$expr <- substitute(replay(obj, smooth.fps=smooth.fps))
   mf$type <- NULL
+  ani.options(interval=1/smooth.fps)
   switch(type, 
     "GIF"=mf$movie.name <- filename, 
     "Video"=mf$video.name <- filename,

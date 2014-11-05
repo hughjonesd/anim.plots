@@ -3,7 +3,7 @@
 \alias{anim.save}
 \title{Save an anim.frames object in various formats.}
 \usage{
-anim.save(obj, type, filename, ...)
+anim.save(obj, type, filename, smooth.fps = 5, ...)
 }
 \arguments{
 \item{obj}{an \code{anim.frames} object}
@@ -12,6 +12,8 @@ anim.save(obj, type, filename, ...)
 
 \item{filename}{file to save to}
 
+\item{smooth.fps}{frames per second to plot at}
+
 \item{...}{arguments passed to e.g. \code{\link{saveGIF}}}
 }
 \description{
@@ -19,8 +21,9 @@ This function simply calls replay on the object and then calls
 \code{\link{saveGIF}} and friends on the result.
 }
 \details{
-For most of the underlying functions, the \code{times} parameter
-will be ignored as if you had set \code{use.times=FALSE}.
+Most underlying functions in the \code{animation} package save at a constant
+speed, ignoring timings. To get round this, \code{anim.save} replots
+frames every 1/\code{smooth.fps} second.
 }
 \examples{
 \dontrun{
