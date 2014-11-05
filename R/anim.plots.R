@@ -870,3 +870,13 @@ NULL
 #' @name gm_data
 #' @source http://gapminder.org
 NULL
+
+#' Simple Animated Plots For R.
+#' 
+#' \code{anim.plots} contains simple one-line commands to create animated plots 
+#' using the \pkg{animation} package. A good place to start is either the
+#' vignette, or the documentation and examples for \code{\link{anim.plot}}.
+#' 
+#' @docType package
+#' @name anim.plots-package
+NULL
