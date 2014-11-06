@@ -10,8 +10,10 @@ Description: Simple animated versions of basic R plots, using the 'animation'
     filled.contour, hist, curve, points, lines, text, symbols, segments, and
     arrows.
 License: GPL-2
-VignetteBuilder: knitr
 LazyData: TRUE
+URL: http://github.com/hughjonesd/anim.plots
+BugReports: http://github.com/hughjonesd/anim.plots/issues
+VignetteBuilder: knitr
 Imports:
     animation
 Suggests:
