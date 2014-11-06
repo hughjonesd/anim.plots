@@ -11,6 +11,8 @@ Description: Simple animated versions of basic R plots, using the 'animation'
     arrows.
 License: GPL-2
 LazyData: TRUE
+URL: http://github.com/hughjonesd/anim.plots
+BugReports: http://github.com/hughjonesd/anim.plots/issues
 VignetteBuilder: knitr
 Imports:
     animation
