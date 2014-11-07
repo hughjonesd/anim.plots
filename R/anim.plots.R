@@ -5,6 +5,7 @@
 # density, stars, polygons?
 # plot3d - is this possible? persp is done...
 # separate smoothing from replay (smooth function)
+# anim.do general public function?
 
 .setup.anim <- function (reset=TRUE, dev.control.enable=TRUE) {
   if (dev.cur()==1) dev.new()

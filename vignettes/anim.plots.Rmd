@@ -214,7 +214,7 @@ made over the years 1860-1959, from the `discoveries` dataset.
 
 ```{r, fig.show='animate'}
 xlim <- rbind(1840:1939,1860:1959)
-anim.plot(1860:1959, discoveries, times=1:100, xlim=xlim, col="red", xlab="Year",
+anim.plot(1860:1959, discoveries, times=100, xlim=xlim, col="red", xlab="Year",
      xaxp=rbind(xlim, 10), window=(t-20):t, type="b", lwd=5, speed=4)
 ```
 
