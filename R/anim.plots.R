@@ -871,6 +871,17 @@ NULL
 #' @source http://gapminder.org
 NULL
 
+#' Data from 20 rounds of a public goods game with punishment
+#' 
+#' A 2x3x20 array of data from a laboratory public goods game.
+#' Dimensions are Picked (was subject picked for punishment?),
+#' Contribution (of subject: Non-unique lowest, Not lowest/all same and Unique lowest), and Period. 
+#' 
+#' Provided by the package author.
+#' 
+#' @name PGgame
+NULL
+
 #' Simple Animated Plots For R.
 #' 
 #' \code{anim.plots} contains simple one-line commands to create animated plots 
