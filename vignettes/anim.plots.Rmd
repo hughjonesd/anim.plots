@@ -470,8 +470,8 @@ functions work this way.) You may even be able to use `ggplot` or similar....
 The function `anim.save()` will save your `anim.frames` objects. It simply calls
 the underlying functions from the `animation` package.
 
-These functions do not respect changes in animation speed. For example, here's
-a rocket boosting off:
+These functions do not respect changes in animation speed. For example, the 
+following code would show a rocket boosting off:
 
 ```{r, eval=FALSE}
 tmp <- anim.plot(1, 1:30, times=sqrt(1:30))
@@ -483,7 +483,6 @@ But when you save it, it will go at constant speed. To get round this, run e.g.:
 anim.save(replay(tmp, smooth.fps=10), type="Video", filename="rocket.mp4")
 ```
 
-
 The `smooth.fps` argument creates a "smoothed" version of the animation, which
 plays each frame after a constant interval. This involves creating many more 
 frames, so when you play it in R, it will probably look slower. However, when
@@ -491,8 +490,15 @@ you save it, it should look right.
 
 **Note**: `smooth.fps` only works in version 0.2 and above (available from GitHub as of November 2014).
 
+
 ## Getting help and contributing
 
 The code lives at http://github.com/hughjonesd/anim.plots, and issues
 can be reported at http://github.com/hughjonesd/anim.plots/issues. Enjoy!
+
+
+
+David Hugh-Jones 
+davidhughjones@gmail.com
+
 
