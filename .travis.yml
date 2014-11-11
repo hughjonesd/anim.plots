@@ -22,3 +22,7 @@ notifications:
     on_success: change
     on_failure: change
 
+global:
+  - R_BUILD_ARGS=" " 
+  - R_CHECK_ARGS="--as-cran"
+  - WARNINGS_ARE_ERRORS=1
