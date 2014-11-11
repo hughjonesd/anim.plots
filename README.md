@@ -1,6 +1,8 @@
 anim.plots
 ==========
 
+<img src='https://travis-ci.org/hughjonesd/anim.plots.svg?branch=master'>
+
 Simple animated plots for R. To install:
 
 ```{splus}
