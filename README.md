@@ -3,7 +3,7 @@ anim.plots
 
 <img src='https://travis-ci.org/hughjonesd/anim.plots.svg?branch=master'>
 
-Simple animated plots for R. To install version 0.1 from [CRAN](http://cran.r-project.org/packages/anim.plots):
+Simple animated plots for R. To install version 0.1 from [CRAN](http://cran.r-project.org/web/packages/anim.plots):
 
 ```{splus}
 install.packages("anim.plots")
