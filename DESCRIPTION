@@ -18,4 +18,5 @@ Imports:
     animation
 Suggests:
     maps,
-    knitr
+    knitr,
+    mapdata

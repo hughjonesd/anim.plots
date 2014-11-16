@@ -3,16 +3,15 @@
 \alias{anim.save}
 \title{Save an anim.frames object in various formats.}
 \usage{
-anim.save(obj, type, filename, smooth.fps = 5, ...)
+anim.save(obj, filename, type = switch(file_ext(filename), gif = "GIF", mp4 =
+  "Video", swf = "SWF", html = "HTML", tex = "Latex"), ...)
 }
 \arguments{
-\item{obj}{an \code{anim.frames} object}
-
-\item{type}{one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'}
+\item{obj}{an \code{anim.frames} object, or an expression to evaluate}
 
 \item{filename}{file to save to}
 
-\item{smooth.fps}{frames per second to plot at}
+\item{type}{one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'}
 
 \item{...}{arguments passed to e.g. \code{\link{saveGIF}}}
 }
@@ -20,19 +19,13 @@ anim.save(obj, type, filename, smooth.fps = 5, ...)
 This function simply calls replay on the object and then calls
 \code{\link{saveGIF}} and friends on the result.
 }
-\details{
-Most underlying functions in the \code{animation} package save at a constant
-speed, ignoring timings. To get round this, \code{anim.save} replots
-frames every 1/\code{smooth.fps} second.
-}
 \examples{
 \dontrun{
 tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
-anim.save(tmp, "GIF", "filename.gif")
+anim.save(tmp, "mygif.gif")
 
-## for anything more complex. Note the curlies:
-saveGIF({replay(tmp, after=legend("topleft", legend="My legend"))},
- "filename.gif")
+anim.save(replay(tmp, after=legend("topleft", legend="My legend")),
+ type="GIF", "filename.gif")
 }
 }
 

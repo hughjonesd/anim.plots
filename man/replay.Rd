@@ -8,7 +8,7 @@
 replay(...)
 
 \method{replay}{anim.frames}(x, frames = 1:length(x), speed = attr(x,
-  "speed"), smooth.fps, after = NULL, before = NULL, ...)
+  "speed"), after = NULL, before = NULL, ...)
 
 \method{plot}{anim.frames}(x, ...)
 }
@@ -20,8 +20,6 @@ replay(...)
 \item{frames}{numeric vector specifying which frames to replay}
 
 \item{speed}{a new speed}
-
-\item{smooth.fps}{smooth to how many frames per second}
 
 \item{after}{an expression to evaluate after each frame is plotted}
 
@@ -35,10 +33,6 @@ Replay all or some of the frames of an object.
 frame's call available in their environment - see the example.
 
 The \code{plot} method simply calls \code{replay}.
-
-If \code{smooth.fps} is specified, frames will be interpolated at one every
-1/fps seconds. This is useful for saving animations. Note that plot parameters
-(e.g. x and y positions)  are not interpolated.
 }
 \examples{
 myplot <- anim.plot(1:10, 1:10, speed=3)
