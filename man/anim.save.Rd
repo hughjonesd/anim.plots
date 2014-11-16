@@ -25,7 +25,7 @@ tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
 anim.save(tmp, "mygif.gif")
 
 anim.save(replay(tmp, after=legend("topleft", legend="My legend")),
- type="GIF", "filename.gif")
+   "mygif2.gif")
 }
 }
 

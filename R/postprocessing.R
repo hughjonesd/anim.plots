@@ -127,8 +127,8 @@ plot.anim.frames <- function(x, ...) replay(x, ...)
 #' tmp <- anim.plot(1:10, 1:10, pch=1:10, show=FALSE)
 #' anim.save(tmp, "mygif.gif")
 #' 
-#' anim.save(replay(tmp, after=legend("topleft", legend="My legend")),
-#'  type="GIF", "filename.gif")
+#' anim.save(replay(tmp, after=legend("topleft", legend="My legend")), 
+#'    "mygif2.gif")
 #' }
 #' 
 #' @export
@@ -142,7 +142,8 @@ anim.save <- function(obj, filename,  type=switch(file_ext(filename),
   mf$expr <- if (inherits(obj, "anim.frames")) substitute(replay(obj)) else 
     substitute(obj)
   mf$type <- NULL
-  ani.options(interval=1/attr(obj, "speed"))
+  speed <- if (! is.null(attr(obj, "speed"))) attr(obj, "speed") else 1
+  ani.options(interval=1/speed)
   switch(type, 
     "GIF"=mf$movie.name <- filename, 
     "Video"=mf$video.name <- filename,
