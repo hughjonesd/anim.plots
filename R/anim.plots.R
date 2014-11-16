@@ -99,7 +99,6 @@
 #' 
 #' @param x an \code{anim.frames} object
 #' @param speed a new speed
-#' @param smooth.fps smooth to how many frames per second
 #' @param frames numeric vector specifying which frames to replay
 #' @param before an expression to evaluate before each frame is plotted
 #' @param after an expression to evaluate after each frame is plotted
@@ -110,10 +109,6 @@
 #' frame's call available in their environment - see the example.
 #' 
 #' The \code{plot} method simply calls \code{replay}.
-#' 
-#' If \code{smooth.fps} is specified, frames will be interpolated at one every
-#' 1/fps seconds. This is useful for saving animations. Note that plot parameters
-#' (e.g. x and y positions)  are not interpolated.
 #' 
 #' @examples
 #' 
@@ -131,7 +126,7 @@ replay <- function(...) UseMethod("replay")
 #' @export
 #' @rdname replay
 replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
-  smooth.fps, after=NULL, before=NULL, ...) {
+      after=NULL, before=NULL, ...) {
   speed # force eval
   before2 <- substitute(before)
   after2 <- substitute(after)
@@ -141,14 +136,6 @@ replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
   times <- times[frames]
   intervals <- intervals[frames]
   x <- x[frames]
-  rts <- times
-  # times 1,4,5. Plots 1,2,3. fps 2. new times 1, 1.5...5. new plots 1,1,1,1,1,1,2,2,3 
-  if (! missing(smooth.fps)) {
-    times <- seq(min(times), max(times), by=1/smooth.fps)
-    intervals <- c(diff(times), 0)
-    idx <- sapply(times, function(x) which.max(x <=rts))
-    x <- x[idx]
-  } 
   
   for (t in 1:length(x)) {
     argl <- as.list(x[[t]])
@@ -160,6 +147,52 @@ replay.anim.frames <- function(x, frames=1:length(x), speed=attr(x, "speed"),
   }
   invisible()
 } 
+
+#' Smooth an \code{anim.frames} object
+#' 
+#' Some export formats ignore information in the \code{times}
+#' attribute and plot frames at constant speed. \code{smooth} creates
+#' a smoothed version of the \code{anim.frames} object with frames at 
+#' constant intervals, suitable for export.
+#' 
+#' @param x an \code{anim.frames} object
+#' @param fps smooth to how many frames per second
+#' 
+#' @return
+#' A smoothed \code{anim.frames} object, with \code{speed = 1}.
+#' 
+#' @details
+#' Note that plot parameters such as x and y positions are not interpolated.
+#' 
+#' @examples
+#' 
+#' accel <- anim.plot(1, 1:30, times=sqrt(1:30))
+#' \dontrun{
+#' anim.save(accel, "GIF", "wrong.gif")
+#' }
+#' accel <- smooth(accel, fps=20)
+#' #' \dontrun{
+#' anim.save(accel, "GIF", "better.gif")
+#' }
+#' @export
+smooth <- function(...) UseMethod("smooth")
+
+
+#' @export
+#' @rdname smooth
+smooth.anim.frames <- function(x, fps=10) {
+  times <- attr(x, "times")/attr(x, "speed")
+  rts <- times
+  # times 1,4,5. Plots 1,2,3. fps 2. new times 1, 1.5...5. new plots 1,1,1,1,1,1,2,2,3 
+  times <- seq(min(times), max(times), by=1/fps)
+  intervals <- c(diff(times), 0)
+  idx <- sapply(times, function(x) which.max(x <=rts))
+  x <- x[idx]
+  class(x) <- "anim.frames"
+  attr(x, "times") <- times
+  attr(x, "speed") <- 1
+  x
+}
 
 #' @export
 #' @rdname replay
