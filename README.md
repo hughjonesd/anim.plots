@@ -1,7 +1,7 @@
 anim.plots
 ==========
 
-<img src='https://travis-ci.org/hughjonesd/anim.plots.svg?branch=master'>
+<a href="https://travis-ci.org/hughjonesd/anim.plots"><img src='https://travis-ci.org/hughjonesd/anim.plots.svg?branch=master'></a>
 
 Simple animated plots for R. To install version 0.1 from [CRAN](http://cran.r-project.org/web/packages/anim.plots):
 
