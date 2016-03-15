@@ -183,13 +183,14 @@ anim.barplot.default <- function(height, times=NULL,
 #' @param window.process function to call on each window of each times. See details.
 #' @param use.times if \code{TRUE}, animation speed is determined by the 
 #'   \code{times} argument. If \code{FALSE}, animation speed is constant.
-#' @param xlim,ylim,col,pch,labels,cex,lty,lwd,asp,xaxp,yaxp,... arguments passed to 
-#'   \code{\link{plot}}.
-#' @param fn function called to create each frame
+#' @param xlim,ylim,col,pch arguments passed to \code{\link{plot}}.
+#' @param labels,cex,lty,lwd as above.
+#' @param asp,xaxp,yaxp,... as above.
+#' @param fn function called to create each frame.
 #' @param data a data frame from where the values in \code{formula} should be 
-#'    taken
-#' @param formula a \code{\link{formula}} such as \code{y ~ x + time}
-#' @param subset a vector specifying which rows of \code{data} to use
+#'    taken.
+#' @param formula a \code{\link{formula}} of the form \code{y ~ x + time}.
+#' @param subset a vector specifying which rows of \code{data} to use.
 #'   
 #' @details
 #' 
