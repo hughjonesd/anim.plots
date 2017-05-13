@@ -1,7 +1,22 @@
 
+#' anim.plots: simple animated plots For R
+#'
+#' anim.plots provides simple animated versions of basic R plots, using the 'animation'
+#' package. It includes animated versions of plot, barplot, persp, contour,
+#' filled.contour, hist, curve, points, lines, text, symbols, segments, and
+#' arrows.
+#' @docType package
+#' @details
+#'
+#' For more information, run \code{vignette('anim.plots')}.
+#'
+#' @name anim.plots-package
+NULL
+
 #' @import animation
 #' @import graphics
 #' @import grDevices
+NULL
 
 # TODO:
 # density, stars, polygons?
@@ -706,14 +721,4 @@ NULL
 #' Provided by the package author.
 #' 
 #' @name PGgame
-NULL
-
-#' Simple Animated Plots For R.
-#' 
-#' \code{anim.plots} contains simple one-line commands to create animated plots 
-#' using the \pkg{animation} package. A good place to start is either the
-#' vignette, or the documentation and examples for \code{\link{anim.plot}}.
-#' 
-#' @docType package
-#' @name anim.plots-package
 NULL
