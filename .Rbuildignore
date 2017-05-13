@@ -3,3 +3,4 @@
 ^\.travis\.yml$
 ^README.md$
 ^build.R$
+^extra$
