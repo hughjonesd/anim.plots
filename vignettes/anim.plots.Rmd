@@ -1,7 +1,7 @@
 ---
 title: "Animations with anim.plots"
 author: "David Hugh-Jones"
-date: "30 October 2014"
+date: "2017-05-13"
 output: 
   rmarkdown::html_vignette:
     self_contained: false
@@ -23,7 +23,7 @@ vignette: >
 library(knitr)
 opts_knit$set(animation.fun=hook_scianimator, base.url="")
 par(bg="white")
-quick_run <- TRUE # set to TRUE to skip slow animations, only for testing
+quick_run <- FALSE # set to TRUE to skip slow animations, only for testing
 ```
 
 ## Introduction
@@ -99,7 +99,7 @@ will plot 10 frames.
 ## Recycling arguments
 
 You can animate more than just the location of points. Here are the first
-10 plot symbols, in different colours:
+twenty plot symbols, in different colours:
 
 ```{r, fig.show='animate'}
 cols <- c("green", "blue", "red", "orange", "purple")
@@ -482,10 +482,10 @@ tmp <- anim.plot(1, 1:30, times=sqrt(1:30))
 But when you save it, it will go at constant speed. To get round this, run e.g.:
 
 ```{r, eval=FALSE}
-anim.save(smooth(tmp, fps=10), type="Video", filename="rocket.mp4")
+anim.save(anim.smooth(tmp, fps=10), type="Video", filename="rocket.mp4")
 ```
 
-The `smooth` function creates a "smoothed" version of the animation, which
+The `anim.smooth` function creates a "smoothed" version of the animation, which
 plays each frame after a constant interval. This involves creating many more 
 frames, so when you play it in R, it will probably look slower. However, when
 you save it, it should look right.
@@ -496,8 +496,5 @@ The code lives at http://github.com/hughjonesd/anim.plots, and issues
 can be reported at http://github.com/hughjonesd/anim.plots/issues. Enjoy!
 
 
-
-David Hugh-Jones 
-davidhughjones@gmail.com
 
 
