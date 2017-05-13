@@ -19,5 +19,6 @@ Imports:
 Suggests:
     maps,
     knitr,
-    mapdata
+    mapdata,
+    testthat
 RoxygenNote: 6.0.1
