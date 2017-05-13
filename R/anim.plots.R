@@ -168,7 +168,7 @@ anim.barplot.default <- function(height, times=NULL,
     if (is.array(height)) times <- 1:utils::tail(dim(height), 1) else 
           stop("'times' not specified")
   } else if (length(times)==1) {
-    lng <- if (is.array(height)) tail(dim(height), 1) else length(height)
+    lng <- if (is.array(height)) utils::tail(dim(height), 1) else length(height)
     if (lng %% times != 0) warning("'height' length is not an exact multiple of 'times'")
     times <- rep(1:times, each=lng/times)
   }
