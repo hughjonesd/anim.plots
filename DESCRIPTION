@@ -1,8 +1,8 @@
 Package: anim.plots
 Type: Package
-Title: Simple Animated Plots For R
+Title: Simple Animated Plots for R
 Version: 0.2
-Date: 2014-10-27
+Date: 2017-5-13
 Author: David Hugh-Jones <davidhughjones@gmail.com>
 Maintainer: David Hugh-Jones <davidhughjones@gmail.com>
 Description: Simple animated versions of basic R plots, using the 'animation'
