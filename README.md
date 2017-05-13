@@ -3,10 +3,10 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/anim.plots)](https://cran.r-project.org/package=anim.plots)
 [![Travis-CI Build Status](https://travis-ci.org/hughjonesd/anim.plots.svg?branch=master)](https://travis-ci.org/hughjonesd/anim.plots)
 
-anim.plots provides simple animated versions of basic R plots, using the 'animation'
-package. It includes animated versions of plot, barplot, persp, contour,
-filled.contour, hist, curve, points, lines, text, symbols, segments, and
-arrows.
+`anim.plots` provides simple animated versions of basic R plots, using the `animation`
+package. It includes animated versions of `plot`, `barplot`, `persp`, `contour`,
+`filled.contour`, `hist`, `curve`, `points`, `lines`, `text`, `symbols`, `segments`, and
+`arrows`.
 
 ## Installation
 
