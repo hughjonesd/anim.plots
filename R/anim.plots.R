@@ -1,5 +1,6 @@
 
 #' @import animation
+#' @import graphics
 
 # TODO:
 # density, stars, polygons?

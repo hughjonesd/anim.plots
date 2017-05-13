@@ -20,3 +20,4 @@ Suggests:
     maps,
     knitr,
     mapdata
+RoxygenNote: 6.0.1
