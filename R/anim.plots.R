@@ -165,7 +165,7 @@ anim.barplot.default <- function(height, times=NULL,
 
   hdim <- if(is.matrix(height)) 1 else 2
   if (is.null(times)) {
-    if (is.array(height)) times <- 1:tail(dim(height), 1) else 
+    if (is.array(height)) times <- 1:utils::tail(dim(height), 1) else 
           stop("'times' not specified")
   } else if (length(times)==1) {
     lng <- if (is.array(height)) tail(dim(height), 1) else length(height)
@@ -380,7 +380,7 @@ anim.plot.formula <- function(formula, data=parent.frame(), subset=NULL,
   eframe <- parent.frame() 
   md <- eval(m$data, eframe)
   dots <- lapply(m$..., eval, md, eframe) 
-  mf <- model.frame(formula, data=md)
+  mf <- stats::model.frame(formula, data=md)
   subset.expr <- m$subset
   if (!missing(subset)) {
     s <- eval(subset.expr, data, eframe)
