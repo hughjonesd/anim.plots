@@ -21,8 +21,9 @@ vignette: >
 
 ```{r, echo=FALSE}
 library(knitr)
-opts_knit$set(animation.fun=hook_scianimator)
+opts_knit$set(animation.fun=hook_scianimator, base.url="")
 par(bg="white")
+quick_run <- TRUE # set to TRUE to skip slow animations, only for testing
 ```
 
 ## Introduction
@@ -159,7 +160,7 @@ Instead, we pass in a 2-by-n matrix of `xlim` values. This is sliced up, and
 one slice is used for each frame. Here's the code:
 
 
-```{r, fig.show='animate', interval=0.2}
+```{r, fig.show='animate', interval=0.2, eval=!quick_run}
  x <- rep(rnorm(4000), 40)
  y <- rep(rnorm(4000), 40)
  lims <- 4*0.95^(1:40)
@@ -212,7 +213,7 @@ You don't actually need `window` for this example: you could just use
 uses `window` for something cleverer. We animate the number of discoveries 
 made over the years 1860-1959, from the `discoveries` dataset.
 
-```{r, fig.show='animate'}
+```{r, fig.show='animate', eval=!quick_run}
 xlim <- rbind(1840:1939,1860:1959)
 anim.plot(1860:1959, discoveries, times=100, xlim=xlim, col="red", xlab="Year",
      xaxp=rbind(xlim, 10), window=(t-20):t, type="b", lwd=5, speed=4)
@@ -228,7 +229,7 @@ You can capture this and replay it in whole or part.
 Let's rerun our statistical demonstration. First, we use the `show=FALSE`
 argument to create an `anim.frames` object without displaying it. 
 
-```{r, fig.show='animate'}
+```{r, fig.show='animate', eval=!quick_run}
 allx <- rnorm(200)
 ally <- allx + rnorm(200, 0, 2)
 stat.demo <- anim.plot(allx, ally, times=20, window=1:t, col=rgb(0, 0, 0, 0.5), 
@@ -237,7 +238,7 @@ stat.demo <- anim.plot(allx, ally, times=20, window=1:t, col=rgb(0, 0, 0, 0.5),
 
 Now we display the first five frames, and add a regression line:
 
-```{r, fig.show='animate'}
+```{r, fig.show='animate', eval=!quick_run}
 replay(stat.demo, frames=1:5)
 abline(lm(ally[1:50] ~ allx[1:50]), col="red", lwd=2)
 ```
@@ -272,7 +273,7 @@ available in its environment. This lets you do things like data summaries.
 Here is our sample size demo again, but now we'll add a regression line
 at each frame.
 
-```{r, fig.show='animate'}
+```{r, fig.show='animate', eval=!quick_run}
 replay(stat.demo, after={
         abline(lm(ally~allx), col="red")
         abline(lm(y~x), pty=1, lty=2, col="grey2") 
@@ -362,8 +363,9 @@ goods game, dividing subjects up by the amount they contributed and showing
 whether or not their fellow group members punished them.
 
 ```{r, fig.show='animate'}
-dimnames(PGgame)
 prop <- prop.table(PGgame, 2:3)
+prop[, , 1:2]
+
 anim.barplot(prop, main=paste("Period", 1:20), legend=TRUE, ylim=c(0, 1.5),
       col=c("grey", "red"),
       args.legend=list(x="topright", legend=c("Punished", "Not punished"), 
@@ -378,9 +380,9 @@ In particular there are `anim.points`, `anim.lines`, `anim.text` and
 Here, we use `anim.lines` to recreate an animated version of a famous plot. (You will need the `maps` library installed to see it.)
 
 **Note**: as of November 2014, this and the subsequent plot don't show in `knitr`.
-They work if run from the command line, hwoever.
+They work if run from the command line, however.
 
-```{r, fig.keep='all', fig.show='animate', fig.height=5, fig.width=7}
+```{r, fig.keep='all', fig.show='animate', fig.height=5, fig.width=7, eval=!quick_run}
  if (require('maps')) {
    map('world', xlim=c(22, 40), ylim=c(52,58), fill=TRUE, col=c("wheat", "sienna1"))
    if (require('mapdata')) map('rivers', add=TRUE)
@@ -397,7 +399,7 @@ They work if run from the command line, hwoever.
  
 Below we draw the paths of all 2009 hurricanes, starting them all simultaneously at their first recorded time.
  
-```{r, fig.keep='all', fig.show='animate'}
+```{r, fig.keep='all', fig.show='animate', eval=!quick_run}
 if (require('maps')) {
   hr <- subset(hurricanes, lat > 0 & lat < 50 & lon > -95 & lon < -20 &
         Shour %% 6 == 0)
@@ -416,7 +418,7 @@ Now we've got almost all the tools we need to create our own Gapminder-style ani
 This creates a single animation from two objects. We use it below to
 add labels to the larger countries.
 
-```{r, fig.show='animate', fig.width=6, fig.height=7, interval=0.2}
+```{r, fig.show='animate', fig.width=6, fig.height=7, interval=0.2, eval=!quick_run}
 pl <- palette(adjustcolor(rainbow(23), 1, .6, .6, .6, offset=c(0,0,0,-0.1)))
 
 blobs <- anim.plot(lifex ~ GDP + year, data=gm_data, log="x",
@@ -453,7 +455,7 @@ You can process arguments for each individual plot using the `window.process` ar
 arguments to plot, and a vector of `times`. It should return the plot arguments,
 suitably processed. This can be useful for, e.g., drawing animated movement:
 
-```{r, fig.show='animate', interval=0.1}
+```{r, fig.show='animate', interval=0.1, eval=!quick_run}
 anim.plot(1:100, 1:100 + sin(1:100/3)*5, speed=10, window=(t-5):t, 
       window.process = function(args, times){
         args$col <- rgb(0,0,0,0:5/5) # fade shadows
