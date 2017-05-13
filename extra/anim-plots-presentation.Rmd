@@ -33,7 +33,7 @@ set.par <- function(...) {
 knitr::knit_hooks$set(set.par = set.par)
 # nb setting fig.show = 'animate' here doesn't seem to work
 knitr::opts_chunk$set(interval = 0.25, out.height = '25%', fig.width = 4, fig.height = 2.5)
-knitr::opts_knit$set(animation.fun = knitr::hook_scianimator, global.par = TRUE)
+knitr::opts_knit$set(animation.fun = knitr::hook_scianimator, global.par = TRUE, base.url = "")
 
 ```
 
