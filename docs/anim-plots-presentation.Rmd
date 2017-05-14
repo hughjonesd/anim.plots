@@ -10,9 +10,9 @@ output:
     smaller: yes
 ---
 
-<link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
+<link rel="stylesheet" href="https://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
+<script src="https://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
 <style type="text/css">
 .reveal code.r {
    font-size: 1em
@@ -163,6 +163,6 @@ anim.persp(z = cplot2, times = 1:20, xlab = "", ylab = "", zlab = "Height", phi 
 
 # Thanks!
 
-- http://github.com/hughjonesd/anim.plots
+- https://github.com/hughjonesd/anim.plots
 
 

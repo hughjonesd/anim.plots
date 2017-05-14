@@ -26,20 +26,32 @@ par(bg="white")
 quick_run <- FALSE # set to TRUE to skip slow animations, only for testing
 ```
 
+
+## Front matter
+
+This is the vignette for the `anim.plots` package, version `r packageVersion('anim.plots')`. A copy is online at
+[github.io](https://hughjonesd.github.io/anim.plots/anim.plots.html). This vignette will work best if you are online. If
+you're not online, you can still read it, but you won't be able to view the animations. It is also best viewed in your
+browser, and not e.g. from within RStudio. To see it in your browser, you can run:
+
+```{r, eval = FALSE}
+RShowDoc('anim.plots', package = 'anim.plots')
+```
+
 ## Introduction
 
 [This presentation from GapMinder](http://www.gapminder.org/videos/200-years-that-changed-the-world-bbc/) shows the power of animated graphics. Animation can help tell a story through time, grabbing viewers' attention. It can help us understand our data better, by engaging our natural sense of how events unfold in time. Many of our explanations use this: stories, narratives and history.
 
-So far, though, animated graphics in R have been difficult. `anim.plots` aims to remedy this by providing simple commands to create animated plots, similar to standard R graphics. This vignette provides an introduction to `anim.plots`. By the end, you will be ready to create your own GapMinder-style animation.
+So far, though, animated graphics in R have been difficult. `anim.plots` aims to remedy this by providing simple
+commands to create animated plots, similar to standard R graphics. This vignette provides an introduction to
+`anim.plots`. By the end, you will be ready to create your own GapMinder-style animation.
 
-`anim.plots` is built on top of Yihui Xie's `animation` package. `animation` works
-like traditional cartoon animation. It creates lots of static pictures, then
-flips through them quickly. Under the hood, `anim.plots` is doing the same thing,
-but it bundles it into simple one-liners. If there's something you can't do in
-`anim.plots`, I encourage you to look at `animation`.
+`anim.plots` is built on top of Yihui Xie's `animation` package. `animation` works like traditional cartoon animation.
+It creates lots of static pictures, then flips through them quickly. Under the hood, `anim.plots` is doing the same
+thing, but it bundles it into simple one-liners. If there's something you can't do in `anim.plots`, I encourage you to
+look at `animation`. You might also want to look at the `gganimate` package. Or, if you can use Javascript, `plotly` has
+animation capabilities. Bottom line: `anim.plots` is just a quick hack, there are other powerful solutions out there!
 
-This vignette will work best if you are online. If you're not online, you can
-still read it, but you won't be able to view the animations. It is also best viewed in your browser, and not e.g. from within RStudio.
 
 ## Your first animation
 
