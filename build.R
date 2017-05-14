@@ -1,25 +1,16 @@
 
-# build script, builds vignette manually and updates github.io website
+# script to build package and update github website
 
-
+# build github.io docs ====================================
 # first, create vignette with animation files
-rmarkdown::render('vignettes/anim.plots.Rmd', clean = FALSE)
-# now, vignettes has what we want including the anim.plots_files folder
-# copy them to inst/doc and to docs for website
-# perhaps vignettes products could be moved not copied?
-for (dest in c('inst/doc', 'docs')) {
-  file.copy('vignettes/anim.plots.html',  dest, overwrite = TRUE)
-  file.copy('vignettes/anim.plots.Rmd',   dest, overwrite = TRUE)
-  file.copy('vignettes/anim.plots_files', dest, recursive = TRUE)
-}
+rmarkdown::render('docs/anim.plots.Rmd', clean = FALSE)
 # create presentation on website
 rmarkdown::render('docs/anim-plots-presentation.Rmd')
 
-# create presentation
-# run build with --no-build-vignettes
-devtools::build(vignettes = FALSE)
+# run build. Builds only stub vignette ====================
+devtools::build()
 
-# create example for README.md
+# create example for README.md ============================
 setwd('docs')
 x <- rep(rnorm(400), 10)
 y <- rep(rnorm(400), 10)

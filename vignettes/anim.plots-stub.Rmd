@@ -1,0 +1,32 @@
+---
+title: "anim.plots vignette"
+author: "David Hugh-Jones"
+date: "14/05/2017"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{anim.plots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Vignette stub
+
+You can see the anim.plots vignette online at [github.io](https://hughjonesd.github.io/anim.plots/anim.plots.html). The
+file size was too large to include in CRAN. If you want to build the vignette yourself, run:
+
+```{r, eval = FALSE}
+rmd_file <- system.file('doc', 'anim.plots.Rmd', package = 'anim.plots')
+doc_dir <- system.file('doc', 'anim.plots.Rmd')
+rmarkdown::render(rmd_file, clean = FALSE, output_dir = doc_dir)
+```
+
+And to see the vignette in your web browser:
+
+```{r, eval = FALSE}
+RShowDoc('anim.plots.html', type = 'html', package = 'anim.plots')
+```
+

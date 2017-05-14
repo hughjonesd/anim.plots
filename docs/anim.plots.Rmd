@@ -12,7 +12,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
 ---
-
+ 
 <link rel="stylesheet" href="https://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="https://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
