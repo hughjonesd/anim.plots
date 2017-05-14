@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple animation with anim.plots</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Simple animation with anim.plots',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'David Hugh-Jones' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="anim-plots-presentation_files/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="anim-plots-presentation_files/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="anim-plots-presentation_files/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="anim-plots-presentation_files/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides>
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">13/05/2017</p>
+          </hgroup>
+  </slide>
+
+<link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
+
+<style type="text/css">
+.reveal code.r {
+   font-size: 1em
+}
+img {
+  width: 450px;
+  height: 300px;
+}
+</style>
+
+<slide class=''><hgroup><h2>Simple example</h2></hgroup><article  id="simple-example" class="smaller ">
+
+<ul>
+<li>NB: I set <code>par(xaxt = &#39;n&#39;, yaxt = &#39;n&#39;)</code> to remove clutter</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>library(anim.plots)
+anim.plot(1:5, 1:5, col = &quot;green&quot;)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_1" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(5);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-1-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_1").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_1").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2><code>times</code> controls the frames</h2></hgroup><article  id="times-controls-the-frames" class="smaller ">
+
+<pre class = 'prettyprint lang-r'>x &lt;- rep(1:100/10, 20) 
+times &lt;- rep(1:20, each = 100) # twenty frames with 100 points each
+y &lt;- sin(x*times/4)
+anim.plot(x, y, times = times, type = &quot;l&quot;, col = &quot;orange&quot;, lwd = 2)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_2" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(20);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-2-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_2").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_2").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Incremental animations</h2></hgroup><article  id="incremental-animations" class="smaller ">
+
+<ul>
+<li>Use <code>window</code>:</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>symbs &lt;- anim.plot(rep(1:10, 2), rep(2:1, each = 10), window = 1:t, pch = 1:20, ylim = c(0,3), cex = 2,
+      col = 1:5, xlab = paste(&quot;Plot symbols&quot;, 1:20))</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_3" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(20);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-3-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_3").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_3").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Parameters</h2></hgroup><article  id="parameters" class="smaller ">
+
+<ul>
+<li>Per-point parameters get recycled to the number of points</li>
+<li>Per-plot parameters get recycled to the number of plot frames</li>
+<li>For more complex parameters, use a matrix</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Example - zooming in</h2></hgroup><article  id="example---zooming-in" class="smaller ">
+
+<pre class = 'prettyprint lang-r'>x &lt;- rnorm(4000); y&lt;- rnorm(4000)
+x &lt;- rep(x, 40); y &lt;- rep(y, 40)
+xlims &lt;- 4*2^(-(1:40/10))
+ylims &lt;- xlims &lt;- rbind(xlims, -xlims) 
+anim.plot(x, y, times=40, xlim=xlims, ylim=ylims, col=rgb(0,1,.5,.3), pch=19, 
+      xaxt = &#39;n&#39;, yaxt = &#39;n&#39;)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_4" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(40);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-4-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_4").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_4").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Moving window</h2></hgroup><article  id="moving-window" class="smaller ">
+
+<ul>
+<li>Use <code>window</code> again:</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>## discoveries 1860-1959
+xlim &lt;- rbind(1860:1959,1870:1969)
+anim.plot(1860:1959, discoveries, times = 1:100, xlim = xlim, col = &quot;red&quot;, 
+      xaxp = rbind(xlim, 10), window = t:(t+10), type = &quot;h&quot;, lwd = 8, 
+      xaxt = &quot;s&quot;, yaxt = &quot;s&quot;)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_5" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(100);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-5-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_5").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_5").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Formula interface</h2></hgroup><article  id="formula-interface" class="smaller ">
+
+<pre class = 'prettyprint lang-r'>data(ChickWeight)
+ChickWeight$chn &lt;- as.numeric(as.factor(ChickWeight$Chick))
+tmp &lt;- anim.plot(weight ~ chn + Time, data = ChickWeight, col = as.numeric(Diet), 
+      pch = as.numeric(Diet))</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_6" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(12);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-6-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_6").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_6").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Run extra commands</h2></hgroup><article  id="run-extra-commands" class="smaller ">
+
+<ul>
+<li>Use <code>replay</code> with <code>before</code> and <code>after</code>:</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>replay(tmp, after = legend(&quot;topleft&quot;, legend = paste(&quot;Diet&quot;, 1:4), pch = 1:4, 
+      col = 1:4, horiz = TRUE))</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_7" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(12);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-7-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_7").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_7").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Plots available</h2></hgroup><article  id="plots-available" class="smaller ">
+
+</article></slide><slide class=''><hgroup><h2>Histogram</h2></hgroup><article  id="histogram" class="smaller ">
+
+<pre class = 'prettyprint lang-r'>anim.hist(rep(rnorm(5000), 7), times = rep(1:7, each = 5000), 
+     breaks = c(5, 10, 20, 50, 100, 200, 500, 1000), main = &quot;Normal distribution&quot;)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_8" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(7);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-8-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_8").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_8").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Animated curve</h2></hgroup><article  id="animated-curve" class="smaller ">
+
+<pre class = 'prettyprint lang-r'>anim.curve(x^t, times = 10:50 / 10, n = 20)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_9" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(41);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-9-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_9").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_9").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>Contour plot</h2></hgroup><article  id="contour-plot" class="smaller ">
+
+<ul>
+<li>Using a dataset I made earlier</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>anim.contour(z = cplot, times = 1:20, levels = 80 + 1:12 * 10, lty = c(1, 2, 2))</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_11" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(20);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-11-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_11").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_11").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class=''><hgroup><h2>3D animation</h2></hgroup><article  id="d-animation" class="smaller ">
+
+<pre class = 'prettyprint lang-r'>par(mar = rep(0, 4))
+anim.persp(z = cplot2, times = 1:20, xlab = &quot;&quot;, ylab = &quot;&quot;, zlab = &quot;Height&quot;, phi = 45,
+      theta = 30, speed = 5, border = NA, r = 3, col = &quot;yellowgreen&quot;, 
+      shade = .5, box = FALSE)</pre>
+
+<div class="scianimator">
+<div id="unnamed_chunk_13" style="display: inline-block;">
+</div></div>
+
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function() {
+      var imgs = Array(20);
+      for (i = 0; ; i++) {
+        if (i == imgs.length) break;
+        imgs[i] = "anim-plots-presentation_files/figure-html/unnamed-chunk-13-" + (i + 1) + ".png";
+      }
+      $("#unnamed_chunk_13").scianimator({
+          "images": imgs,
+          "delay": 250,
+          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
+      });
+      $("#unnamed_chunk_13").scianimator("play");
+    });
+  })(jQuery);
+</script>
+
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Thanks!</h2></hgroup><article  id="thanks" class="smaller ">
+
+<ul>
+<li><a href='http://github.com/hughjonesd/anim.plots' title=''>http://github.com/hughjonesd/anim.plots</a></li>
+</ul></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
