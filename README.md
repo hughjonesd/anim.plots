@@ -35,3 +35,10 @@ ylims <- xlims <- rbind(xlims, -xlims)
 
 anim.plot(x, y, times = 10, speed = 2, xlim = xlims, ylim = ylims, col = rgb(0,0,0,.3), pch = 19)
 ```
+
+![anim.plots example](https://hughjonesd.github.io/anim.plots/readme-example.gif)
+
+## More information
+
+* [Vignette](https://hughjonesd.github.io/anim.plots/anim.plots.html)
+* [Web presentation](https://hughjonesd.github.io/anim.plots/anim-plots-presentation.html)
