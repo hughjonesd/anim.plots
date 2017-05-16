@@ -31,9 +31,9 @@ Zooming into a bivariate normal distribution:
 x <- rep(rnorm(400), 10)
 y <- rep(rnorm(400), 10)
 xlims <- 4 * 2^-(1:10/10)
-ylims <- xlims <- rbind(xlims, -xlims) 
-
-anim.plot(x, y, times = 10, speed = 2, xlim = xlims, ylim = ylims, col = rgb(0,0,0,.3), pch = 19)
+ylims <- xlims <- rbind(xlims, -xlims)
+anim.plot(x, y, times = 10, speed = 2, xlim = xlims, ylim = ylims, col = rgb(0,1,0,.3), pch = 19,
+      show = FALSE)
 ```
 
 ![anim.plots example](https://hughjonesd.github.io/anim.plots/readme-example.gif)
@@ -48,4 +48,4 @@ anim.plot(x, y, times = 10, speed = 2, xlim = xlims, ylim = ylims, col = rgb(0,0
 
 Got a nice example? <a class="twitter-share-button"
   href="https://twitter.com/intent/tweet?text=@davidhughjones&hashtags=anim.plots,Rstats">
-Tweet it</a>
+Tweet it</a>.
