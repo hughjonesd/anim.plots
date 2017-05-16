@@ -42,3 +42,10 @@ anim.plot(x, y, times = 10, speed = 2, xlim = xlims, ylim = ylims, col = rgb(0,0
 
 * [Vignette](https://hughjonesd.github.io/anim.plots/anim.plots.html)
 * [Web presentation](https://hughjonesd.github.io/anim.plots/anim-plots-presentation.html)
+
+## Feedback
+
+<script src="https://platform.twitter.com/widgets.js">
+Got a nice example? Tweet it: <a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet?text=@davidhughjones&hashtags=anim.plots,Rstats">
+Tweet</a>
