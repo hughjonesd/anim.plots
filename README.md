@@ -45,7 +45,7 @@ anim.plot(x, y, times = 10, speed = 2, xlim = xlims, ylim = ylims, col = rgb(0,0
 
 ## Feedback
 
-<script src="https://platform.twitter.com/widgets.js">
-Got a nice example? Tweet it: <a class="twitter-share-button"
+
+Got a nice example? <a class="twitter-share-button"
   href="https://twitter.com/intent/tweet?text=@davidhughjones&hashtags=anim.plots,Rstats">
-Tweet</a>
+Tweet it</a>
