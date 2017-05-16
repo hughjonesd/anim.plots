@@ -7,7 +7,9 @@ rmarkdown::render('docs/anim.plots.Rmd', clean = FALSE)
 # create presentation on website
 rmarkdown::render('docs/anim-plots-presentation.Rmd')
 
-# run build. Builds only stub vignette ====================
+# run build. Builds only stub vignette; copies real vignette to inst/doc =======
+devtools::build_vignettes()
+file.copy('docs/anim.plots.Rmd', 'inst/doc')
 devtools::build()
 
 # create example for README.md ============================
