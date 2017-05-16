@@ -8,7 +8,7 @@
 #' @docType package
 #' @details
 #'
-#' For more information, run \code{vignette('anim.plots')}, or check the vignette out
+#' For more information, run \code{vignette('anim.plots-stub')}, or check the vignette out
 #' on the web at \url{https://hughjonesd.github.io/anim.plots/anim.plots.html}.
 #'
 #' @name anim.plots-package

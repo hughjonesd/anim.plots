@@ -168,8 +168,8 @@ in general this wouldn't work very well -
 what if we want to pass in more complex arguments, like vectors with arbitrary
 lengths, or matrices?
 
-Instead, we pass in a 2-by-n matrix of `xlim` values. This is sliced up, and
-one slice is used for each frame. Here's the code:
+Instead, we pass in a 2-by-n matrix of `xlim` values. This is sliced up into columns, and
+one column is used for each frame. Here's the code:
 
 
 ```{r, fig.show='animate', interval=0.2, eval=!quick_run}
