@@ -24,15 +24,15 @@ anim.lines(...)
 
 anim.text(...)
 
-\method{anim.plot}{default}(x, y = NULL, times = 1:length(x), speed = 1,
-  show = TRUE, use.times = TRUE, window = if (identical(fn, lines)) t:(t +
-  1) else t, window.process = NULL, xlim = NULL, ylim = NULL,
-  col = par("col"), xaxp = NULL, yaxp = NULL, pch = par("pch"),
-  cex = 1, labels = NULL, asp = NULL, lty = par("lty"),
-  lwd = par("lwd"), fn = plot, ...)
+\method{anim.plot}{default}(x, y = NULL, times = 1:length(x),
+  speed = 1, show = TRUE, use.times = TRUE, window = if
+  (identical(fn, lines)) t:(t + 1) else t, window.process = NULL,
+  xlim = NULL, ylim = NULL, col = par("col"), xaxp = NULL,
+  yaxp = NULL, pch = par("pch"), cex = 1, labels = NULL,
+  asp = NULL, lty = par("lty"), lwd = par("lwd"), fn = plot, ...)
 
-\method{anim.plot}{formula}(formula, data = parent.frame(), subset = NULL,
-  fn = plot, window = t, ...)
+\method{anim.plot}{formula}(formula, data = parent.frame(),
+  subset = NULL, fn = plot, window = t, ...)
 
 \method{anim.points}{default}(...)
 

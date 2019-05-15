@@ -11,6 +11,10 @@
 #' For more information, run \code{vignette('anim.plots-stub')}, or check the vignette out
 #' on the web at \url{https://hughjonesd.github.io/anim.plots/anim.plots.html}.
 #'
+#' 
+#' Be aware that anim.plots is just a simple wrapper around Yihui Xie's "animation"
+#' package. You may want to consider more modern solutions such as 
+#' \href{https://cran.r-project.org/package=gganimate}{gganimate}.
 #' @name anim.plots-package
 NULL
 

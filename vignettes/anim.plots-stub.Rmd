@@ -19,11 +19,14 @@ You can see the anim.plots vignette online at [github.io](https://hughjonesd.git
 file size was too large to include in CRAN. If you want to build the vignette yourself, run:
 
 ```{r, eval = FALSE}
-rmd_file <- system.file('doc', 'anim.plots.Rmd', package = 'anim.plots')
-doc_dir <- 'path/to/somewhere/appropriate' # e.g. your Desktop folder
+rmd_file <- system.file("doc", "full", "anim.plots.Rmd", package = "anim.plots")
+doc_dir <- "path/to/somewhere/appropriate" # e.g. your Desktop folder
 rmarkdown::render(rmd_file, clean = FALSE, output_dir = doc_dir)
 ```
 
 You can then view it in your web browser.
+
+Be aware that anim.plots is just a simple wrapper around Yihui Xie's "animation"
+package. You may want to consider more modern solutions such as [gganimate](https://cran.r-project.org/package=gganimate).
 
 

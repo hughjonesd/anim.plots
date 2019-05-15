@@ -7,9 +7,10 @@
 \alias{anim.arrowplot}
 \title{Draw an animation of line segments or arrows.}
 \usage{
-anim.segments(x0, y0, x1 = NULL, y1 = NULL, times = NULL, speed = 1,
-  show = TRUE, use.times = TRUE, window = t, window.process = NULL,
-  fn = segments, col = NULL, lty = NULL, lwd = NULL, ...)
+anim.segments(x0, y0, x1 = NULL, y1 = NULL, times = NULL,
+  speed = 1, show = TRUE, use.times = TRUE, window = t,
+  window.process = NULL, fn = segments, col = NULL, lty = NULL,
+  lwd = NULL, ...)
 
 anim.arrows(..., length = 0.25, angle = 30, code = 2)
 

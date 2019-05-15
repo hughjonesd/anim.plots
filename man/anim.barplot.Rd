@@ -11,8 +11,9 @@ anim.barplot(...)
   speed = 1, use.times = TRUE, window = t, window.process = NULL,
   width = 1, space = NULL, names.arg = NULL, beside = FALSE,
   density = NULL, angle = NULL, col = NULL, border = NULL,
-  horiz = FALSE, xlim = NULL, ylim = NULL, xlab = NULL, ylab = NULL,
-  main = NULL, sub = NULL, offset = NULL, legend.text = NULL, ...)
+  horiz = FALSE, xlim = NULL, ylim = NULL, xlab = NULL,
+  ylab = NULL, main = NULL, sub = NULL, offset = NULL,
+  legend.text = NULL, ...)
 }
 \arguments{
 \item{height}{a vector, matrix or array. If a vector it is divided up by 
