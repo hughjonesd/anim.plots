@@ -20,5 +20,6 @@ Suggests:
     maps,
     knitr,
     mapdata,
-    testthat
+    testthat,
+    rmarkdown
 RoxygenNote: 6.1.1
