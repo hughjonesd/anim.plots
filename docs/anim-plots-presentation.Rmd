@@ -10,9 +10,6 @@ output:
     smaller: yes
 ---
 
-<link rel="stylesheet" href="https://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="https://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
 <style type="text/css">
 .reveal code.r {
    font-size: 1em
@@ -33,7 +30,7 @@ set.par <- function(...) {
 knitr::knit_hooks$set(set.par = set.par)
 # nb setting fig.show = 'animate' here doesn't seem to work
 knitr::opts_chunk$set(interval = 0.25, out.height = '25%', fig.width = 4, fig.height = 2.5)
-knitr::opts_knit$set(animation.fun = knitr::hook_scianimator, global.par = TRUE, base.url = "")
+knitr::opts_knit$set(animation.fun = knitr::hook_gifski, global.par = TRUE, base.url = "")
 
 ```
 

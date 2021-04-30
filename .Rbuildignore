@@ -6,3 +6,5 @@
 ^extra$
 ^docs$
 ^\.github$
+^doc$
+^Meta$

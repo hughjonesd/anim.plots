@@ -620,12 +620,16 @@ anim.segments <- function(x0, y0, x1=NULL, y1=NULL, times=NULL, speed=1, show=TR
     times <- times[times > min(times)]
   } else if (is.null(x1)) x1 <- x0 else if (is.null(y1)) y1 <- y0
   
+  oth.args <- list()
   chunk.args <- list(x0=x0, y0=y0, x1=x1, y1=y1, col=col, lty=lty, lwd=lwd)
-  for (ca in c("length", "angle", "code")) if (ca %in% names(dots)) 
-        chunk.args[[ca]] <- dots[[ca]]
+  for (ca in c("length", "angle", "code")) if (ca %in% names(dots)) {
+    oth.args[[ca]] <- dots[[ca]]
+    dots[[ca]] <- NULL
+  }
+        
   .do.loop(fn, times=times, show=show, speed=speed, use.times=use.times, 
         window=substitute(window), window.process=window.process, 
-        chunk.args=chunk.args,   
+        chunk.args=chunk.args, oth.args = oth.args,  
         slice.args=dots, arg.dims=list(xlim=1, ylim=1), chunkargs.ref.length=crl)
 }
 

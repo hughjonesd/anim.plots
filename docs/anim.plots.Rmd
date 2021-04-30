@@ -1,5 +1,5 @@
 ---
-title: "Animations with anim.plots"
+title: "anim.plots"
 author: "David Hugh-Jones"
 date: "2017-05-13"
 output: 
@@ -13,16 +13,12 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
  
-<link rel="stylesheet" href="https://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="https://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
-
-
 
 ```{r, echo=FALSE}
 library(knitr)
-opts_knit$set(animation.fun=hook_scianimator, base.url="")
-par(bg="white")
+opts_knit$set(base.url = "")
+opts_chunk$set(animation.hook = knitr::hook_gifski)
+par(bg = "white")
 quick_run <- FALSE # set to TRUE to skip slow animations, only for testing
 ```
 
@@ -333,7 +329,7 @@ anim.curve(sin(x*t), times=1:30, n=100, speed=12, col="darkgreen", from=-1, to=1
 ```
 
 `anim.contour` does contour plots. Here's the map of the Maunga Whau volcano
-in Auckland, emerging from a sphere. (Well, I had to come up with something.)
+in Auckland, emerging from a sphere.
 
 ```{r, fig.show='animate'}
 # create a sphere:

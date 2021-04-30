@@ -1,65 +1,135 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="David Hugh-Jones" />
 
 <meta name="date" content="2017-05-13" />
 
-<title>Animations with anim.plots</title>
+<title>anim.plots</title>
 
+<script src="anim.plots_files/header-attrs-2.7/header-attrs.js"></script>
 
-
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
 </style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
-<link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/3.3/Resources/library/rmarkdown/rmarkdown/templates/html_vignette/resources/vignette.css" type="text/css" />
+
+<link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/4.0/Resources/library/rmarkdown/rmarkdown/templates/html_vignette/resources/vignette.css" type="text/css" />
+
+
+
 
 </head>
 
@@ -68,19 +138,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">Animations with anim.plots</h1>
-<h4 class="author"><em>David Hugh-Jones</em></h4>
-<h4 class="date"><em>2017-05-13</em></h4>
+<h1 class="title toc-ignore">anim.plots</h1>
+<h4 class="author">David Hugh-Jones</h4>
+<h4 class="date">2017-05-13</h4>
 
 
 
-<link rel="stylesheet" href="https://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="https://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
 <div id="front-matter" class="section level2">
 <h2>Front matter</h2>
-<p>This is the vignette for the <code>anim.plots</code> package, version 0.2. A copy is online at <a href="https://hughjonesd.github.io/anim.plots/anim.plots.html">github.io</a>. This vignette will work best if you are online. If you’re not online, you can still read it, but you won’t be able to view the animations. It is also best viewed in your browser, and not e.g. from within RStudio. To see it in your browser, you can run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">RShowDoc</span>(<span class="st">&#39;anim.plots&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;anim.plots&#39;</span>)</code></pre></div>
+<p>This is the vignette for the <code>anim.plots</code> package, version 0.2.1.9000. A copy is online at <a href="https://hughjonesd.github.io/anim.plots/anim.plots.html">github.io</a>. This vignette will work best if you are online. If you’re not online, you can still read it, but you won’t be able to view the animations. It is also best viewed in your browser, and not e.g. from within RStudio. To see it in your browser, you can run:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RShowDoc</span>(<span class="st">&#39;anim.plots&#39;</span>, <span class="at">package =</span> <span class="st">&#39;anim.plots&#39;</span>)</span></code></pre></div>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
@@ -91,30 +158,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="your-first-animation" class="section level2">
 <h2>Your first animation</h2>
 <p>Here’s a very simple animation using the <code>anim.plot</code> command. It shows a dot moving across the screen.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(anim.plots)
-<span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">times=</span><span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">19</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_3" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(10);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-3-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_3").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_3").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(anim.plots)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">times=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">&quot;green&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-3-.gif" /><!-- --></p>
 <p>This command shows the basic way <code>anim.plots</code> commands work:</p>
 <ul>
 <li>The animated command (here, <code>anim.plot</code>) takes the same arguments as the normal graphics command (<code>plot</code>), plus an extra <code>times</code> argument.</li>
@@ -122,91 +168,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The <code>times</code> command controls what gets plotted when. Here, it runs from 1 to 10, so you see ten frames of animation.</p>
 <p>In each frame, the corresponding values from the first two arguments to <code>anim.plot</code> get used. These also run from 1 to 10. They are passed in as the first two arguments to <code>plot</code>, which control the x and y position. So the green dot moves diagonally up the screen, from (1,1) to (10,10).</p>
 <p>If we reverse the order of the <code>times</code> argument, we reverse the order of the plot:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">times=</span><span class="dv">10</span>:<span class="dv">1</span>, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">19</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_4" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(10);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-4-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_4").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_4").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">times=</span><span class="dv">10</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;green&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-4-.gif" /><!-- --></p>
 <p>If <code>times</code> has multiple non-unique values, then each set of points corresponding to a single value of <code>times</code> will be plotted together, in a single frame. So, this snippet plots our points two at a time:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">5</span>, <span class="dt">each=</span><span class="dv">2</span>)
-times</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">each=</span><span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>times</span></code></pre></div>
 <pre><code>##  [1] 1 1 2 2 3 3 4 4 5 5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">times=</span>times, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">19</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_5" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(5);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-5-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_5").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_5").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">times=</span>times, <span class="at">col=</span><span class="st">&quot;green&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-5-.gif" /><!-- --></p>
 <p>There are two shortcuts you can use. First, if <code>times</code> is a single number, <code>anim.plot</code> will create that many frames, each with an equal number of points. So the following code would have just the same result as the previous example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">times=</span><span class="dv">5</span>, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">19</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">times=</span><span class="dv">5</span>, <span class="at">col=</span><span class="st">&quot;green&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>)</span></code></pre></div>
 <p>Second, if you don’t specify <code>times</code> at all, it will guess that you want to plot one point at a time. So</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">19</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">&quot;green&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>)</span></code></pre></div>
 <p>will plot 10 frames.</p>
 </div>
 <div id="recycling-arguments" class="section level2">
 <h2>Recycling arguments</h2>
 <p>You can animate more than just the location of points. Here are the first twenty plot symbols, in different colours:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>)
-y &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">2</span>:<span class="dv">1</span>, <span class="dt">each=</span><span class="dv">10</span>)
-<span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">10</span>, y, <span class="dt">times=</span><span class="dv">1</span>:<span class="dv">20</span>, <span class="dt">col=</span>cols, <span class="dt">pch=</span><span class="dv">1</span>:<span class="dv">20</span>, <span class="dt">cex=</span><span class="dv">3</span>,
-  <span class="dt">ylim=</span><span class="kw">c</span>(<span class="fl">0.5</span>,<span class="fl">2.5</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_8" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(20);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-8-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_8").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_8").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">each=</span><span class="dv">10</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, y, <span class="at">times=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">col=</span>cols, <span class="at">pch=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">cex=</span><span class="dv">3</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">2.5</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-8-.gif" /><!-- --></p>
 <p>The <code>pch</code> and <code>col</code> arguments control the plot symbol and colour, just as they do in the <code>plot</code> command. <code>pch</code> goes from 1 to 20, so a different plot symbol is shown in each frame. <code>cols</code> has five values, so it is recycled four times. (And <code>cex</code>, which controls the size of the plot symbol, has one value, so it is recycled twenty times! In fact, this was already happening in the earlier plots, with <code>pch=19</code> and <code>col='green'</code>.)</p>
 <p>This example demonstrates <em>rule one</em> of recycling arguments in <code>anim.plots</code>:</p>
 <ul>
@@ -216,70 +199,28 @@ y &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">2</
 <p>This way of working should be familiar. In the <code>plot</code> command, you can plot different points with different colours by specifying a vector argument to <code>col</code>. Here, in the same way, you can plot points with different colours <em>across multiple frames of animation</em>.</p>
 <p>You can also recycle <code>x</code> and <code>y</code> values. The example sets <code>x=1:10</code>, and this is used twice to produce two rows of plots.</p>
 <p>Not all arguments work on each point. Some arguments work on a whole plot at once. But when you are animating, you can change those arguments too. The next command plots our symbols five at a time, and shows an appropriate title.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">titles &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Symbols&quot;</span>, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">6</span>,<span class="dv">11</span>,<span class="dv">16</span>), <span class="st">&quot;to&quot;</span>, <span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>))
-<span class="kw">anim.plot</span>(<span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">10</span>,<span class="dv">2</span>), <span class="kw">rep</span>(<span class="dv">2</span>:<span class="dv">1</span>, <span class="dt">each=</span><span class="dv">10</span>), <span class="dt">times=</span><span class="dv">4</span>, <span class="dt">pch=</span><span class="dv">1</span>:<span class="dv">20</span>, <span class="dt">cex=</span><span class="dv">3</span>, <span class="dt">main=</span>titles, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">3</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_9" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(4);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-9-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_9").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_9").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>titles <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;Symbols&quot;</span>, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">6</span>,<span class="dv">11</span>,<span class="dv">16</span>), <span class="st">&quot;to&quot;</span>, <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">2</span>), <span class="fu">rep</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">each=</span><span class="dv">10</span>), <span class="at">times=</span><span class="dv">4</span>, <span class="at">pch=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">cex=</span><span class="dv">3</span>, <span class="at">main=</span>titles, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">3</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-9-.gif" /><!-- --></p>
 <p>There are four frames, and <code>titles</code> is a vector of length 4, one for each frame. <em>Rule two</em> of <code>anim.plots</code> is:</p>
 <ul>
 <li>Per-plot arguments are recycled to the total number of frames in the animation.</li>
 </ul>
 <p>Now you just need to know one more thing about argument recycling in <code>anim.plots</code>. To illustrate it, let’s suppose we want to animate “zooming in” on a distribution of points. To do that, we will change the <code>xlim</code> and <code>ylim</code> arguments to <code>plot</code>. These give the left/right, and top/bottom edges of the plot window. They are length two vectors.</p>
 <p>You might think we would just pass in a vector of <code>xlim</code> values, twice the length of the number of frames, and chop it up with two <code>xlim</code> values for each frame. But in general this wouldn’t work very well - what if we want to pass in more complex arguments, like vectors with arbitrary lengths, or matrices?</p>
-<p>Instead, we pass in a 2-by-n matrix of <code>xlim</code> values. This is sliced up, and one slice is used for each frame. Here’s the code:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> x &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">rnorm</span>(<span class="dv">4000</span>), <span class="dv">40</span>)
- y &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">rnorm</span>(<span class="dv">4000</span>), <span class="dv">40</span>)
- lims &lt;-<span class="st"> </span><span class="dv">4</span>*<span class="fl">0.95</span>^(<span class="dv">1</span>:<span class="dv">40</span>)
- ylims &lt;-<span class="st"> </span>xlims &lt;-<span class="st"> </span><span class="kw">rbind</span>(lims, -lims) 
- <span class="co"># First five values of xlims: </span>
- xlims[,<span class="dv">1</span>:<span class="dv">5</span>]</code></pre></div>
+<p>Instead, we pass in a 2-by-n matrix of <code>xlim</code> values. This is sliced up into columns, and one column is used for each frame. Here’s the code:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a> x <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>), <span class="dv">40</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a> y <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>), <span class="dv">40</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a> lims <span class="ot">&lt;-</span> <span class="dv">4</span><span class="sc">*</span><span class="fl">0.95</span><span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a> ylims <span class="ot">&lt;-</span> xlims <span class="ot">&lt;-</span> <span class="fu">rbind</span>(lims, <span class="sc">-</span>lims) </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># First five values of xlims: </span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a> xlims[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>##      [,1]  [,2]    [,3]      [,4]      [,5]
 ## lims  3.8  3.61  3.4295  3.258025  3.095124
 ##      -3.8 -3.61 -3.4295 -3.258025 -3.095124</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="kw">anim.plot</span>(x, y, <span class="dt">times=</span><span class="dv">40</span>, <span class="dt">speed=</span><span class="dv">5</span>, <span class="dt">xlim=</span>xlims, <span class="dt">ylim=</span>ylims, 
-       <span class="dt">col=</span><span class="kw">rgb</span>(<span class="kw">runif</span>(<span class="dv">4000</span>), <span class="dv">0</span>, <span class="kw">runif</span>(<span class="dv">4000</span>), .<span class="dv">3</span>), <span class="dt">pch=</span><span class="dv">19</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_10" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(40);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-10-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_10").scianimator({
-          "images": imgs,
-          "delay": 200,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_10").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">anim.plot</span>(x, y, <span class="at">times=</span><span class="dv">40</span>, <span class="at">speed=</span><span class="dv">5</span>, <span class="at">xlim=</span>xlims, <span class="at">ylim=</span>ylims, </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">rgb</span>(<span class="fu">runif</span>(<span class="dv">4000</span>), <span class="dv">0</span>, <span class="fu">runif</span>(<span class="dv">4000</span>), .<span class="dv">3</span>), <span class="at">pch=</span><span class="dv">19</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-10-.gif" /><!-- --></p>
 <p>We repeat our x and y values 40 times, so we will plot the same points, but within different bounds. The plot zooms in by 5% each time.</p>
 <p>So, <em>rule three</em> for recycling parameters is:</p>
 <ul>
@@ -291,284 +232,95 @@ y &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">2</
 <h2>Creating incremental plots</h2>
 <p>Paradoxically, we don’t always want to plot “one time at a time”. Sometimes we may want to add points incrementally. There is a simple way to do this, using the <code>window</code> argument to <code>anim.plot</code>.</p>
 <p>The default value of the <code>window</code> argument is <code>window=t</code>. This plots all the points from time t at time t. By using a different expression involving <code>t</code>, you can change the set of points that gets plotted. For example, <code>window=1:t</code> will plot everything from time 1 to time t. Let’s use this for a statistical demonstration of the effect of increasing sample size.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">allx &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">400</span>)
-ally &lt;-<span class="st"> </span>allx +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">400</span>)
-<span class="kw">anim.plot</span>(allx, ally, <span class="dt">times=</span><span class="dv">40</span>, <span class="dt">window=</span><span class="dv">1</span>:t, <span class="dt">col=</span><span class="kw">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="dt">pch=</span><span class="dv">19</span>, 
-      <span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;Sample size&quot;</span>, <span class="dv">1</span>:<span class="dv">40</span>*<span class="dv">10</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_11" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(40);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-11-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_11").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_11").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>allx <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">400</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ally <span class="ot">&lt;-</span> allx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">400</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(allx, ally, <span class="at">times=</span><span class="dv">40</span>, <span class="at">window=</span><span class="dv">1</span><span class="sc">:</span>t, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">pch=</span><span class="dv">19</span>, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">main=</span><span class="fu">paste</span>(<span class="st">&quot;Sample size&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">40</span><span class="sc">*</span><span class="dv">10</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-11-.gif" /><!-- --></p>
 <p>As <code>t</code> grows, the set of points plotted increases and the relationship between x and y becomes clearer.</p>
 <p>You may be wondering why <code>window</code> doesn’t also affect the <code>main</code> argument and mess up your plot titles. The short answer is, magic ;-) The long answer is that <code>anim.plots</code> knows the difference between per-plot and per-point arguments: only per-point arguments are affected by <code>window</code>.</p>
 <p>You don’t actually need <code>window</code> for this example: you could just use <code>anim.points</code> to add points incrementally to an animation. Our next trick uses <code>window</code> for something cleverer. We animate the number of discoveries made over the years 1860-1959, from the <code>discoveries</code> dataset.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xlim &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="dv">1840</span>:<span class="dv">1939</span>,<span class="dv">1860</span>:<span class="dv">1959</span>)
-<span class="kw">anim.plot</span>(<span class="dv">1860</span>:<span class="dv">1959</span>, discoveries, <span class="dt">times=</span><span class="dv">100</span>, <span class="dt">xlim=</span>xlim, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Year&quot;</span>,
-     <span class="dt">xaxp=</span><span class="kw">rbind</span>(xlim, <span class="dv">10</span>), <span class="dt">window=</span>(t<span class="dv">-20</span>):t, <span class="dt">type=</span><span class="st">&quot;b&quot;</span>, <span class="dt">lwd=</span><span class="dv">5</span>, <span class="dt">speed=</span><span class="dv">4</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_12" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(100);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-12-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_12").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_12").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="dv">1840</span><span class="sc">:</span><span class="dv">1939</span>,<span class="dv">1860</span><span class="sc">:</span><span class="dv">1959</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1860</span><span class="sc">:</span><span class="dv">1959</span>, discoveries, <span class="at">times=</span><span class="dv">100</span>, <span class="at">xlim=</span>xlim, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxp=</span><span class="fu">rbind</span>(xlim, <span class="dv">10</span>), <span class="at">window=</span>(t<span class="dv">-20</span>)<span class="sc">:</span>t, <span class="at">type=</span><span class="st">&quot;b&quot;</span>, <span class="at">lwd=</span><span class="dv">5</span>, <span class="at">speed=</span><span class="dv">4</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-12-.gif" /><!-- --></p>
 <p>Here, we display discoveries in a 20-year window: <code>(t-20):t</code>.</p>
 </div>
 <div id="replaying-plots" class="section level2">
 <h2>Replaying plots</h2>
 <p><code>anim.plot</code> and similar functions return an object of class <code>anim.frames</code>. You can capture this and replay it in whole or part.</p>
 <p>Let’s rerun our statistical demonstration. First, we use the <code>show=FALSE</code> argument to create an <code>anim.frames</code> object without displaying it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">allx &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">200</span>)
-ally &lt;-<span class="st"> </span>allx +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">200</span>, <span class="dv">0</span>, <span class="dv">2</span>)
-stat.demo &lt;-<span class="st"> </span><span class="kw">anim.plot</span>(allx, ally, <span class="dt">times=</span><span class="dv">20</span>, <span class="dt">window=</span><span class="dv">1</span>:t, <span class="dt">col=</span><span class="kw">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), 
-      <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;Sample size&quot;</span>, <span class="dv">1</span>:<span class="dv">20</span>*<span class="dv">10</span>), <span class="dt">show=</span><span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>allx <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">200</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ally <span class="ot">&lt;-</span> allx <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">200</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>stat.demo <span class="ot">&lt;-</span> <span class="fu">anim.plot</span>(allx, ally, <span class="at">times=</span><span class="dv">20</span>, <span class="at">window=</span><span class="dv">1</span><span class="sc">:</span>t, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">pch=</span><span class="dv">19</span>, <span class="at">main=</span><span class="fu">paste</span>(<span class="st">&quot;Sample size&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span><span class="sc">*</span><span class="dv">10</span>), <span class="at">show=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p>Now we display the first five frames, and add a regression line:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">replay</span>(stat.demo, <span class="dt">frames=</span><span class="dv">1</span>:<span class="dv">5</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">abline</span>(<span class="kw">lm</span>(ally[<span class="dv">1</span>:<span class="dv">50</span>] ~<span class="st"> </span>allx[<span class="dv">1</span>:<span class="dv">50</span>]), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_14" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(5);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-14-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_14").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_14").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replay</span>(stat.demo, <span class="at">frames=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(ally[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>] <span class="sc">~</span> allx[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>]), <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-14-.gif" /><!-- --></p>
 <p>Notice that you can add standard R graphics like <code>abline</code>. This is not surprising: really, everything in the animation is done by normal graphics functions.</p>
 <p>Sometimes we need to call a separate function to change the plot. For example, to add a legend to a standard plot, you need to use the <code>legend</code> function. We can’t just do this at the end, because we want it to be shown during the whole animation.</p>
 <p>To do this, you can use the <code>after</code> argument to <code>replay</code>. For example, the next animation shows the growth of fifty chicks who are fed one of four different diets. We add a legend showing the diets.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ChickWeight$chn &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(ChickWeight$Chick))
-chw.anim &lt;-<span class="st"> </span><span class="kw">anim.plot</span>(ChickWeight$chn, ChickWeight$weight, 
-      <span class="dt">times=</span>ChickWeight$Time, <span class="dt">col=</span><span class="kw">as.numeric</span>(ChickWeight$Diet), 
-      <span class="dt">pch=</span><span class="kw">as.numeric</span>(ChickWeight$Diet), <span class="dt">speed=</span><span class="dv">3</span>, <span class="dt">show=</span><span class="ot">FALSE</span>)
-
-<span class="kw">replay</span>(chw.anim, <span class="dt">after=</span><span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend=</span><span class="kw">paste</span>(<span class="st">&quot;Diet&quot;</span>, <span class="dv">1</span>:<span class="dv">4</span>), <span class="dt">pch=</span><span class="dv">1</span>:<span class="dv">4</span>, 
-      <span class="dt">col=</span><span class="dv">1</span>:<span class="dv">4</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_15" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(12);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-15-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_15").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_15").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ChickWeight<span class="sc">$</span>chn <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Chick))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>chw.anim <span class="ot">&lt;-</span> <span class="fu">anim.plot</span>(ChickWeight<span class="sc">$</span>chn, ChickWeight<span class="sc">$</span>weight, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">times=</span>ChickWeight<span class="sc">$</span>Time, <span class="at">col=</span><span class="fu">as.numeric</span>(ChickWeight<span class="sc">$</span>Diet), </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">pch=</span><span class="fu">as.numeric</span>(ChickWeight<span class="sc">$</span>Diet), <span class="at">speed=</span><span class="dv">3</span>, <span class="at">show=</span><span class="cn">FALSE</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">replay</span>(chw.anim, <span class="at">after=</span><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="at">legend=</span><span class="fu">paste</span>(<span class="st">&quot;Diet&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), <span class="at">pch=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">col=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-15-.gif" /><!-- --></p>
 <p>The argument to <code>after</code> will be evaluated after each frame of the animation.</p>
 <p>When <code>after</code> is evaluated, the arguments to the preceding function call are available in its environment. This lets you do things like data summaries. Here is our sample size demo again, but now we’ll add a regression line at each frame.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">replay</span>(stat.demo, <span class="dt">after=</span>{
-        <span class="kw">abline</span>(<span class="kw">lm</span>(ally~allx), <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)
-        <span class="kw">abline</span>(<span class="kw">lm</span>(y~x), <span class="dt">pty=</span><span class="dv">1</span>, <span class="dt">lty=</span><span class="dv">2</span>, <span class="dt">col=</span><span class="st">&quot;grey2&quot;</span>) 
-        <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">lty=</span><span class="dv">2</span>:<span class="dv">1</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;grey2&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Estimate&quot;</span>, 
-              <span class="st">&quot;True&quot;</span>))
-      })</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_16" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(20);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-16-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_16").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_16").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replay</span>(stat.demo, <span class="at">after=</span>{</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">abline</span>(<span class="fu">lm</span>(ally<span class="sc">~</span>allx), <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">abline</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x), <span class="at">pty=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;grey2&quot;</span>) </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="at">lty=</span><span class="dv">2</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;grey2&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Estimate&quot;</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;True&quot;</span>))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      })</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-16-.gif" /><!-- --></p>
 <p>Look at the first two calls to <code>abline</code>. The first call uses <code>allx</code> and <code>ally</code>, data from the global environment. The second call uses <code>x</code> and <code>y</code>. These are the names of the first two arguments to <code>plot</code> - the data that has been plotted. Notice also how we use curly brackets (<code>{}</code>) to run multiple statements after each plot.</p>
 <p>There is also a <code>before</code> argument to call a function before the main plot is run. For more complicated plots, you can <code>merge</code> two <code>anim.frames</code> objects: more on this below.</p>
 </div>
 <div id="other-functions-and-formula-interface" class="section level2">
 <h2>Other functions and formula interface</h2>
 <p>Like many plot functions, <code>anim.plot</code> has a formula interface. The following command would show the plot of chick growth again, and is much easier to type.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(weight ~<span class="st"> </span>chn +<span class="st"> </span>Time, <span class="dt">data=</span>ChickWeight, <span class="dt">col=</span><span class="kw">as.numeric</span>(Diet), 
-     <span class="dt">pch=</span><span class="kw">as.numeric</span>(Diet), <span class="dt">speed=</span><span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(weight <span class="sc">~</span> chn <span class="sc">+</span> Time, <span class="at">data=</span>ChickWeight, <span class="at">col=</span><span class="fu">as.numeric</span>(Diet), </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="fu">as.numeric</span>(Diet), <span class="at">speed=</span><span class="dv">3</span>)</span></code></pre></div>
 <p>The format is <code>y ~ x + times</code>. As you can see, other arguments also get evaluated in the environment provided by <code>data</code>.</p>
 <p>As well as the standard plot function, <code>anim.plots</code> provides animated versions of several others. <code>anim.hist</code> is a histogram:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.hist</span>(<span class="kw">rep</span>(<span class="kw">rnorm</span>(<span class="dv">5000</span>), <span class="dv">7</span>), <span class="dt">times=</span><span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">7</span>, <span class="dt">each=</span><span class="dv">5000</span>), 
-     <span class="dt">breaks=</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">50</span>,<span class="dv">100</span>,<span class="dv">200</span>, <span class="dv">500</span>, <span class="dv">1000</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_18" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(5);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-18-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_18").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_18").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.hist</span>(<span class="fu">rep</span>(<span class="fu">rnorm</span>(<span class="dv">5000</span>), <span class="dv">7</span>), <span class="at">times=</span><span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">each=</span><span class="dv">5000</span>), </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">50</span>,<span class="dv">100</span>,<span class="dv">200</span>, <span class="dv">500</span>, <span class="dv">1000</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-18-.gif" /><!-- --></p>
 <p><code>anim.curve</code> plots a mathematical curve. The value <code>t</code> changes over time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.curve</span>(<span class="kw">sin</span>(x*t), <span class="dt">times=</span><span class="dv">1</span>:<span class="dv">30</span>, <span class="dt">n=</span><span class="dv">100</span>, <span class="dt">speed=</span><span class="dv">12</span>, <span class="dt">col=</span><span class="st">&quot;darkgreen&quot;</span>, <span class="dt">from=</span>-<span class="dv">1</span>, <span class="dt">to=</span><span class="dv">1</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_19" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(30);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-19-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_19").scianimator({
-          "images": imgs,
-          "delay": 250,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_19").scianimator("play");
-    });
-  })(jQuery);
-</script>
-<p><code>anim.contour</code> does contour plots. Here’s the map of the Maunga Whau volcano in Auckland, emerging from a sphere. (Well, I had to come up with something.)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a sphere:</span>
-tmp &lt;-<span class="st"> </span>volcano
-tmp[] &lt;-<span class="st"> </span><span class="dv">200</span> -<span class="st"> </span>((<span class="kw">row</span>(tmp) -<span class="st"> </span><span class="dv">43</span>)^<span class="dv">2</span> +<span class="st"> </span>(<span class="kw">col</span>(tmp) -<span class="st"> </span><span class="dv">30</span>)^<span class="dv">2</span>)/<span class="dv">20</span>
-<span class="co"># an animated contour needs a 3D array:</span>
-cplot &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>, <span class="dt">dim=</span><span class="kw">c</span>(<span class="dv">87</span>,<span class="dv">61</span>,<span class="dv">20</span>))
-cplot[,,<span class="dv">1</span>] &lt;-<span class="st"> </span>tmp
-cplot[,,<span class="dv">20</span>] &lt;-<span class="st"> </span>volcano
-<span class="co"># morph the volcano into a circle:</span>
-cplot &lt;-<span class="st"> </span><span class="kw">apply</span>(cplot, <span class="dv">1</span>:<span class="dv">2</span>, function(x) <span class="kw">seq</span>(x[<span class="dv">1</span>], x[<span class="dv">20</span>], <span class="dt">length.out=</span><span class="dv">20</span>))
-cplot &lt;-<span class="st"> </span><span class="kw">aperm</span>(cplot, <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>))
-<span class="kw">dim</span>(cplot) <span class="co"># the third dimension is time</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.curve</span>(<span class="fu">sin</span>(x<span class="sc">*</span>t), <span class="at">times=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>, <span class="at">n=</span><span class="dv">100</span>, <span class="at">speed=</span><span class="dv">12</span>, <span class="at">col=</span><span class="st">&quot;darkgreen&quot;</span>, <span class="at">from=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">1</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-19-.gif" /><!-- --></p>
+<p><code>anim.contour</code> does contour plots. Here’s the map of the Maunga Whau volcano in Auckland, emerging from a sphere.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a sphere:</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> volcano</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>tmp[] <span class="ot">&lt;-</span> <span class="dv">200</span> <span class="sc">-</span> ((<span class="fu">row</span>(tmp) <span class="sc">-</span> <span class="dv">43</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (<span class="fu">col</span>(tmp) <span class="sc">-</span> <span class="dv">30</span>)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">20</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># an animated contour needs a 3D array:</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>cplot <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(<span class="dv">87</span>,<span class="dv">61</span>,<span class="dv">20</span>))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>cplot[,,<span class="dv">1</span>] <span class="ot">&lt;-</span> tmp</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>cplot[,,<span class="dv">20</span>] <span class="ot">&lt;-</span> volcano</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># morph the volcano into a circle:</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>cplot <span class="ot">&lt;-</span> <span class="fu">apply</span>(cplot, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">seq</span>(x[<span class="dv">1</span>], x[<span class="dv">20</span>], <span class="at">length.out=</span><span class="dv">20</span>))</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>cplot <span class="ot">&lt;-</span> <span class="fu">aperm</span>(cplot, <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>))</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(cplot) <span class="co"># the third dimension is time</span></span></code></pre></div>
 <pre><code>## [1] 87 61 20</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.contour</span>(<span class="dt">z=</span>cplot, <span class="dt">times=</span><span class="dv">1</span>:<span class="dv">20</span>, <span class="dt">speed=</span><span class="dv">3</span>, <span class="dt">levels=</span><span class="dv">80</span> +<span class="st"> </span><span class="dv">1</span>:<span class="dv">12</span>*<span class="dv">10</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_20" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(20);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-20-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_20").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_20").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.contour</span>(<span class="at">z=</span>cplot, <span class="at">times=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">speed=</span><span class="dv">3</span>, <span class="at">levels=</span><span class="dv">80</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span><span class="sc">*</span><span class="dv">10</span>, <span class="at">lty=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-20-.gif" /><!-- --></p>
 <p>The closely related <code>anim.persp</code> does animated 3D plots.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">rep</span>(.<span class="dv">4</span>,<span class="dv">4</span>))
-cplot2 &lt;-<span class="st"> </span><span class="kw">apply</span>(cplot, <span class="dv">1</span>:<span class="dv">2</span>, function(x) <span class="kw">seq</span>(<span class="dv">94</span>, x[<span class="dv">20</span>], <span class="dt">length.out=</span><span class="dv">20</span>))
-cplot2 &lt;-<span class="st"> </span><span class="kw">aperm</span>(cplot2, <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>)) 
-
-<span class="kw">anim.persp</span>(<span class="dt">z=</span>cplot2, <span class="dt">times=</span><span class="dv">1</span>:<span class="dv">20</span>, <span class="dt">phi=</span><span class="dv">15</span>:<span class="dv">34</span>, <span class="dt">theta=</span><span class="dv">30</span>:<span class="dv">49</span>, <span class="dt">speed=</span><span class="dv">5</span>, <span class="dt">border=</span><span class="ot">NA</span>, 
-        <span class="dt">col=</span><span class="st">&quot;yellowgreen&quot;</span>, <span class="dt">shade=</span>.<span class="dv">5</span>, <span class="dt">box=</span><span class="ot">FALSE</span>)</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_21" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(20);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-21-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_21").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_21").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">rep</span>(.<span class="dv">4</span>,<span class="dv">4</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>cplot2 <span class="ot">&lt;-</span> <span class="fu">apply</span>(cplot, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">seq</span>(<span class="dv">94</span>, x[<span class="dv">20</span>], <span class="at">length.out=</span><span class="dv">20</span>))</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>cplot2 <span class="ot">&lt;-</span> <span class="fu">aperm</span>(cplot2, <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>)) </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.persp</span>(<span class="at">z=</span>cplot2, <span class="at">times=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">phi=</span><span class="dv">15</span><span class="sc">:</span><span class="dv">34</span>, <span class="at">theta=</span><span class="dv">30</span><span class="sc">:</span><span class="dv">49</span>, <span class="at">speed=</span><span class="dv">5</span>, <span class="at">border=</span><span class="cn">NA</span>, </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">col=</span><span class="st">&quot;yellowgreen&quot;</span>, <span class="at">shade=</span>.<span class="dv">5</span>, <span class="at">box=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-21-.gif" /><!-- --></p>
 <p>Both of these provide a 3D array as their first argument. This 3D array is sliced up, and each slice is passed to <code>contour</code> or <code>persp</code> to create a separate frame.</p>
 <p><code>anim.barplot</code> is a little tricky. You can pass it a vector, which will be cut up according to <code>times</code> to create a single-D barplot. Or you can pass it a 3D matrix which will be sliced up to create a multiple barplot (either stacked or side-by-side). The example shows 20 rounds of a laboratory public goods game, dividing subjects up by the amount they contributed and showing whether or not their fellow group members punished them.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prop &lt;-<span class="st"> </span><span class="kw">prop.table</span>(PGgame, <span class="dv">2</span>:<span class="dv">3</span>)
-prop[, , <span class="dv">1</span>:<span class="dv">2</span>]</code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>prop <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(PGgame, <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>prop[, , <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## , , Period = 1
 ## 
 ##        Contribution
@@ -582,181 +334,77 @@ prop[, , <span class="dv">1</span>:<span class="dv">2</span>]</code></pre></div>
 ## Picked  Non-unique lowest Not lowest/all same Unique lowest
 ##   FALSE         0.9047619           1.0000000     0.7391304
 ##   TRUE          0.0952381           0.0000000     0.2608696</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.barplot</span>(prop, <span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;Period&quot;</span>, <span class="dv">1</span>:<span class="dv">20</span>), <span class="dt">legend=</span><span class="ot">TRUE</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>),
-      <span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;grey&quot;</span>, <span class="st">&quot;red&quot;</span>),
-      <span class="dt">args.legend=</span><span class="kw">list</span>(<span class="dt">x=</span><span class="st">&quot;topright&quot;</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Punished&quot;</span>, <span class="st">&quot;Not punished&quot;</span>), 
-      <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>, <span class="dt">horiz=</span><span class="ot">TRUE</span>))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_22" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(20);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-22-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_22").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_22").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.barplot</span>(prop, <span class="at">main=</span><span class="fu">paste</span>(<span class="st">&quot;Period&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>), <span class="at">legend=</span><span class="cn">TRUE</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>),</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;grey&quot;</span>, <span class="st">&quot;red&quot;</span>),</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">args.legend=</span><span class="fu">list</span>(<span class="at">x=</span><span class="st">&quot;topright&quot;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;Punished&quot;</span>, <span class="st">&quot;Not punished&quot;</span>), </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">bty=</span><span class="st">&quot;n&quot;</span>, <span class="at">horiz=</span><span class="cn">TRUE</span>))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-22-.gif" /><!-- --></p>
 <p>Lastly, most of the usual <code>points</code>-style functions have animated versions. In particular there are <code>anim.points</code>, <code>anim.lines</code>, <code>anim.text</code> and <code>anim.symbols</code>. All these will add to an existing plot, rather than create a new one.</p>
 <p>Here, we use <code>anim.lines</code> to recreate an animated version of a famous plot. (You will need the <code>maps</code> library installed to see it.)</p>
 <p><strong>Note</strong>: as of November 2014, this and the subsequent plot don’t show in <code>knitr</code>. They work if run from the command line, however.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> if (<span class="kw">require</span>(<span class="st">&#39;maps&#39;</span>)) {
-   <span class="kw">map</span>(<span class="st">&#39;world&#39;</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">22</span>, <span class="dv">40</span>), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">52</span>,<span class="dv">58</span>), <span class="dt">fill=</span><span class="ot">TRUE</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;wheat&quot;</span>, <span class="st">&quot;sienna1&quot;</span>))
-   if (<span class="kw">require</span>(<span class="st">&#39;mapdata&#39;</span>)) <span class="kw">map</span>(<span class="st">&#39;rivers&#39;</span>, <span class="dt">add=</span><span class="ot">TRUE</span>)
-   <span class="kw">title</span>(<span class="st">&quot;March of the Grande Armee on Moscow&quot;</span>)
-   <span class="kw">points</span>(cities$long, cities$lat, <span class="dt">pch=</span><span class="dv">18</span>)
-   <span class="kw">text</span>(cities$long, cities$lat, <span class="dt">labels=</span>cities$city, <span class="dt">pos=</span><span class="dv">4</span>, <span class="dt">cex=</span>.<span class="dv">7</span>)
-   <span class="kw">with</span>(troops[troops$group==<span class="dv">1</span>,], <span class="kw">anim.lines</span>(<span class="dt">x=</span>long,
-         <span class="dt">y=</span>lat, <span class="dt">window=</span>t:(t<span class="dv">+1</span>), <span class="dt">speed=</span><span class="dv">2</span>, <span class="dt">lwd=</span>survivors/<span class="dv">10000</span>,
-        <span class="dt">col=</span><span class="kw">rgb</span>(.<span class="dv">3</span>,.<span class="dv">16</span>,.<span class="dv">16</span>)))
-}</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_23" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(1);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-23-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_23").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_23").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> (<span class="fu">require</span>(<span class="st">&#39;maps&#39;</span>)) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">map</span>(<span class="st">&#39;world&#39;</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">22</span>, <span class="dv">40</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">52</span>,<span class="dv">58</span>), <span class="at">fill=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;wheat&quot;</span>, <span class="st">&quot;sienna1&quot;</span>))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (<span class="fu">require</span>(<span class="st">&#39;mapdata&#39;</span>)) <span class="fu">map</span>(<span class="st">&#39;rivers&#39;</span>, <span class="at">add=</span><span class="cn">TRUE</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">title</span>(<span class="st">&quot;March of the Grande Armee on Moscow&quot;</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">points</span>(cities<span class="sc">$</span>long, cities<span class="sc">$</span>lat, <span class="at">pch=</span><span class="dv">18</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">text</span>(cities<span class="sc">$</span>long, cities<span class="sc">$</span>lat, <span class="at">labels=</span>cities<span class="sc">$</span>city, <span class="at">pos=</span><span class="dv">4</span>, <span class="at">cex=</span>.<span class="dv">7</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">with</span>(troops[troops<span class="sc">$</span>group<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">anim.lines</span>(<span class="at">x=</span>long,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">y=</span>lat, <span class="at">window=</span>t<span class="sc">:</span>(t<span class="sc">+</span><span class="dv">1</span>), <span class="at">speed=</span><span class="dv">2</span>, <span class="at">lwd=</span>survivors<span class="sc">/</span><span class="dv">10000</span>,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">col=</span><span class="fu">rgb</span>(.<span class="dv">3</span>,.<span class="dv">16</span>,.<span class="dv">16</span>)))</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Loading required package: mapdata</code></pre>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-23-.gif" /><!-- --></p>
 <p>There are also <code>anim.segments</code> and <code>anim.arrows</code>. Like <code>anim.points</code> and friends, these functions add to the plot between frames, rather than redrawing it. The convenience functions <code>anim.arrowplot</code> and <code>anim.segmentplot</code> redraw the plot before they are called.</p>
 <p>Below we draw the paths of all 2009 hurricanes, starting them all simultaneously at their first recorded time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if (<span class="kw">require</span>(<span class="st">&#39;maps&#39;</span>)) {
-  hr &lt;-<span class="st"> </span><span class="kw">subset</span>(hurricanes, lat &gt;<span class="st"> </span><span class="dv">0</span> &amp;<span class="st"> </span>lat &lt;<span class="st"> </span><span class="dv">50</span> &amp;<span class="st"> </span>lon &gt;<span class="st"> </span>-<span class="dv">95</span> &amp;<span class="st"> </span>lon &lt;<span class="st"> </span>-<span class="dv">20</span> &amp;
-<span class="st">        </span>Shour %%<span class="st"> </span><span class="dv">6</span> ==<span class="st"> </span><span class="dv">0</span>)
-  hr$dlat &lt;-<span class="st"> </span><span class="kw">cos</span>(hr$diruv/<span class="dv">360</span>*<span class="dv">2</span>*pi) *<span class="st"> </span>hr$maguv /<span class="st"> </span><span class="dv">8</span>
-  hr$dlon &lt;-<span class="st"> </span><span class="kw">sin</span>(hr$diruv/<span class="dv">360</span>*<span class="dv">2</span>*pi) *<span class="st"> </span>hr$maguv /<span class="st"> </span><span class="dv">8</span>
-  hr$name &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+$&quot;</span>, <span class="st">&quot;&quot;</span>, hr$name)
-  <span class="kw">map</span>(<span class="st">&#39;world&#39;</span>, <span class="dt">xlim=</span><span class="kw">c</span>(-<span class="dv">95</span>,-<span class="dv">20</span>), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">50</span>), <span class="dt">fill=</span><span class="ot">TRUE</span>, <span class="dt">col=</span><span class="kw">terrain.colors</span>(<span class="dv">10</span>))
-  <span class="kw">title</span>(<span class="st">&quot;Hurricanes, 2009&quot;</span>)
-  <span class="kw">with</span>(hr[!<span class="kw">duplicated</span>(hr$name),], <span class="kw">text</span>(lon, lat, <span class="dt">labels=</span><span class="kw">paste0</span>(name, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, Yr), <span class="dt">cex=</span><span class="fl">0.8</span>))
-  <span class="kw">with</span>(hr, <span class="kw">anim.arrows</span>(<span class="dt">x0=</span>lon, <span class="dt">y0=</span>lat, <span class="dt">y1=</span>lat+dlat, <span class="dt">x1=</span>lon+dlon, <span class="dt">times=</span>Shour, 
-        <span class="dt">speed=</span><span class="dv">12</span>, <span class="dt">col=</span><span class="kw">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.8</span>), <span class="dt">length=</span>.<span class="dv">1</span>, <span class="dt">lwd=</span><span class="dv">2</span>))
-}</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_24" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(1);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-24-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_24").scianimator({
-          "images": imgs,
-          "delay": 1000,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_24").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">require</span>(<span class="st">&#39;maps&#39;</span>)) {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  hr <span class="ot">&lt;-</span> <span class="fu">subset</span>(hurricanes, lat <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> lat <span class="sc">&lt;</span> <span class="dv">50</span> <span class="sc">&amp;</span> lon <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">95</span> <span class="sc">&amp;</span> lon <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">20</span> <span class="sc">&amp;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>        Shour <span class="sc">%%</span> <span class="dv">6</span> <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  hr<span class="sc">$</span>dlat <span class="ot">&lt;-</span> <span class="fu">cos</span>(hr<span class="sc">$</span>diruv<span class="sc">/</span><span class="dv">360</span><span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">*</span> hr<span class="sc">$</span>maguv <span class="sc">/</span> <span class="dv">8</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  hr<span class="sc">$</span>dlon <span class="ot">&lt;-</span> <span class="fu">sin</span>(hr<span class="sc">$</span>diruv<span class="sc">/</span><span class="dv">360</span><span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">*</span> hr<span class="sc">$</span>maguv <span class="sc">/</span> <span class="dv">8</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  hr<span class="sc">$</span>name <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">s+$&quot;</span>, <span class="st">&quot;&quot;</span>, hr<span class="sc">$</span>name)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="st">&#39;world&#39;</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">95</span>,<span class="sc">-</span><span class="dv">20</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">50</span>), <span class="at">fill=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">10</span>))</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">title</span>(<span class="st">&quot;Hurricanes, 2009&quot;</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(hr[<span class="sc">!</span><span class="fu">duplicated</span>(hr<span class="sc">$</span>name),], <span class="fu">text</span>(lon, lat, <span class="at">labels=</span><span class="fu">paste0</span>(name, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, Yr), <span class="at">cex=</span><span class="fl">0.8</span>))</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(hr, <span class="fu">anim.arrows</span>(<span class="at">x0=</span>lon, <span class="at">y0=</span>lat, <span class="at">y1=</span>lat<span class="sc">+</span>dlat, <span class="at">x1=</span>lon<span class="sc">+</span>dlon, <span class="at">times=</span>Shour, </span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">speed=</span><span class="dv">12</span>, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.8</span>), <span class="at">length=</span>.<span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">2</span>))</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-24-.gif" /><!-- --></p>
 <p>Now we’ve got almost all the tools we need to create our own Gapminder-style animation. The last tool is the <code>merge</code> method for two <code>anim.frames</code> objects. This creates a single animation from two objects. We use it below to add labels to the larger countries.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pl &lt;-<span class="st"> </span><span class="kw">palette</span>(<span class="kw">adjustcolor</span>(<span class="kw">rainbow</span>(<span class="dv">23</span>), <span class="dv">1</span>, .<span class="dv">6</span>, .<span class="dv">6</span>, .<span class="dv">6</span>, <span class="dt">offset=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,-<span class="fl">0.1</span>)))
-
-blobs &lt;-<span class="st"> </span><span class="kw">anim.plot</span>(lifex ~<span class="st"> </span>GDP +<span class="st"> </span>year, <span class="dt">data=</span>gm_data, <span class="dt">log=</span><span class="st">&quot;x&quot;</span>,
-      <span class="dt">cex=</span><span class="kw">sqrt</span>(pop)*<span class="fl">0.0004</span>, <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">col=</span>region, <span class="dt">xlab=</span><span class="st">&quot;GDP&quot;</span>, 
-      <span class="dt">ylab=</span><span class="st">&quot;Life expectancy&quot;</span>, <span class="dt">speed=</span><span class="dv">7</span>, <span class="dt">subset=</span>year &gt;<span class="st"> </span><span class="dv">1850</span>, <span class="dt">show=</span><span class="ot">FALSE</span>)
-cnames &lt;-<span class="st"> </span><span class="kw">anim.text</span>(lifex ~<span class="st"> </span>GDP +<span class="st"> </span>year, <span class="dt">data=</span>gm_data,
-      <span class="dt">labels=</span>country, <span class="dt">speed=</span><span class="dv">7</span>, <span class="dt">subset=</span>year &gt;<span class="st"> </span><span class="dv">1850</span> &amp;<span class="st"> </span>pop &gt;<span class="st"> </span><span class="dv">50000000</span>, 
-      <span class="dt">show=</span><span class="ot">FALSE</span>, <span class="dt">cex=</span><span class="fl">0.7</span>, <span class="dt">col=</span><span class="st">&quot;darkorange&quot;</span>)
-<span class="kw">replay</span>(<span class="kw">merge</span>(blobs, cnames))</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_25" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(162);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-25-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_25").scianimator({
-          "images": imgs,
-          "delay": 200,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_25").scianimator("play");
-    });
-  })(jQuery);
-</script>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">palette</span>(pl)</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">palette</span>(<span class="fu">adjustcolor</span>(<span class="fu">rainbow</span>(<span class="dv">23</span>), <span class="dv">1</span>, .<span class="dv">6</span>, .<span class="dv">6</span>, .<span class="dv">6</span>, <span class="at">offset=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="fl">0.1</span>)))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>blobs <span class="ot">&lt;-</span> <span class="fu">anim.plot</span>(lifex <span class="sc">~</span> GDP <span class="sc">+</span> year, <span class="at">data=</span>gm_data, <span class="at">log=</span><span class="st">&quot;x&quot;</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">cex=</span><span class="fu">sqrt</span>(pop)<span class="sc">*</span><span class="fl">0.0004</span>, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">col=</span>region, <span class="at">xlab=</span><span class="st">&quot;GDP&quot;</span>, </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab=</span><span class="st">&quot;Life expectancy&quot;</span>, <span class="at">speed=</span><span class="dv">7</span>, <span class="at">subset=</span>year <span class="sc">&gt;</span> <span class="dv">1850</span>, <span class="at">show=</span><span class="cn">FALSE</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>cnames <span class="ot">&lt;-</span> <span class="fu">anim.text</span>(lifex <span class="sc">~</span> GDP <span class="sc">+</span> year, <span class="at">data=</span>gm_data,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels=</span>country, <span class="at">speed=</span><span class="dv">7</span>, <span class="at">subset=</span>year <span class="sc">&gt;</span> <span class="dv">1850</span> <span class="sc">&amp;</span> pop <span class="sc">&gt;</span> <span class="dv">50000000</span>, </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">show=</span><span class="cn">FALSE</span>, <span class="at">cex=</span><span class="fl">0.7</span>, <span class="at">col=</span><span class="st">&quot;darkorange&quot;</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">replay</span>(<span class="fu">merge</span>(blobs, cnames))</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-25-.gif" /><!-- --></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palette</span>(pl)</span></code></pre></div>
 <p>Merging is quite primitive - it simply interleaves graphics calls. Don’t expect it to put different plots on the same window unless one of the calls is to a function like <code>points</code>.</p>
 </div>
 <div id="tips-and-tricks" class="section level2">
 <h2>Tips and tricks</h2>
 <p>To replay plots faster or slower, use the <code>speed</code> argument. <code>knitr</code> doesn’t display this nicely in this document, but it will work for you.</p>
 <p>Similarly, if you have different intervals between your values of <code>times</code>, <code>anim.plots</code> will respect these when they are played. For example</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">5</span>, <span class="dv">1</span>:<span class="dv">5</span>, <span class="dt">times=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>))</code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">times=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>))</span></code></pre></div>
 <p>will show a long pause between the second and third frames. To turn this feature off, pass the argument <code>use.times=FALSE</code>.</p>
 <p>You can process arguments for each individual plot using the <code>window.process</code> argument. This should be a function which takes two arguments - a list of arguments to plot, and a vector of <code>times</code>. It should return the plot arguments, suitably processed. This can be useful for, e.g., drawing animated movement:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.plot</span>(<span class="dv">1</span>:<span class="dv">100</span>, <span class="dv">1</span>:<span class="dv">100</span> +<span class="st"> </span><span class="kw">sin</span>(<span class="dv">1</span>:<span class="dv">100</span>/<span class="dv">3</span>)*<span class="dv">5</span>, <span class="dt">speed=</span><span class="dv">10</span>, <span class="dt">window=</span>(t<span class="dv">-5</span>):t, 
-      <span class="dt">window.process =</span> function(args, times){
-        args$col &lt;-<span class="st"> </span><span class="kw">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>:<span class="dv">5</span>/<span class="dv">5</span>) <span class="co"># fade shadows</span>
-        <span class="kw">return</span>(args)
-      })</code></pre></div>
-<div class="scianimator">
-<div id="unnamed_chunk_27" style="display: inline-block;">
-
-</div>
-</div>
-<script type="text/javascript">
-  (function($) {
-    $(document).ready(function() {
-      var imgs = Array(100);
-      for (i = 0; ; i++) {
-        if (i == imgs.length) break;
-        imgs[i] = "anim.plots_files/figure-html/unnamed-chunk-27-" + (i + 1) + ".png";
-      }
-      $("#unnamed_chunk_27").scianimator({
-          "images": imgs,
-          "delay": 100,
-          "controls": ["first", "previous", "play", "next", "last", "loop", "speed"],
-      });
-      $("#unnamed_chunk_27").scianimator("play");
-    });
-  })(jQuery);
-</script>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span> <span class="sc">+</span> <span class="fu">sin</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span><span class="sc">/</span><span class="dv">3</span>)<span class="sc">*</span><span class="dv">5</span>, <span class="at">speed=</span><span class="dv">10</span>, <span class="at">window=</span>(t<span class="dv">-5</span>)<span class="sc">:</span>t, </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">window.process =</span> <span class="cf">function</span>(args, times){</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        args<span class="sc">$</span>col <span class="ot">&lt;-</span> <span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span><span class="sc">:</span><span class="dv">5</span><span class="sc">/</span><span class="dv">5</span>) <span class="co"># fade shadows</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(args)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>      })</span></code></pre></div>
+<p><img src="anim.plots_files/figure-html/unnamed-chunk-27-.gif" /><!-- --></p>
 <p>Lastly, if you’re feeling adventurous, you can pass a different function than <code>plot</code> into <code>anim.plot</code> using the <code>fn</code> argument. (Quite a few of the built-in functions work this way.) You may even be able to use <code>ggplot</code> or similar….</p>
 </div>
 <div id="saving-your-plots" class="section level2">
 <h2>Saving your plots</h2>
 <p>The function <code>anim.save()</code> will save your <code>anim.frames</code> objects. It simply calls the underlying functions from the <code>animation</code> package.</p>
 <p>These functions do not respect changes in animation speed. For example, the following code would show a rocket boosting off:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp &lt;-<span class="st"> </span><span class="kw">anim.plot</span>(<span class="dv">1</span>, <span class="dv">1</span>:<span class="dv">30</span>, <span class="dt">times=</span><span class="kw">sqrt</span>(<span class="dv">1</span>:<span class="dv">30</span>))</code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">anim.plot</span>(<span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>, <span class="at">times=</span><span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>))</span></code></pre></div>
 <p>But when you save it, it will go at constant speed. To get round this, run e.g.:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim.save</span>(<span class="kw">anim.smooth</span>(tmp, <span class="dt">fps=</span><span class="dv">10</span>), <span class="dt">type=</span><span class="st">&quot;Video&quot;</span>, <span class="dt">filename=</span><span class="st">&quot;rocket.mp4&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim.save</span>(<span class="fu">anim.smooth</span>(tmp, <span class="at">fps=</span><span class="dv">10</span>), <span class="at">type=</span><span class="st">&quot;Video&quot;</span>, <span class="at">filename=</span><span class="st">&quot;rocket.mp4&quot;</span>)</span></code></pre></div>
 <p>The <code>anim.smooth</code> function creates a “smoothed” version of the animation, which plays each frame after a constant interval. This involves creating many more frames, so when you play it in R, it will probably look slower. However, when you save it, it should look right.</p>
 </div>
 <div id="getting-help-and-contributing" class="section level2">
@@ -766,12 +414,15 @@ cnames &lt;-<span class="st"> </span><span class="kw">anim.text</span>(lifex ~<s
 
 
 
+<!-- code folding -->
+
+
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
