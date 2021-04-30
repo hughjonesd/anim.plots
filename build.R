@@ -23,6 +23,8 @@ file.copy("docs/anim.plots.Rmd", "inst/doc/full/")
 built_pkg <- devtools::build(clean_doc = FALSE)
 
 # release
+devtools::check_win_devel(clean_doc = FALSE)
+rhub_check <- rhub::check_for_cran(built_pkg, show_status = FALSE)
 devtools::release(pkg = built_pkg)
 
 
