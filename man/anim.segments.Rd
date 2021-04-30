@@ -7,10 +7,23 @@
 \alias{anim.arrowplot}
 \title{Draw an animation of line segments or arrows.}
 \usage{
-anim.segments(x0, y0, x1 = NULL, y1 = NULL, times = NULL,
-  speed = 1, show = TRUE, use.times = TRUE, window = t,
-  window.process = NULL, fn = segments, col = NULL, lty = NULL,
-  lwd = NULL, ...)
+anim.segments(
+  x0,
+  y0,
+  x1 = NULL,
+  y1 = NULL,
+  times = NULL,
+  speed = 1,
+  show = TRUE,
+  use.times = TRUE,
+  window = t,
+  window.process = NULL,
+  fn = segments,
+  col = NULL,
+  lty = NULL,
+  lwd = NULL,
+  ...
+)
 
 anim.arrows(..., length = 0.25, angle = 30, code = 2)
 
@@ -55,7 +68,7 @@ if (require('maps')) {
    map('world', xlim=c(-95,-20), ylim=c(0,50))
    title("Hurricanes, 2009")
    with(hr[!duplicated(hr$name),], text(lon, lat, 
-         labels=paste0(name, "\\n", Yr), cex=0.8))
+         labels=paste0(name, "\n", Yr), cex=0.8))
    with(hr, anim.arrows(x0=lon, y0=lat, y1=lat+dlat, x1=lon+dlon, 
          times=Shour, speed=12, col=rgb(0,0,1,0.8), length=.1, lwd=2)) 
 }

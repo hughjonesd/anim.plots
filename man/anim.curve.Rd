@@ -4,8 +4,7 @@
 \alias{anim.curve}
 \title{Draw an animated curve.}
 \usage{
-anim.curve(expr, x = NULL, from = 0, to = 1, n = 255, times,
-  type = "l", ...)
+anim.curve(expr, x = NULL, from = 0, to = 1, n = 255, times, type = "l", ...)
 }
 \arguments{
 \item{expr}{a function which takes two arguments, or an expression involving

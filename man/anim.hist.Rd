@@ -4,9 +4,20 @@
 \alias{anim.hist}
 \title{Draw an animated histogram.}
 \usage{
-anim.hist(x, times, speed = 1, show = TRUE, use.times = TRUE,
-  window = t, window.process = NULL, density = NULL, angle = NULL,
-  col = NULL, border = NULL, ...)
+anim.hist(
+  x,
+  times,
+  speed = 1,
+  show = TRUE,
+  use.times = TRUE,
+  window = t,
+  window.process = NULL,
+  density = NULL,
+  angle = NULL,
+  col = NULL,
+  border = NULL,
+  ...
+)
 }
 \arguments{
 \item{x, density, angle, col, border, ...}{parameters passed to \code{\link{hist}}.}

@@ -8,8 +8,14 @@
 \usage{
 replay(...)
 
-\method{replay}{anim.frames}(x, frames = 1:length(x), speed = attr(x,
-  "speed"), after = NULL, before = NULL, ...)
+\method{replay}{anim.frames}(
+  x,
+  frames = 1:length(x),
+  speed = attr(x, "speed"),
+  after = NULL,
+  before = NULL,
+  ...
+)
 
 \method{plot}{anim.frames}(x, ...)
 }

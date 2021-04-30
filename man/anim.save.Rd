@@ -4,8 +4,13 @@
 \alias{anim.save}
 \title{Save an anim.frames object in various formats.}
 \usage{
-anim.save(obj, filename, type = switch(file_ext(filename), gif = "GIF",
-  mp4 = "Video", swf = "SWF", html = "HTML", tex = "Latex"), ...)
+anim.save(
+  obj,
+  filename,
+  type = switch(file_ext(filename), gif = "GIF", mp4 = "Video", swf = "SWF", html =
+    "HTML", tex = "Latex"),
+  ...
+)
 }
 \arguments{
 \item{obj}{an \code{anim.frames} object, or an expression to evaluate}

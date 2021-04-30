@@ -7,3 +7,4 @@
 ^docs$
 ^\.github$
 ^Meta$
+^cran-comments\.md$
