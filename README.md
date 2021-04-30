@@ -1,7 +1,10 @@
 # anim.plots
 
+<!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/anim.plots)](https://cran.r-project.org/package=anim.plots)
-[![Travis-CI Build Status](https://travis-ci.org/hughjonesd/anim.plots.svg?branch=master)](https://travis-ci.org/hughjonesd/anim.plots)
+[![R-CMD-check](https://github.com/hughjonesd/anim.plots/workflows/R-CMD-check/badge.svg)](https://github.com/hughjonesd/anim.plots/actions)
+<!-- badges: end -->
+
 
 `anim.plots` provides simple animated versions of basic R plots, using the `animation`
 package. It includes animated versions of `plot`, `barplot`, `persp`, `contour`,
