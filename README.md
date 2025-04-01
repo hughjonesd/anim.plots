@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/anim.plots)](https://cran.r-project.org/package=anim.plots)
 [![R-CMD-check](https://github.com/hughjonesd/anim.plots/workflows/R-CMD-check/badge.svg)](https://github.com/hughjonesd/anim.plots/actions)
+[![R-CMD-check](https://github.com/hughjonesd/anim.plots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hughjonesd/anim.plots/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 
