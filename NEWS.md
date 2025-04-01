@@ -1,8 +1,12 @@
 
+# anim.plots 0.2.3
+
+* Documentation fixes for HTML manuals on CRAN.
+
 # anim.plots 0.2.2
 
-* Tweaks to fix R CMD check
-* Fixed a warning in `anim.arrows()`
+* Tweaks to fix R CMD check.
+* Fixed a warning in `anim.arrows()`.
 
 # anim.plots 0.2.1
 

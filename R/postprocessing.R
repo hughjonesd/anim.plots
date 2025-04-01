@@ -114,12 +114,12 @@ plot.anim.frames <- function(x, ...) replay(x, ...)
 #' Save an anim.frames object in various formats.
 #' 
 #' This function simply calls replay on the object and then calls
-#' \code{\link{saveGIF}} and friends on the result.
+#' \code{\link[animation]{saveGIF}} and friends on the result.
 #' 
 #' @param obj an \code{anim.frames} object, or an expression to evaluate
 #' @param type one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'
 #' @param filename file to save to
-#' @param ... arguments passed to e.g. \code{\link{saveGIF}}
+#' @param ... arguments passed to e.g. \code{\link[animation]{saveGIF}}
 #' 
 #' @examples
 #' 

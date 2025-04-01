@@ -5,7 +5,6 @@
 #' package. It includes animated versions of plot, barplot, persp, contour,
 #' filled.contour, hist, curve, points, lines, text, symbols, segments, and
 #' arrows.
-#' @docType package
 #' @details
 #'
 #' For more information, run \code{vignette('anim.plots-stub')}, or check the vignette out
@@ -16,7 +15,7 @@
 #' package. You may want to consider more modern solutions such as 
 #' \href{https://cran.r-project.org/package=gganimate}{gganimate}.
 #' @name anim.plots-package
-NULL
+"_PACKAGE"
 
 #' @import animation
 #' @import graphics

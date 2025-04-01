@@ -1,8 +1,12 @@
 Package: anim.plots
 Type: Package
 Title: Simple Animated Plots for R
-Version: 0.2.2
-Author: David Hugh-Jones <davidhughjones@gmail.com>
+Version: 0.2.3
+Encoding: UTF-8
+Authors@R: person(given = "David",
+                  family = "Hugh-Jones",
+                  role = c("aut", "cre"),
+                  email = "davidhughjones@gmail.com")
 Maintainer: David Hugh-Jones <davidhughjones@gmail.com>
 Description: Simple animated versions of basic R plots, using the 'animation'
     package. Includes animated versions of plot, barplot, persp, contour,
@@ -21,4 +25,4 @@ Suggests:
     mapdata,
     testthat,
     rmarkdown
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2

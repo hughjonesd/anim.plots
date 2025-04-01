@@ -19,11 +19,11 @@ anim.save(
 
 \item{type}{one of 'GIF', 'Video', 'SWF', 'HTML', or 'Latex'}
 
-\item{...}{arguments passed to e.g. \code{\link{saveGIF}}}
+\item{...}{arguments passed to e.g. \code{\link[animation]{saveGIF}}}
 }
 \description{
 This function simply calls replay on the object and then calls
-\code{\link{saveGIF}} and friends on the result.
+\code{\link[animation]{saveGIF}} and friends on the result.
 }
 \examples{
 
